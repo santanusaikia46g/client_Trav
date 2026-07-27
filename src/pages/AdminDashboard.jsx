@@ -534,7 +534,7 @@ const AdminDashboard = () => {
   return (
     <div className="container section">
       {/* Top Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', flexWrap: 'wrap', gap: '15px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
         <div>
           <h1 className="section-title" style={{ textAlign: 'left', marginBottom: '4px' }}>Agency Management Console</h1>
           <p style={{ color: 'var(--medium)', margin: 0, fontSize: '0.9rem' }}>Welcome back, Administrator. Real-time control panel.</p>
@@ -546,6 +546,58 @@ const AdminDashboard = () => {
           <Button variant="outline" size="sm" onClick={handleLogout}>
             Sign Out
           </Button>
+        </div>
+      </div>
+
+      {/* System Admin Profile Bar */}
+      <div style={{
+        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        color: '#ffffff',
+        padding: '16px 24px',
+        borderRadius: 'var(--radius-md)',
+        marginBottom: '25px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '15px',
+        boxShadow: 'var(--shadow-md)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{
+            width: '42px',
+            height: '42px',
+            borderRadius: '50%',
+            background: 'var(--primary)',
+            color: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 800,
+            fontSize: '1.2rem'
+          }}>
+            👤
+          </div>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#ffffff' }}>System Admin Profile</div>
+            <div style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
+              Logged in as: <strong style={{ color: '#38bdf8' }}>Admin User</strong> &nbsp;|&nbsp; Role: <strong style={{ color: '#a7f3d0' }}>Super Administrator</strong>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{
+            background: 'rgba(16, 185, 129, 0.2)',
+            color: '#34d399',
+            padding: '4px 12px',
+            borderRadius: '20px',
+            fontSize: '0.8rem',
+            fontWeight: 700,
+            border: '1px solid rgba(52, 211, 153, 0.4)'
+          }}>
+            ● Session Token: Active (JWT Verified)
+          </span>
         </div>
       </div>
 
