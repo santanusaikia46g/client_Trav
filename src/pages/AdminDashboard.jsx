@@ -532,119 +532,120 @@ const AdminDashboard = () => {
   });
 
   return (
-    <div className="admin-layout-container">
-      {/* Sidebar Navigation */}
-      <aside className="admin-sidebar">
-        <div className="admin-sidebar-brand">
-          <div className="admin-brand-icon">T</div>
-          <div>
-            <div className="admin-brand-title">TravMitra</div>
-            <div style={{ fontSize: '0.7rem', color: '#64748b' }}>Agency Console</div>
-          </div>
-          <span className="admin-brand-badge">ADMIN</span>
+    <div className="container section">
+      {/* Top Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
+        <div>
+          <h1 className="section-title" style={{ textAlign: 'left', marginBottom: '4px' }}>Agency Management Console</h1>
+          <p style={{ color: 'var(--medium)', margin: 0, fontSize: '0.9rem' }}>Welcome back, Administrator. Real-time control panel.</p>
         </div>
-
-        <div className="admin-sidebar-menu">
-          <div>
-            <div className="admin-menu-group-title">Main Operations</div>
-            <button
-              className={`admin-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('overview'); setSearchTerm(''); }}
-            >
-              <span>📊</span> Dashboard Overview
-            </button>
-            <button
-              className={`admin-nav-item ${activeTab === 'packages' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('packages'); setSearchTerm(''); }}
-            >
-              <span>🧳</span> Tour Packages ({packages.length})
-            </button>
-            <button
-              className={`admin-nav-item ${activeTab === 'inquiries' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('inquiries'); setSearchTerm(''); }}
-            >
-              <span>📩</span> Lead Pipeline ({inquiries.length})
-            </button>
-            <button
-              className={`admin-nav-item ${activeTab === 'destinations' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('destinations'); setSearchTerm(''); }}
-            >
-              <span>🗺️</span> Destinations ({destinations.length})
-            </button>
-          </div>
-
-          <div>
-            <div className="admin-menu-group-title">Moderation & Feedback</div>
-            <button
-              className={`admin-nav-item ${activeTab === 'reviews' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('reviews'); setSearchTerm(''); }}
-            >
-              <span>⭐</span> Reviews & Ratings
-            </button>
-          </div>
-
-          <div>
-            <div className="admin-menu-group-title">System & Audit</div>
-            <button
-              className={`admin-nav-item ${activeTab === 'activity' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('activity'); setSearchTerm(''); }}
-            >
-              <span>⚙️</span> Audit Log & Settings
-            </button>
-          </div>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <Button variant="outline" size="sm" onClick={() => exportToCSV(inquiries, 'Travmitra_Inquiries')}>
+            📥 Export CSV
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleLogout}>
+            Sign Out
+          </Button>
         </div>
+      </div>
 
-        <div className="admin-sidebar-footer">
-          <div className="admin-avatar">A</div>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#f8fafc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Admin User</div>
-            <div style={{ fontSize: '0.7rem', color: '#10b981' }}>● Super Admin</div>
+      {/* System Admin Profile Bar */}
+      <div style={{
+        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        color: '#ffffff',
+        padding: '16px 24px',
+        borderRadius: 'var(--radius-md)',
+        marginBottom: '25px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '15px',
+        boxShadow: 'var(--shadow-md)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{
+            width: '42px',
+            height: '42px',
+            borderRadius: '50%',
+            background: 'var(--primary)',
+            color: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 800,
+            fontSize: '1.2rem'
+          }}>
+            👤
           </div>
-          <button
-            onClick={handleLogout}
-            title="Sign Out"
-            style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1.1rem' }}
-          >
-            🚪
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="admin-main-wrapper">
-        {/* Top Navbar */}
-        <header className="admin-topbar">
           <div>
-            <h1 className="admin-page-title">
-              {activeTab === 'overview' && 'Dashboard Overview & Analytics'}
-              {activeTab === 'packages' && 'Tour Packages Management'}
-              {activeTab === 'inquiries' && 'Lead Pipeline & Inquiries'}
-              {activeTab === 'destinations' && 'Destinations Catalog'}
-              {activeTab === 'reviews' && 'Reviews & Testimonials Moderation'}
-              {activeTab === 'activity' && 'System Audit Log & Settings'}
-            </h1>
-            <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
-              Logged in as <strong style={{ color: '#0f172a' }}>Admin User</strong> (Super Administrator) | Session Token Active
+            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#ffffff' }}>System Admin Profile</div>
+            <div style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
+              Logged in as: <strong style={{ color: '#38bdf8' }}>Admin User</strong> &nbsp;|&nbsp; Role: <strong style={{ color: '#a7f3d0' }}>Super Administrator</strong>
             </div>
           </div>
+        </div>
 
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <Button variant="outline" size="sm" onClick={() => exportToCSV(inquiries, 'Travmitra_Inquiries')}>
-              📥 Export Inquiries CSV
-            </Button>
-            {activeTab === 'packages' && (
-              <Button variant="primary" size="sm" onClick={() => openPackageModal()}>
-                + Create Package
-              </Button>
-            )}
-            <Button variant="outline" size="sm" onClick={handleLogout}>
-              Sign Out
-            </Button>
-          </div>
-        </header>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{
+            background: 'rgba(16, 185, 129, 0.2)',
+            color: '#34d399',
+            padding: '4px 12px',
+            borderRadius: '20px',
+            fontSize: '0.8rem',
+            fontWeight: 700,
+            border: '1px solid rgba(52, 211, 153, 0.4)'
+          }}>
+            ● Session Token: Active (JWT Verified)
+          </span>
+        </div>
+      </div>
 
-        {/* Content Container */}
-        <div className="admin-content-padding">
+      {/* Navigation Tabs */}
+      <div style={{ display: 'flex', gap: '10px', borderBottom: '2px solid var(--border)', marginBottom: '30px', overflowX: 'auto', paddingBottom: '2px' }}>
+        <button
+          className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
+          onClick={() => { setActiveTab('overview'); setSearchTerm(''); }}
+          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'overview' ? '3px solid var(--primary)' : 'none', color: activeTab === 'overview' ? 'var(--primary)' : 'var(--medium)' }}
+        >
+          📊 Overview & KPIs
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'packages' ? 'active' : ''}`}
+          onClick={() => { setActiveTab('packages'); setSearchTerm(''); }}
+          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'packages' ? '3px solid var(--primary)' : 'none', color: activeTab === 'packages' ? 'var(--primary)' : 'var(--medium)' }}
+        >
+          🧳 Tour Packages ({packages.length})
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'inquiries' ? 'active' : ''}`}
+          onClick={() => { setActiveTab('inquiries'); setSearchTerm(''); }}
+          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'inquiries' ? '3px solid var(--primary)' : 'none', color: activeTab === 'inquiries' ? 'var(--primary)' : 'var(--medium)' }}
+        >
+          📩 Lead Pipeline ({inquiries.length})
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'destinations' ? 'active' : ''}`}
+          onClick={() => { setActiveTab('destinations'); setSearchTerm(''); }}
+          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'destinations' ? '3px solid var(--primary)' : 'none', color: activeTab === 'destinations' ? 'var(--primary)' : 'var(--medium)' }}
+        >
+          🗺️ Destinations ({destinations.length})
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
+          onClick={() => { setActiveTab('reviews'); setSearchTerm(''); }}
+          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'reviews' ? '3px solid var(--primary)' : 'none', color: activeTab === 'reviews' ? 'var(--primary)' : 'var(--medium)' }}
+        >
+          ⭐ Reviews & Testimonials
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'activity' ? 'active' : ''}`}
+          onClick={() => { setActiveTab('activity'); setSearchTerm(''); }}
+          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'activity' ? '3px solid var(--primary)' : 'none', color: activeTab === 'activity' ? 'var(--primary)' : 'var(--medium)' }}
+        >
+          ⚙️ Activity Log & System
+        </button>
+      </div>
 
       {/* TAB 1: OVERVIEW & ANALYTICS */}
       {activeTab === 'overview' && (
@@ -1091,8 +1092,6 @@ const AdminDashboard = () => {
           </div>
         </div>
       )}
-        </div>
-      </main>
 
       {/* CREATE / EDIT PACKAGE MODAL */}
       {packageModalOpen && (
