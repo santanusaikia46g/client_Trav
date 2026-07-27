@@ -129,6 +129,9 @@ const Home = () => {
                   <div className="package-card-img">
                     <img src={pkg.images[0] || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80'} alt={pkg.title} />
                     <span className="package-card-tag">{pkg.duration}</span>
+                    <span className={`badge-category badge-category-${(pkg.category || 'Standard').toLowerCase()} package-card-category-badge`}>
+                      {pkg.category || 'Standard'}
+                    </span>
                   </div>
                   <div className="package-card-content">
                     <div className="package-card-meta">

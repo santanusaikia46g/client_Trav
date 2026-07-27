@@ -47,8 +47,9 @@ const AdminDashboard = () => {
   const [pkgPrice, setPkgPrice] = useState('');
   const [pkgDuration, setPkgDuration] = useState('');
   const [pkgDestination, setPkgDestination] = useState('');
+  const [pkgCategory, setPkgCategory] = useState('Standard');
   const [pkgImages, setPkgImages] = useState(['']);
-  const [pkgItinerary, setPkgItinerary] = useState([{ day: 1, title: '', description: '' }]);
+  const [pkgItinerary, setPkgItinerary] = useState([{ day: 1, title: '', description: '', image: '' }]);
   const [pkgIncluded, setPkgIncluded] = useState(['']);
   const [pkgExcluded, setPkgExcluded] = useState(['']);
 
@@ -157,7 +158,7 @@ const AdminDashboard = () => {
 
   // Itinerary helper functions
   const handleAddItineraryDay = () => {
-    setPkgItinerary((prev) => [...prev, { day: prev.length + 1, title: '', description: '' }]);
+    setPkgItinerary((prev) => [...prev, { day: prev.length + 1, title: '', description: '', image: '' }]);
   };
 
   const handleRemoveItineraryDay = (index) => {
@@ -185,8 +186,9 @@ const AdminDashboard = () => {
       setPkgPrice(pkg.price.toString());
       setPkgDuration(pkg.duration);
       setPkgDestination(pkg.destination);
+      setPkgCategory(pkg.category || 'Standard');
       setPkgImages(pkg.images.length > 0 ? pkg.images : ['']);
-      setPkgItinerary(pkg.itinerary.length > 0 ? pkg.itinerary : [{ day: 1, title: '', description: '' }]);
+      setPkgItinerary(pkg.itinerary.length > 0 ? pkg.itinerary.map((it, idx) => ({ day: it.day || idx + 1, title: it.title || '', description: it.description || '', image: it.image || '' })) : [{ day: 1, title: '', description: '', image: '' }]);
       setPkgIncluded(pkg.included.length > 0 ? pkg.included : ['']);
       setPkgExcluded(pkg.excluded.length > 0 ? pkg.excluded : ['']);
     } else {
@@ -196,8 +198,9 @@ const AdminDashboard = () => {
       setPkgPrice('');
       setPkgDuration('');
       setPkgDestination('');
+      setPkgCategory('Standard');
       setPkgImages(['']);
-      setPkgItinerary([{ day: 1, title: '', description: '' }]);
+      setPkgItinerary([{ day: 1, title: '', description: '', image: '' }]);
       setPkgIncluded(['']);
       setPkgExcluded(['']);
     }
@@ -218,6 +221,7 @@ const AdminDashboard = () => {
       price: Number(pkgPrice),
       duration: pkgDuration,
       destination: pkgDestination,
+      category: pkgCategory,
       images: pkgImages.filter((img) => img.trim() !== ''),
       itinerary: pkgItinerary.filter((it) => it.title.trim() !== '' && it.description.trim() !== ''),
       included: pkgIncluded.filter((inc) => inc.trim() !== ''),
@@ -442,6 +446,7 @@ const AdminDashboard = () => {
                     <tr>
                       <th>Title</th>
                       <th>Destination</th>
+                      <th>Category</th>
                       <th>Price</th>
                       <th>Duration</th>
                       <th>Actions</th>
@@ -452,6 +457,11 @@ const AdminDashboard = () => {
                       <tr key={pkg._id}>
                         <td style={{ fontWeight: '600' }}>{pkg.title}</td>
                         <td>{pkg.destination}</td>
+                        <td>
+                          <span className={`badge-category badge-category-${(pkg.category || 'Standard').toLowerCase()}`}>
+                            {pkg.category || 'Standard'}
+                          </span>
+                        </td>
                         <td>₹{pkg.price.toLocaleString('en-IN')}</td>
                         <td>{pkg.duration}</td>
                         <td>
@@ -719,7 +729,19 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px' }}>
+                  <div className="form-group">
+                    <label>Category / Tier *</label>
+                    <select
+                      className="form-control"
+                      value={pkgCategory}
+                      onChange={(e) => setPkgCategory(e.target.value)}
+                    >
+                      <option value="Standard">Standard</option>
+                      <option value="Deluxe">Deluxe</option>
+                      <option value="Luxury">Luxury</option>
+                    </select>
+                  </div>
                   <div className="form-group">
                     <label>Duration *</label>
                     <input
@@ -855,6 +877,15 @@ const AdminDashboard = () => {
                             value={item.title}
                             onChange={(e) => handleItineraryChange(index, 'title', e.target.value)}
                             placeholder="Day Activity Title (e.g. Arrival & Beach Sunset)"
+                          />
+                        </div>
+                        <div className="form-group" style={{ marginTop: '8px' }}>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={item.image || ''}
+                            onChange={(e) => handleItineraryChange(index, 'image', e.target.value)}
+                            placeholder="Day Image URL (Optional - e.g. https://...)"
                           />
                         </div>
                         <div className="form-group" style={{ marginBottom: 0 }}>

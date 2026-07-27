@@ -129,6 +129,11 @@ const PackageDetails = () => {
                 </svg>
                 {pkg.duration}
               </li>
+              <li>
+                <span className={`badge-category badge-category-${(pkg.category || 'Standard').toLowerCase()}`}>
+                  {pkg.category || 'Standard'}
+                </span>
+              </li>
             </ul>
           </div>
         </div>
@@ -166,9 +171,16 @@ const PackageDetails = () => {
                   {pkg.itinerary.map((item) => (
                     <div key={item._id || item.day} className="itinerary-item">
                       <div className="itinerary-day-badge">DAY {item.day}</div>
-                      <div className="itinerary-content">
-                        <h4>{item.title}</h4>
-                        <p>{item.description}</p>
+                      <div className={`itinerary-item-body ${item.image ? 'has-image' : ''}`}>
+                        <div className="itinerary-content">
+                          <h4>{item.title}</h4>
+                          <p>{item.description}</p>
+                        </div>
+                        {item.image && (
+                          <div className="itinerary-image-wrapper">
+                            <img src={item.image} alt={item.title} className="itinerary-image" />
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}

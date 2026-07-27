@@ -22,6 +22,7 @@ const Packages = () => {
   // Filter States
   const [search, setSearch] = useState('');
   const [destination, setDestination] = useState(initialDestination);
+  const [category, setCategory] = useState('');
   const [duration, setDuration] = useState('');
   const [maxPrice, setMaxPrice] = useState(40000);
 
@@ -29,7 +30,7 @@ const Packages = () => {
     document.title = 'Tour Packages | Travmitra';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
-      metaDesc.setAttribute('content', 'Browse through our premium domestic and international travel packages. Filter by budget, duration, and destination to find the perfect tour.');
+      metaDesc.setAttribute('content', 'Browse through our premium domestic and international travel packages. Filter by budget, duration, category, and destination to find the perfect tour.');
     }
   }, []);
 
@@ -41,6 +42,7 @@ const Packages = () => {
         const params = {
           search: search.trim() || undefined,
           destination: destination || undefined,
+          category: category || undefined,
           duration: duration || undefined,
           maxPrice: maxPrice || undefined
         };
@@ -60,11 +62,12 @@ const Packages = () => {
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [search, destination, duration, maxPrice, showToast]);
+  }, [search, destination, category, duration, maxPrice, showToast]);
 
   const handleResetFilters = () => {
     setSearch('');
     setDestination('');
+    setCategory('');
     setDuration('');
     setMaxPrice(40000);
   };
@@ -78,7 +81,7 @@ const Packages = () => {
 
       {/* Filters Form Wrapper */}
       <div className="packages-filter-wrap">
-        <div className="filters-grid">
+        <div className="filters-grid" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr' }}>
           {/* Text Search */}
           <div className="filter-group">
             <label className="filter-label">Search Tours</label>
@@ -105,6 +108,21 @@ const Packages = () => {
               <option value="Kerala">Kerala</option>
               <option value="Rajasthan">Rajasthan</option>
               <option value="Himachal">Himachal</option>
+            </select>
+          </div>
+
+          {/* Category Selector */}
+          <div className="filter-group">
+            <label className="filter-label">Category</label>
+            <select
+              className="filter-input"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="">All Categories</option>
+              <option value="Standard">Standard</option>
+              <option value="Deluxe">Deluxe</option>
+              <option value="Luxury">Luxury</option>
             </select>
           </div>
 
@@ -175,6 +193,9 @@ const Packages = () => {
               <div className="package-card-img">
                 <img src={pkg.images[0] || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80'} alt={pkg.title} />
                 <span className="package-card-tag">{pkg.duration}</span>
+                <span className={`badge-category badge-category-${(pkg.category || 'Standard').toLowerCase()} package-card-category-badge`}>
+                  {pkg.category || 'Standard'}
+                </span>
               </div>
               <div className="package-card-content">
                 <div className="package-card-meta">
