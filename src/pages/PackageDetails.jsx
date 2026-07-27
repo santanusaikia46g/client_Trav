@@ -168,22 +168,29 @@ const PackageDetails = () => {
               <h2 className="detail-section-title">Day-Wise Itinerary</h2>
               {pkg.itinerary && pkg.itinerary.length > 0 ? (
                 <div className="itinerary-list">
-                  {pkg.itinerary.map((item) => (
-                    <div key={item._id || item.day} className="itinerary-item">
-                      <div className="itinerary-day-badge">DAY {item.day}</div>
-                      <div className={`itinerary-item-body ${item.image ? 'has-image' : ''}`}>
+                  {pkg.itinerary.map((item) => {
+                    const dayImages = Array.isArray(item.images) && item.images.length > 0
+                      ? item.images.filter(Boolean)
+                      : (item.image ? [item.image] : []);
+                    return (
+                      <div key={item._id || item.day} className="itinerary-item">
+                        <div className="itinerary-day-badge">DAY {item.day}</div>
                         <div className="itinerary-content">
                           <h4>{item.title}</h4>
                           <p>{item.description}</p>
+                          {dayImages.length > 0 && (
+                            <div className="itinerary-gallery" style={{ marginTop: '16px' }}>
+                              {dayImages.map((imgUrl, imgIdx) => (
+                                <div key={imgIdx} className="itinerary-image-wrapper">
+                                  <img src={imgUrl} alt={`${item.title} photo ${imgIdx + 1}`} className="itinerary-image" />
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        {item.image && (
-                          <div className="itinerary-image-wrapper">
-                            <img src={item.image} alt={item.title} className="itinerary-image" />
-                          </div>
-                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <p style={{ color: 'var(--medium)' }}>Itinerary details are not configured yet.</p>

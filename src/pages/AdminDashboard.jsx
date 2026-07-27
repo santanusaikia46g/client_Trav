@@ -49,7 +49,7 @@ const AdminDashboard = () => {
   const [pkgDestination, setPkgDestination] = useState('');
   const [pkgCategory, setPkgCategory] = useState('Standard');
   const [pkgImages, setPkgImages] = useState(['']);
-  const [pkgItinerary, setPkgItinerary] = useState([{ day: 1, title: '', description: '', image: '' }]);
+  const [pkgItinerary, setPkgItinerary] = useState([{ day: 1, title: '', description: '', images: [''] }]);
   const [pkgIncluded, setPkgIncluded] = useState(['']);
   const [pkgExcluded, setPkgExcluded] = useState(['']);
 
@@ -158,7 +158,7 @@ const AdminDashboard = () => {
 
   // Itinerary helper functions
   const handleAddItineraryDay = () => {
-    setPkgItinerary((prev) => [...prev, { day: prev.length + 1, title: '', description: '', image: '' }]);
+    setPkgItinerary((prev) => [...prev, { day: prev.length + 1, title: '', description: '', images: [''] }]);
   };
 
   const handleRemoveItineraryDay = (index) => {
@@ -177,6 +177,34 @@ const AdminDashboard = () => {
     });
   };
 
+  const handleAddItineraryDayImage = (dayIndex) => {
+    setPkgItinerary((prev) => {
+      const updated = [...prev];
+      const currentImages = updated[dayIndex].images || [];
+      updated[dayIndex].images = [...currentImages, ''];
+      return updated;
+    });
+  };
+
+  const handleRemoveItineraryDayImage = (dayIndex, imgIndex) => {
+    setPkgItinerary((prev) => {
+      const updated = [...prev];
+      const currentImages = updated[dayIndex].images || [];
+      updated[dayIndex].images = currentImages.filter((_, i) => i !== imgIndex);
+      return updated;
+    });
+  };
+
+  const handleItineraryDayImageChange = (dayIndex, imgIndex, value) => {
+    setPkgItinerary((prev) => {
+      const updated = [...prev];
+      const currentImages = [...(updated[dayIndex].images || [])];
+      currentImages[imgIndex] = value;
+      updated[dayIndex].images = currentImages;
+      return updated;
+    });
+  };
+
   // Open Modal for Create or Edit
   const openPackageModal = (pkg = null) => {
     if (pkg) {
@@ -188,7 +216,26 @@ const AdminDashboard = () => {
       setPkgDestination(pkg.destination);
       setPkgCategory(pkg.category || 'Standard');
       setPkgImages(pkg.images.length > 0 ? pkg.images : ['']);
-      setPkgItinerary(pkg.itinerary.length > 0 ? pkg.itinerary.map((it, idx) => ({ day: it.day || idx + 1, title: it.title || '', description: it.description || '', image: it.image || '' })) : [{ day: 1, title: '', description: '', image: '' }]);
+      setPkgItinerary(
+        pkg.itinerary && pkg.itinerary.length > 0
+          ? pkg.itinerary.map((it, idx) => {
+              let imgs = [];
+              if (Array.isArray(it.images) && it.images.length > 0) {
+                imgs = it.images;
+              } else if (it.image) {
+                imgs = [it.image];
+              } else {
+                imgs = [''];
+              }
+              return {
+                day: it.day || idx + 1,
+                title: it.title || '',
+                description: it.description || '',
+                images: imgs
+              };
+            })
+          : [{ day: 1, title: '', description: '', images: [''] }]
+      );
       setPkgIncluded(pkg.included.length > 0 ? pkg.included : ['']);
       setPkgExcluded(pkg.excluded.length > 0 ? pkg.excluded : ['']);
     } else {
@@ -200,7 +247,7 @@ const AdminDashboard = () => {
       setPkgDestination('');
       setPkgCategory('Standard');
       setPkgImages(['']);
-      setPkgItinerary([{ day: 1, title: '', description: '', image: '' }]);
+      setPkgItinerary([{ day: 1, title: '', description: '', images: [''] }]);
       setPkgIncluded(['']);
       setPkgExcluded(['']);
     }
@@ -223,7 +270,14 @@ const AdminDashboard = () => {
       destination: pkgDestination,
       category: pkgCategory,
       images: pkgImages.filter((img) => img.trim() !== ''),
-      itinerary: pkgItinerary.filter((it) => it.title.trim() !== '' && it.description.trim() !== ''),
+      itinerary: pkgItinerary
+        .filter((it) => it.title.trim() !== '' || it.description.trim() !== '')
+        .map((it) => ({
+          day: it.day,
+          title: it.title,
+          description: it.description,
+          images: (it.images || []).filter((img) => img.trim() !== '')
+        })),
       included: pkgIncluded.filter((inc) => inc.trim() !== ''),
       excluded: pkgExcluded.filter((exc) => exc.trim() !== '')
     };
@@ -879,16 +933,42 @@ const AdminDashboard = () => {
                             placeholder="Day Activity Title (e.g. Arrival & Beach Sunset)"
                           />
                         </div>
-                        <div className="form-group" style={{ marginTop: '8px' }}>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={item.image || ''}
-                            onChange={(e) => handleItineraryChange(index, 'image', e.target.value)}
-                            placeholder="Day Image URL (Optional - e.g. https://...)"
-                          />
+                        <div className="form-group" style={{ marginTop: '10px' }}>
+                          <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--dark)' }}>Day Images (Optional)</label>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+                            {(item.images || ['']).map((imgUrl, imgIdx) => (
+                              <div key={imgIdx} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  value={imgUrl}
+                                  onChange={(e) => handleItineraryDayImageChange(index, imgIdx, e.target.value)}
+                                  placeholder="Day Image URL (e.g. https://...)"
+                                />
+                                {(item.images || []).length > 1 && (
+                                  <Button
+                                    type="button"
+                                    variant="danger"
+                                    size="sm"
+                                    onClick={() => handleRemoveItineraryDayImage(index, imgIdx)}
+                                  >
+                                    &times;
+                                  </Button>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddItineraryDayImage(index)}
+                            style={{ marginTop: '6px', fontSize: '0.75rem', padding: '3px 10px' }}
+                          >
+                            + Add Image to Day {item.day}
+                          </Button>
                         </div>
-                        <div className="form-group" style={{ marginBottom: 0 }}>
+                        <div className="form-group" style={{ marginBottom: 0, marginTop: '10px' }}>
                           <textarea
                             className="form-control"
                             value={item.description}
