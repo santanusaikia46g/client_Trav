@@ -75,13 +75,41 @@ export const getInquiries = async () => {
   return response.data;
 };
 
-export const updateInquiryStatus = async (id, status) => {
-  const response = await API.put(`/inquiry/${id}`, { status });
+export const updateInquiryStatus = async (id, statusData) => {
+  const payload = typeof statusData === 'object' ? statusData : { status: statusData };
+  const response = await API.put(`/inquiry/${id}`, payload);
   return response.data;
 };
 
 export const deleteInquiry = async (id) => {
   const response = await API.delete(`/inquiry/${id}`);
+  return response.data;
+};
+
+// Reviews APIs
+export const getReviews = async (params = {}) => {
+  const response = await API.get('/reviews', { params });
+  return response.data;
+};
+
+export const createReview = async (reviewData) => {
+  const response = await API.post('/reviews', reviewData);
+  return response.data;
+};
+
+export const updateReview = async (id, reviewData) => {
+  const response = await API.put(`/reviews/${id}`, reviewData);
+  return response.data;
+};
+
+export const deleteReview = async (id) => {
+  const response = await API.delete(`/reviews/${id}`);
+  return response.data;
+};
+
+// Activity Logs API
+export const getActivityLogs = async () => {
+  const response = await API.get('/activity');
   return response.data;
 };
 
