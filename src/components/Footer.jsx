@@ -9,8 +9,7 @@ const Footer = () => {
       <div className="container footer-grid">
         <div className="footer-col">
           <Link to="/" className="logo" style={{ color: 'var(--white)', marginBottom: '20px' }}>
-            <img src="/logo.png" alt="TravMitra Logo" className="logo-img" style={{ height: '38px', filter: 'brightness(1.1)' }} />
-            <span>Travmitra</span>
+            <img src="/logo.png" alt="TravMitra" className="logo-img" style={{ height: '42px', filter: 'brightness(1.1)' }} />
           </Link>
           <p>
             Travmitra is your trusted companion for exploring the world. We offer carefully curated domestic and international travel packages, seasoned tour guides, and 24/7 client support to ensure you travel worry-free.

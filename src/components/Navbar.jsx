@@ -32,8 +32,7 @@ const Navbar = () => {
     <header className={`navbar-header ${scrolled ? 'scrolled' : ''}`}>
       <div className="container navbar-container">
         <Link to="/" className="logo" onClick={closeMenu}>
-          <img src="/logo.png" alt="TravMitra Logo" className="logo-img" />
-          <span>Travmitra</span>
+          <img src="/logo.png" alt="TravMitra" className="logo-img" />
         </Link>
 
         <button className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu} aria-label="Toggle menu">
