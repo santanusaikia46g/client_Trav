@@ -29,10 +29,36 @@ const testimonials = [
   }
 ];
 
+const HERO_IMAGES = [
+  'https://images.unsplash.com/photo-1602020234671-15fd6180428d?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1613725194245-d8e21cf5d42e?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1659267695704-842a53942bcd?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1621789547000-b74d615ce6c5?q=80&w=1334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1686472886489-1d2d7e08ff9c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1625654325562-762dcec9e6f2?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1521437620269-f477f5437820?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+];
+
 const Home = () => {
   const [packages, setPackages] = useState([]);
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const slideTimer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 4500);
+    return () => clearInterval(slideTimer);
+  }, []);
+
+  const handleNextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length);
+  };
+
+  const handlePrevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + HERO_IMAGES.length) % HERO_IMAGES.length);
+  };
 
   useEffect(() => {
     document.title = 'Travmitra | Explore The World With Us';
@@ -62,10 +88,28 @@ const Home = () => {
 
   return (
     <div>
-      {/* 1. Hero Section */}
+      {/* 1. Hero Section with Auto-Scroll / Interactive Slider */}
       <section className="hero">
-        <div className="hero-bg"></div>
-        <div className="container">
+        <div className="hero-slider">
+          {HERO_IMAGES.map((imgUrl, idx) => (
+            <div
+              key={idx}
+              className={`hero-slide ${idx === currentSlide ? 'active' : ''}`}
+              style={{
+                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)), url(${imgUrl})`
+              }}
+            />
+          ))}
+        </div>
+
+        <button className="hero-nav-btn hero-nav-prev" onClick={handlePrevSlide} aria-label="Previous Slide">
+          &#10094;
+        </button>
+        <button className="hero-nav-btn hero-nav-next" onClick={handleNextSlide} aria-label="Next Slide">
+          &#10095;
+        </button>
+
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="hero-content">
             <h1>Explore The World With Travmitra</h1>
             <p>
@@ -75,6 +119,17 @@ const Home = () => {
               <Button variant="primary">Explore Packages</Button>
             </Link>
           </div>
+        </div>
+
+        <div className="hero-dots">
+          {HERO_IMAGES.map((_, idx) => (
+            <button
+              key={idx}
+              className={`hero-dot ${idx === currentSlide ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(idx)}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
         </div>
       </section>
 
