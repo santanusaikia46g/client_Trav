@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
-import Logo from './Logo';
+import { NavLink, Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +31,10 @@ const Navbar = () => {
   return (
     <header className={`navbar-header ${scrolled ? 'scrolled' : ''}`}>
       <div className="container navbar-container">
-        <Logo height={42} onClick={closeMenu} />
+        <Link to="/" className="logo" onClick={closeMenu}>
+          <img src="/logo.png" alt="TravMitra Logo" className="logo-img" />
+          <span>Travmitra</span>
+        </Link>
 
         <button className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu} aria-label="Toggle menu">
           <span></span>

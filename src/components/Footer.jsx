@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Logo from './Logo';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -9,9 +8,10 @@ const Footer = () => {
     <footer className="footer">
       <div className="container footer-grid">
         <div className="footer-col">
-          <div style={{ marginBottom: '20px', background: 'rgba(255, 255, 255, 0.95)', padding: '8px 14px', borderRadius: '8px', display: 'inline-block' }}>
-            <Logo height={36} />
-          </div>
+          <Link to="/" className="logo" style={{ color: 'var(--white)', marginBottom: '20px' }}>
+            <img src="/logo.png" alt="TravMitra Logo" className="logo-img" style={{ height: '38px', filter: 'brightness(1.1)' }} />
+            <span>Travmitra</span>
+          </Link>
           <p>
             Travmitra is your trusted companion for exploring the world. We offer carefully curated domestic and international travel packages, seasoned tour guides, and 24/7 client support to ensure you travel worry-free.
           </p>
