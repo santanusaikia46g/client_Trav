@@ -5,6 +5,8 @@ import Card from '../components/Card';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 
+import HeroScroll from '../components/HeroScroll';
+
 const testimonials = [
   {
     name: 'Suresh Kumar',
@@ -62,21 +64,8 @@ const Home = () => {
 
   return (
     <div>
-      {/* 1. Hero Section */}
-      <section className="hero">
-        <div className="hero-bg"></div>
-        <div className="container">
-          <div className="hero-content">
-            <h1>Explore The World With Travmitra</h1>
-            <p>
-              Plan your next getaway with verified local guides, custom tour structures, and absolute safety. Adventure is calling!
-            </p>
-            <Link to="/packages">
-              <Button variant="primary">Explore Packages</Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* 1. Hero Section Scroll */}
+      <HeroScroll />
 
       {/* 2. Popular Destinations */}
       <section className="section" style={{ backgroundColor: 'var(--white)' }}>
