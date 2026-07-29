@@ -425,14 +425,20 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteDestination = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this destination?')) return;
+    const targetId = id || '';
+    if (!targetId) {
+      showToast('Invalid destination ID', 'error');
+      return;
+    }
+    if (!window.confirm('Are you sure you want to delete this destination permanently?')) return;
     try {
-      await deleteDestination(id);
+      await deleteDestination(targetId);
       showToast('Destination deleted successfully', 'success');
+      setDestinations((prev) => prev.filter((d) => d._id !== targetId && d.id !== targetId));
       loadData();
     } catch (err) {
       console.error(err);
-      showToast('Error deleting destination', 'error');
+      showToast(err.response?.data?.message || 'Error deleting destination', 'error');
     }
   };
 
@@ -1000,7 +1006,7 @@ const AdminDashboard = () => {
                         <Button variant="outline" size="sm" onClick={() => handleEditDestination(dest)}>
                           Edit
                         </Button>
-                        <Button variant="danger" size="sm" onClick={() => handleDeleteDestination(dest._id)}>
+                        <Button variant="danger" size="sm" onClick={() => handleDeleteDestination(dest._id || dest.id)}>
                           Delete
                         </Button>
                       </div>
