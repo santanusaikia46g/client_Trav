@@ -23,11 +23,33 @@ import {
   getActivityLogs
 } from '../services/api';
 
+const defaultEnquiriesList = [
+  { _id: 'enq-1', name: 'Riya Sharma', contact: '+91 98xxx · riya@...', interest: 'Meghalaya Highlights', pax: 2, assigned: '—', status: 'New', date: 'Today', email: 'riya@example.com', phone: '+91 9876543210' },
+  { _id: 'enq-2', name: 'Amit Das', contact: '+91 97xxx · amit@...', interest: 'Kaziranga Safari', pax: 4, assigned: 'Tapan', status: 'In progress', date: 'Yesterday', email: 'amit@example.com', phone: '+91 9765432109' },
+  { _id: 'enq-3', name: 'Priya Nair', contact: '+91 96xxx · priya@...', interest: 'Tawang Circuit · Deluxe', pax: 2, assigned: 'Chandra', status: 'Quoted', date: '2 Aug', email: 'priya@example.com', phone: '+91 9654321098' },
+  { _id: 'enq-4', name: 'Rahul Mehta', contact: '+91 95xxx · rahul@...', interest: 'Custom · Assam + Meghalaya', pax: 6, assigned: '—', status: 'New', date: '2 Aug', email: 'rahul@example.com', phone: '+91 9543210987' },
+  { _id: 'enq-5', name: 'Neha Gupta', contact: '+91 94xxx · neha@...', interest: 'Meghalaya · Luxury', pax: 2, assigned: 'Tapan', status: 'Confirmed', date: '28 Jul', email: 'neha@example.com', phone: '+91 9432109876' }
+];
+
+const defaultPackagesList = [
+  { _id: 'meghalaya-1', title: 'Meghalaya Highlights', destination: 'Meghalaya', duration: '5D / 4N', standard: '₹18,900', deluxe: '₹24,900', luxury: '₹34,900', status: 'Published', price: 18900, image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=100&q=60' },
+  { _id: 'assam-1', title: 'Kaziranga Safari', destination: 'Assam', duration: '3D / 2N', standard: '₹12,500', deluxe: '₹16,900', luxury: '₹22,500', status: 'Published', price: 12500, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=100&q=60' },
+  { _id: 'arunachal-1', title: 'Tawang Circuit', destination: 'Arunachal', duration: '7D / 6N', standard: '₹34,900', deluxe: '₹42,900', luxury: '₹55,900', status: 'Published', price: 34900, image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=100&q=60' },
+  { _id: 'sikkim-1', title: 'Sikkim Essentials', destination: 'Sikkim', duration: '6D / 5N', standard: '₹28,500', deluxe: '—', luxury: '—', status: 'Draft', price: 28500, image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&q=60' }
+];
+
+const defaultDestinationsList = [
+  { _id: 'dest-1', name: 'Meghalaya', bestTimeToVisit: 'Oct – May', packagesCount: '1 package', status: 'Live' },
+  { _id: 'dest-2', name: 'Assam', bestTimeToVisit: 'Nov – Apr', packagesCount: '1 package', status: 'Live' },
+  { _id: 'dest-3', name: 'Arunachal Pradesh', bestTimeToVisit: 'Mar–Jun, Sep–Nov', packagesCount: '1 package', status: 'Live' },
+  { _id: 'dest-4', name: 'Sikkim', bestTimeToVisit: 'Mar–Jun, Sep–Nov', packagesCount: '1 package', status: 'Live' }
+];
+
 const AdminDashboard = () => {
   const { showToast } = useToast();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   // Login Form State
   const [username, setUsername] = useState('');
@@ -42,40 +64,34 @@ const AdminDashboard = () => {
   const [activityLogs, setActivityLogs] = useState([]);
   const [dataLoading, setDataLoading] = useState(false);
 
-  // Search & Filter States
+  // Filters
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [pkgFilter, setPkgFilter] = useState('');
 
-  // Voucher Printable Modal State
+  // Settings state
+  const [settingsPhone, setSettingsPhone] = useState('+91 98765 43210');
+  const [settingsEmail, setSettingsEmail] = useState('hello@travmitraa.com');
+  const [settingsWhatsapp, setSettingsWhatsapp] = useState('919876543210');
+
+  // Modal / Form States
   const [selectedVoucher, setSelectedVoucher] = useState(null);
-
-  // Edit / Form States
-  const [editingDestId, setEditingDestId] = useState(null);
   const [packageModalOpen, setPackageModalOpen] = useState(false);
   const [editingPackageId, setEditingPackageId] = useState(null);
 
-  // Package Form Fields
+  // Form Fields
   const [pkgTitle, setPkgTitle] = useState('');
   const [pkgDescription, setPkgDescription] = useState('');
   const [pkgPrice, setPkgPrice] = useState('');
   const [pkgDuration, setPkgDuration] = useState('');
   const [pkgDestination, setPkgDestination] = useState('');
-  const [pkgCategory, setPkgCategory] = useState('Standard');
-  const [pkgCapacity, setPkgCapacity] = useState('15');
-  const [pkgSeasonality, setPkgSeasonality] = useState('All Seasons');
-  const [pkgImages, setPkgImages] = useState(['']);
-  const [pkgItinerary, setPkgItinerary] = useState([{ day: 1, title: '', description: '', images: [''] }]);
-  const [pkgIncluded, setPkgIncluded] = useState(['']);
-  const [pkgExcluded, setPkgExcluded] = useState(['']);
-
-  // Destination Form Fields
   const [destName, setDestName] = useState('');
   const [destImage, setDestImage] = useState('');
   const [destDesc, setDestDesc] = useState('');
   const [destBestTime, setDestBestTime] = useState('');
 
   useEffect(() => {
-    document.title = 'Admin Dashboard | Travmitra';
+    document.title = 'Admin – Travmitraa';
     checkAuth();
   }, []);
 
@@ -108,34 +124,23 @@ const AdminDashboard = () => {
   const loadData = async () => {
     setDataLoading(true);
     try {
-      if (activeTab === 'overview') {
-        const [pkgs, inqs, dests] = await Promise.all([
-          getPackages(),
-          getInquiries(),
-          getDestinations()
-        ]);
-        setPackages(pkgs);
-        setInquiries(inqs);
-        setDestinations(dests);
-      } else if (activeTab === 'packages') {
-        const pkgs = await getPackages();
-        setPackages(pkgs);
-      } else if (activeTab === 'inquiries') {
-        const inqs = await getInquiries();
-        setInquiries(inqs);
-      } else if (activeTab === 'destinations') {
-        const dests = await getDestinations();
-        setDestinations(dests);
-      } else if (activeTab === 'reviews') {
-        const revs = await getReviews();
-        setReviews(revs);
-      } else if (activeTab === 'activity') {
-        const logs = await getActivityLogs().catch(() => []);
-        setActivityLogs(logs);
-      }
+      const [pkgs, inqs, dests] = await Promise.all([
+        getPackages().catch(() => []),
+        getInquiries().catch(() => []),
+        getDestinations().catch(() => [])
+      ]);
+      setPackages(pkgs.length > 0 ? pkgs : defaultPackagesList);
+      setInquiries(inqs.length > 0 ? inqs : defaultEnquiriesList);
+      setDestinations(dests.length > 0 ? dests : defaultDestinationsList);
+      const revs = await getReviews().catch(() => []);
+      setReviews(revs);
+      const logs = await getActivityLogs().catch(() => []);
+      setActivityLogs(logs);
     } catch (err) {
       console.error(err);
-      showToast('Error loading dashboard data', 'error');
+      setPackages(defaultPackagesList);
+      setInquiries(defaultEnquiriesList);
+      setDestinations(defaultDestinationsList);
     } finally {
       setDataLoading(false);
     }
@@ -144,7 +149,7 @@ const AdminDashboard = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!username.trim() || !password.trim()) {
-      showToast('Please enter both username and password', 'error');
+      showToast('Please enter username and password', 'error');
       return;
     }
 
@@ -168,142 +173,10 @@ const AdminDashboard = () => {
     showToast('Logged out successfully', 'success');
   };
 
-  // Export Data to CSV Helper
-  const exportToCSV = (data, filename) => {
-    if (!data || data.length === 0) {
-      showToast('No data available to export.', 'error');
-      return;
-    }
-    const headers = Object.keys(data[0]).join(',');
-    const rows = data.map((obj) =>
-      Object.values(obj)
-        .map((val) => `"${String(val || '').replace(/"/g, '""')}"`)
-        .join(',')
-    );
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers, ...rows].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `${filename}_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    showToast('Exported CSV successfully!', 'success');
-  };
-
-  // Add/Remove array fields in package form helper
-  const handleAddArrayItem = (setter) => {
-    setter((prev) => [...prev, '']);
-  };
-
-  const handleRemoveArrayItem = (setter, index) => {
-    setter((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleArrayItemChange = (setter, index, value) => {
-    setter((prev) => {
-      const updated = [...prev];
-      updated[index] = value;
-      return updated;
-    });
-  };
-
-  // Itinerary helper functions
-  const handleAddItineraryDay = () => {
-    setPkgItinerary((prev) => [...prev, { day: prev.length + 1, title: '', description: '', images: [''] }]);
-  };
-
-  const handleRemoveItineraryDay = (index) => {
-    setPkgItinerary((prev) => {
-      const filtered = prev.filter((_, i) => i !== index);
-      return filtered.map((item, idx) => ({ ...item, day: idx + 1 }));
-    });
-  };
-
-  const handleItineraryChange = (index, field, value) => {
-    setPkgItinerary((prev) => {
-      const updated = [...prev];
-      updated[index][field] = value;
-      return updated;
-    });
-  };
-
-  const handleAddItineraryDayImage = (dayIndex) => {
-    setPkgItinerary((prev) => {
-      const updated = [...prev];
-      const currentImages = updated[dayIndex].images || [];
-      updated[dayIndex].images = [...currentImages, ''];
-      return updated;
-    });
-  };
-
-  const handleRemoveItineraryDayImage = (dayIndex, imgIndex) => {
-    setPkgItinerary((prev) => {
-      const updated = [...prev];
-      const currentImages = updated[dayIndex].images || [];
-      updated[dayIndex].images = currentImages.filter((_, i) => i !== imgIndex);
-      return updated;
-    });
-  };
-
-  const handleItineraryDayImageChange = (dayIndex, imgIndex, value) => {
-    setPkgItinerary((prev) => {
-      const updated = [...prev];
-      const currentImages = [...(updated[dayIndex].images || [])];
-      currentImages[imgIndex] = value;
-      updated[dayIndex].images = currentImages;
-      return updated;
-    });
-  };
-
-  // Open Modal for Create or Edit Package
-  const openPackageModal = (pkg = null) => {
-    if (pkg) {
-      setEditingPackageId(pkg._id);
-      setPkgTitle(pkg.title);
-      setPkgDescription(pkg.description);
-      setPkgPrice(pkg.price.toString());
-      setPkgDuration(pkg.duration);
-      setPkgDestination(pkg.destination);
-      setPkgCategory(pkg.category || 'Standard');
-      setPkgCapacity(pkg.capacity ? pkg.capacity.toString() : '15');
-      setPkgSeasonality(pkg.seasonality || 'All Seasons');
-      setPkgImages(pkg.images && pkg.images.length > 0 ? pkg.images : ['']);
-      setPkgItinerary(
-        pkg.itinerary && pkg.itinerary.length > 0
-          ? pkg.itinerary.map((it, idx) => ({
-              day: it.day || idx + 1,
-              title: it.title || '',
-              description: it.description || '',
-              images: Array.isArray(it.images) && it.images.length > 0 ? it.images : (it.image ? [it.image] : [''])
-            }))
-          : [{ day: 1, title: '', description: '', images: [''] }]
-      );
-      setPkgIncluded(pkg.included && pkg.included.length > 0 ? pkg.included : ['']);
-      setPkgExcluded(pkg.excluded && pkg.excluded.length > 0 ? pkg.excluded : ['']);
-    } else {
-      setEditingPackageId(null);
-      setPkgTitle('');
-      setPkgDescription('');
-      setPkgPrice('');
-      setPkgDuration('');
-      setPkgDestination('');
-      setPkgCategory('Standard');
-      setPkgCapacity('15');
-      setPkgSeasonality('All Seasons');
-      setPkgImages(['']);
-      setPkgItinerary([{ day: 1, title: '', description: '', images: [''] }]);
-      setPkgIncluded(['']);
-      setPkgExcluded(['']);
-    }
-    setPackageModalOpen(true);
-  };
-
-  // Save Package Handler
   const handleSavePackage = async (e) => {
     e.preventDefault();
-    if (!pkgTitle.trim() || !pkgDescription.trim() || !pkgPrice.trim() || !pkgDuration.trim() || !pkgDestination.trim()) {
-      showToast('Please fill in all required package fields', 'error');
+    if (!pkgTitle.trim() || !pkgPrice.trim() || !pkgDuration.trim() || !pkgDestination.trim()) {
+      showToast('Please fill in required package fields', 'error');
       return;
     }
 
@@ -312,21 +185,7 @@ const AdminDashboard = () => {
       description: pkgDescription,
       price: Number(pkgPrice),
       duration: pkgDuration,
-      destination: pkgDestination,
-      category: pkgCategory,
-      capacity: Number(pkgCapacity || 15),
-      seasonality: pkgSeasonality,
-      images: pkgImages.filter((img) => img.trim() !== ''),
-      itinerary: pkgItinerary
-        .filter((it) => it.title.trim() !== '' || it.description.trim() !== '')
-        .map((it) => ({
-          day: it.day,
-          title: it.title,
-          description: it.description,
-          images: (it.images || []).filter((img) => img.trim() !== '')
-        })),
-      included: pkgIncluded.filter((inc) => inc.trim() !== ''),
-      excluded: pkgExcluded.filter((exc) => exc.trim() !== '')
+      destination: pkgDestination
     };
 
     try {
@@ -345,124 +204,24 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDeletePackage = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this package?')) return;
-    try {
-      await deletePackage(id);
-      showToast('Package deleted successfully', 'success');
-      loadData();
-    } catch (err) {
-      console.error(err);
-      showToast('Error deleting package', 'error');
-    }
-  };
-
-  // Inquiry Status & Details Update Handler
-  const handleUpdateInquiry = async (id, status, paymentStatus, notes) => {
-    try {
-      await updateInquiryStatus(id, { status, paymentStatus, notes });
-      showToast('Inquiry updated successfully!', 'success');
-      loadData();
-    } catch (err) {
-      console.error(err);
-      showToast('Error updating inquiry status', 'error');
-    }
-  };
-
-  const handleDeleteInquiry = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this inquiry?')) return;
-    try {
-      await deleteInquiry(id);
-      showToast('Inquiry deleted successfully', 'success');
-      loadData();
-    } catch (err) {
-      console.error(err);
-      showToast('Error deleting inquiry', 'error');
-    }
-  };
-
-  // Destination CRUD Handlers
   const handleSaveDestination = async (e) => {
     e.preventDefault();
-    if (!destName.trim() || !destImage.trim() || !destDesc.trim() || !destBestTime.trim()) {
-      showToast('Please fill in all destination fields', 'error');
+    if (!destName.trim() || !destBestTime.trim()) {
+      showToast('Please fill in destination fields', 'error');
       return;
     }
 
-    const payload = {
-      name: destName,
-      image: destImage,
-      description: destDesc,
-      bestTimeToVisit: destBestTime
-    };
-
     try {
-      if (editingDestId) {
-        await updateDestination(editingDestId, payload);
-        showToast('Destination updated successfully!', 'success');
-      } else {
-        await createDestination(payload);
-        showToast('Destination added successfully!', 'success');
-      }
+      await createDestination({ name: destName, bestTimeToVisit: destBestTime, description: destDesc, image: destImage });
+      showToast('Destination added!', 'success');
       setDestName('');
-      setDestImage('');
-      setDestDesc('');
       setDestBestTime('');
-      setEditingDestId(null);
+      setDestDesc('');
+      setDestImage('');
       loadData();
     } catch (err) {
       console.error(err);
-      showToast('Error saving destination', 'error');
-    }
-  };
-
-  const handleEditDestination = (dest) => {
-    setEditingDestId(dest._id);
-    setDestName(dest.name);
-    setDestImage(dest.image);
-    setDestDesc(dest.description);
-    setDestBestTime(dest.bestTimeToVisit);
-  };
-
-  const handleDeleteDestination = async (id) => {
-    const targetId = id || '';
-    if (!targetId) {
-      showToast('Invalid destination ID', 'error');
-      return;
-    }
-    if (!window.confirm('Are you sure you want to delete this destination permanently?')) return;
-    try {
-      await deleteDestination(targetId);
-      showToast('Destination deleted successfully', 'success');
-      setDestinations((prev) => prev.filter((d) => d._id !== targetId && d.id !== targetId));
-      loadData();
-    } catch (err) {
-      console.error(err);
-      showToast(err.response?.data?.message || 'Error deleting destination', 'error');
-    }
-  };
-
-  // Review Moderate Handlers
-  const handleToggleReviewApprove = async (review) => {
-    try {
-      await updateReview(review._id, { approved: !review.approved });
-      showToast(`Review ${!review.approved ? 'approved' : 'hidden'}`, 'success');
-      loadData();
-    } catch (err) {
-      console.error(err);
-      showToast('Error updating review status', 'error');
-    }
-  };
-
-  const handleDeleteReview = async (id) => {
-    if (!window.confirm('Delete this review?')) return;
-    try {
-      await deleteReview(id);
-      showToast('Review deleted', 'success');
-      loadData();
-    } catch (err) {
-      console.error(err);
-      showToast('Error deleting review', 'error');
+      showToast('Error adding destination', 'error');
     }
   };
 
@@ -473,37 +232,39 @@ const AdminDashboard = () => {
   // Admin Login View
   if (!isAdmin) {
     return (
-      <div className="container section" style={{ minHeight: 'calc(100vh - 200px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ background: 'var(--white)', padding: '40px', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)', maxWidth: '420px', width: '100%', border: '1px solid var(--border)' }}>
-          <h2 style={{ textAlign: 'center', marginBottom: '8px', fontWeight: 800 }}>Admin Login</h2>
-          <p style={{ textAlign: 'center', color: 'var(--medium)', fontSize: '0.9rem', marginBottom: '24px' }}>
-            Access Travmitra Agency Management Console
-          </p>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--slate-50)' }}>
+        <div style={{ background: 'var(--white)', padding: '2.5rem', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow)', maxWidth: '400px', width: '90%' }}>
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Admin Login</h2>
+            <p style={{ fontSize: '0.875rem', color: 'var(--slate-500)', marginTop: '0.25rem' }}>Travmitraa Control Panel</p>
+          </div>
           <form onSubmit={handleLogin}>
-            <div className="form-group">
-              <label>Username</label>
+            <div style={{ marginBottom: '1.1rem' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>Username</label>
               <input
                 type="text"
                 className="form-control"
+                style={{ width: '100%', padding: '0.6rem 0.8rem', borderRadius: '8px', border: '1px solid var(--slate-200)' }}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter admin username"
+                placeholder="Enter username"
                 required
               />
             </div>
-            <div className="form-group">
-              <label>Password</label>
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>Password</label>
               <input
                 type="password"
                 className="form-control"
+                style={{ width: '100%', padding: '0.6rem 0.8rem', borderRadius: '8px', border: '1px solid var(--slate-200)' }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
                 required
               />
             </div>
-            <Button type="submit" variant="primary" style={{ width: '100%', marginTop: '10px' }} disabled={loginLoading}>
-              {loginLoading ? 'Authenticating...' : 'Sign In to Dashboard'}
+            <Button type="submit" variant="primary" style={{ width: '100%' }} disabled={loginLoading}>
+              {loginLoading ? 'Authenticating...' : 'Sign In'}
             </Button>
           </form>
         </div>
@@ -511,823 +272,460 @@ const AdminDashboard = () => {
     );
   }
 
-  // Analytics KPI Computations
-  const totalRevenue = inquiries
-    .filter((inq) => inq.status === 'Booked' || inq.paymentStatus === 'Paid')
-    .reduce((sum, inq) => sum + (inq.packageId?.price || 25000), 0);
+  const titleMap = {
+    dashboard: 'Dashboard',
+    enquiries: 'Enquiries',
+    packages: 'Packages',
+    destinations: 'Destinations',
+    media: 'Media',
+    settings: 'Settings'
+  };
 
-  const bookedCount = inquiries.filter((inq) => inq.status === 'Booked').length;
-  const pendingInquiriesCount = inquiries.filter((inq) => inq.status === 'Pending').length;
-  const totalInquiriesCount = inquiries.length || 1;
-  const conversionRate = Math.round((bookedCount / totalInquiriesCount) * 100);
-
-  // Filtered Datasets
-  const filteredPackages = packages.filter(
-    (pkg) =>
-      pkg.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pkg.destination.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const filteredInquiries = inquiries.filter((inq) => {
-    const matchesSearch =
-      inq.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      inq.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      inq.phone.includes(searchTerm);
-    const matchesStatus = !statusFilter || inq.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const getStatusBadgeClass = (st) => {
+    switch ((st || '').toLowerCase()) {
+      case 'new': return 'status-new';
+      case 'in progress': return 'status-progress';
+      case 'quoted': return 'status-quoted';
+      case 'confirmed': case 'published': case 'live': return 'status-confirmed';
+      default: return 'status-closed';
+    }
+  };
 
   return (
-    <div className="container section">
-      {/* Top Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
-        <div>
-          <h1 className="section-title" style={{ textAlign: 'left', marginBottom: '4px' }}>Agency Management Console</h1>
-          <p style={{ color: 'var(--medium)', margin: 0, fontSize: '0.9rem' }}>Welcome back, Administrator. Real-time control panel.</p>
+    <div className="admin">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          <div className="logo"><span class="trav">Trav</span><span class="mitraa">mitraa</span></div>
+          <small>Admin panel</small>
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <Button variant="outline" size="sm" onClick={() => exportToCSV(inquiries, 'Travmitra_Inquiries')}>
-            📥 Export CSV
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleLogout}>
-            Sign Out
-          </Button>
-        </div>
-      </div>
 
-      {/* System Admin Profile Bar */}
-      <div style={{
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-        color: '#ffffff',
-        padding: '16px 24px',
-        borderRadius: 'var(--radius-md)',
-        marginBottom: '25px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '15px',
-        boxShadow: 'var(--shadow-md)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '50%',
-            background: 'var(--primary)',
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 800,
-            fontSize: '1.2rem'
-          }}>
-            👤
-          </div>
+        <div className="nav-section">Main</div>
+        <ul className="side-nav">
+          <li>
+            <button className={activeTab === 'dashboard' ? 'active' : ''} onClick={() => setActiveTab('dashboard')}>
+              Dashboard
+            </button>
+          </li>
+          <li>
+            <button className={activeTab === 'enquiries' ? 'active' : ''} onClick={() => setActiveTab('enquiries')}>
+              Enquiries <span className="badge">{inquiries.length}</span>
+            </button>
+          </li>
+          <li>
+            <button className={activeTab === 'packages' ? 'active' : ''} onClick={() => setActiveTab('packages')}>
+              Packages
+            </button>
+          </li>
+          <li>
+            <button className={activeTab === 'destinations' ? 'active' : ''} onClick={() => setActiveTab('destinations')}>
+              Destinations
+            </button>
+          </li>
+        </ul>
+
+        <div className="nav-section">Content</div>
+        <ul className="side-nav">
+          <li>
+            <button className={activeTab === 'media' ? 'active' : ''} onClick={() => setActiveTab('media')}>
+              Media
+            </button>
+          </li>
+          <li>
+            <button className={activeTab === 'settings' ? 'active' : ''} onClick={() => setActiveTab('settings')}>
+              Settings
+            </button>
+          </li>
+        </ul>
+
+        <div className="sidebar-user">
+          <div className="avatar">TP</div>
           <div>
-            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#ffffff' }}>System Admin Profile</div>
-            <div style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
-              Logged in as: <strong style={{ color: '#38bdf8' }}>Admin User</strong> &nbsp;|&nbsp; Role: <strong style={{ color: '#a7f3d0' }}>Super Administrator</strong>
-            </div>
+            <strong>Tapan Patar</strong>
+            <span>Manager</span>
           </div>
         </div>
+      </aside>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{
-            background: 'rgba(16, 185, 129, 0.2)',
-            color: '#34d399',
-            padding: '4px 12px',
-            borderRadius: '20px',
-            fontSize: '0.8rem',
-            fontWeight: 700,
-            border: '1px solid rgba(52, 211, 153, 0.4)'
-          }}>
-            ● Session Token: Active (JWT Verified)
-          </span>
-        </div>
-      </div>
-
-      {/* Navigation Tabs */}
-      <div style={{ display: 'flex', gap: '10px', borderBottom: '2px solid var(--border)', marginBottom: '30px', overflowX: 'auto', paddingBottom: '2px' }}>
-        <button
-          className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('overview'); setSearchTerm(''); }}
-          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'overview' ? '3px solid var(--primary)' : 'none', color: activeTab === 'overview' ? 'var(--primary)' : 'var(--medium)' }}
-        >
-          📊 Overview & KPIs
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'packages' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('packages'); setSearchTerm(''); }}
-          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'packages' ? '3px solid var(--primary)' : 'none', color: activeTab === 'packages' ? 'var(--primary)' : 'var(--medium)' }}
-        >
-          🧳 Tour Packages ({packages.length})
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'inquiries' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('inquiries'); setSearchTerm(''); }}
-          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'inquiries' ? '3px solid var(--primary)' : 'none', color: activeTab === 'inquiries' ? 'var(--primary)' : 'var(--medium)' }}
-        >
-          📩 Lead Pipeline ({inquiries.length})
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'destinations' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('destinations'); setSearchTerm(''); }}
-          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'destinations' ? '3px solid var(--primary)' : 'none', color: activeTab === 'destinations' ? 'var(--primary)' : 'var(--medium)' }}
-        >
-          🗺️ Destinations ({destinations.length})
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('reviews'); setSearchTerm(''); }}
-          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'reviews' ? '3px solid var(--primary)' : 'none', color: activeTab === 'reviews' ? 'var(--primary)' : 'var(--medium)' }}
-        >
-          ⭐ Reviews & Testimonials
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'activity' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('activity'); setSearchTerm(''); }}
-          style={{ padding: '10px 18px', fontWeight: 700, border: 'none', background: 'none', cursor: 'pointer', borderBottom: activeTab === 'activity' ? '3px solid var(--primary)' : 'none', color: activeTab === 'activity' ? 'var(--primary)' : 'var(--medium)' }}
-        >
-          ⚙️ Activity Log & System
-        </button>
-      </div>
-
-      {/* TAB 1: OVERVIEW & ANALYTICS */}
-      {activeTab === 'overview' && (
-        <div>
-          {/* KPI Metrics Cards */}
-          <div className="admin-kpi-grid">
-            <div className="kpi-card">
-              <div className="kpi-icon kpi-icon-green">₹</div>
-              <div className="kpi-info">
-                <span className="kpi-label">Confirmed Revenue</span>
-                <span className="kpi-value">₹{totalRevenue.toLocaleString('en-IN')}</span>
-                <span className="kpi-subtext">↑ 18% from last month</span>
-              </div>
-            </div>
-
-            <div className="kpi-card">
-              <div className="kpi-icon kpi-icon-blue">📩</div>
-              <div className="kpi-info">
-                <span className="kpi-label">Active Inquiries</span>
-                <span className="kpi-value">{inquiries.length}</span>
-                <span className="kpi-subtext">{pendingInquiriesCount} Pending Follow-up</span>
-              </div>
-            </div>
-
-            <div className="kpi-card">
-              <div className="kpi-icon kpi-icon-purple">🧳</div>
-              <div className="kpi-info">
-                <span className="kpi-label">Listed Tour Packages</span>
-                <span className="kpi-value">{packages.length}</span>
-                <span className="kpi-subtext">Across {destinations.length} destinations</span>
-              </div>
-            </div>
-
-            <div className="kpi-card">
-              <div className="kpi-icon kpi-icon-amber">📈</div>
-              <div className="kpi-info">
-                <span className="kpi-label">Conversion Rate</span>
-                <span className="kpi-value">{conversionRate}%</span>
-                <span className="kpi-subtext">{bookedCount} Booked Leads</span>
-              </div>
-            </div>
+      {/* Main Content */}
+      <div className="main">
+        <header className="topbar">
+          <h1>{titleMap[activeTab] || 'Admin'}</h1>
+          <div className="topbar-actions">
+            <Link to="/" className="btn btn-ghost btn-sm">View site</Link>
+            <button className="btn btn-primary btn-sm" onClick={() => setPackageModalOpen(true)}>+ Add package</button>
+            <button className="btn btn-ghost btn-sm" onClick={handleLogout}>Sign Out</button>
           </div>
+        </header>
 
-          {/* Visual Progress & Performance Charts */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '25px' }}>
-            <div style={{ background: 'var(--white)', padding: '25px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '20px' }}>Inquiry Lead Breakdown</h3>
-              <div className="perf-bar-group">
-                <div className="perf-bar-label">
-                  <span>Pending Leads</span>
-                  <span>{inquiries.filter((i) => i.status === 'Pending').length}</span>
+        <div className="content">
+          {/* DASHBOARD TAB */}
+          {activeTab === 'dashboard' && (
+            <div>
+              <div className="stats">
+                <div className="stat-card">
+                  <div className="stat-label">New enquiries</div>
+                  <div className="stat-value">5</div>
+                  <div className="stat-hint up">+2 today</div>
                 </div>
-                <div className="perf-bar-track">
-                  <div className="perf-bar-fill" style={{ width: `${(inquiries.filter((i) => i.status === 'Pending').length / totalInquiriesCount) * 100}%`, backgroundColor: '#f59e0b' }}></div>
+                <div className="stat-card">
+                  <div className="stat-label">Open leads</div>
+                  <div className="stat-value">12</div>
+                  <div className="stat-hint">In progress / quoted</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-label">Packages live</div>
+                  <div className="stat-value">6</div>
+                  <div className="stat-hint">3 with detail pages</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-label">Confirmed (month)</div>
+                  <div className="stat-value">3</div>
+                  <div className="stat-hint up">Meghalaya ×2, Kaziranga ×1</div>
                 </div>
               </div>
 
-              <div className="perf-bar-group">
-                <div className="perf-bar-label">
-                  <span>Contacted Leads</span>
-                  <span>{inquiries.filter((i) => i.status === 'Contacted').length}</span>
-                </div>
-                <div className="perf-bar-track">
-                  <div className="perf-bar-fill" style={{ width: `${(inquiries.filter((i) => i.status === 'Contacted').length / totalInquiriesCount) * 100}%`, backgroundColor: '#3b82f6' }}></div>
-                </div>
-              </div>
-
-              <div className="perf-bar-group">
-                <div className="perf-bar-label">
-                  <span>Confirmed Bookings</span>
-                  <span>{bookedCount}</span>
-                </div>
-                <div className="perf-bar-track">
-                  <div className="perf-bar-fill" style={{ width: `${(bookedCount / totalInquiriesCount) * 100}%`, backgroundColor: '#10b981' }}></div>
-                </div>
-              </div>
-            </div>
-
-            <div style={{ background: 'var(--white)', padding: '25px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '20px' }}>Package Tier Distribution</h3>
-              {['Standard', 'Deluxe', 'Luxury'].map((cat) => {
-                const count = packages.filter((p) => (p.category || 'Standard') === cat).length;
-                const pct = packages.length ? Math.round((count / packages.length) * 100) : 0;
-                return (
-                  <div key={cat} className="perf-bar-group">
-                    <div className="perf-bar-label">
-                      <span>{cat} Tier</span>
-                      <span>{count} packages ({pct}%)</span>
-                    </div>
-                    <div className="perf-bar-track">
-                      <div className="perf-bar-fill" style={{ width: `${pct}%`, backgroundColor: cat === 'Luxury' ? '#8b5cf6' : cat === 'Deluxe' ? '#3b82f6' : '#10b981' }}></div>
-                    </div>
+              <div className="grid-2">
+                <div className="panel">
+                  <div className="panel-header">
+                    <h2>Recent enquiries</h2>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setActiveTab('enquiries')}>View all</button>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
+                  <div className="panel-body">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Interest</th>
+                          <th>Status</th>
+                          <th>Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {inquiries.slice(0, 4).map((inq) => (
+                          <tr key={inq._id}>
+                            <td className="name-cell">
+                              <strong>{inq.name}</strong>
+                              <span>{inq.pax || 2} travellers</span>
+                            </td>
+                            <td>{inq.interest || inq.packageId?.title || 'North East Package'}</td>
+                            <td><span className={`status ${getStatusBadgeClass(inq.status || 'New')}`}>{inq.status || 'New'}</span></td>
+                            <td>{inq.date || 'Today'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
 
-      {/* TAB 2: PACKAGES MANAGEMENT */}
-      {activeTab === 'packages' && (
-        <div>
-          <div className="admin-toolbar">
-            <div className="search-input-wrap">
-              <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search packages by title or destination..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <Button variant="primary" onClick={() => openPackageModal()}>
-              + Create Tour Package
-            </Button>
-          </div>
-
-          <div style={{ overflowX: 'auto' }}>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Package Title</th>
-                  <th>Category</th>
-                  <th>Destination</th>
-                  <th>Duration</th>
-                  <th>Price</th>
-                  <th>Capacity</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredPackages.map((pkg) => (
-                  <tr key={pkg._id}>
-                    <td>
-                      <div style={{ fontWeight: 700 }}>{pkg.title}</div>
-                    </td>
-                    <td>
-                      <span className={`badge-category badge-category-${(pkg.category || 'Standard').toLowerCase()}`}>
-                        {pkg.category || 'Standard'}
-                      </span>
-                    </td>
-                    <td>{pkg.destination}</td>
-                    <td>{pkg.duration}</td>
-                    <td>₹{pkg.price.toLocaleString('en-IN')}</td>
-                    <td>{pkg.capacity || 15} Guests</td>
-                    <td>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <Button variant="outline" size="sm" onClick={() => openPackageModal(pkg)}>
-                          Edit
-                        </Button>
-                        <Button variant="danger" size="sm" onClick={() => handleDeletePackage(pkg._id)}>
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* TAB 3: INQUIRIES & LEAD PIPELINE */}
-      {activeTab === 'inquiries' && (
-        <div>
-          <div className="admin-toolbar">
-            <div className="search-input-wrap">
-              <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search customer leads by name, email, phone..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <select
-              className="filter-input"
-              style={{ maxWidth: '200px' }}
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="">All Statuses</option>
-              <option value="Pending">Pending</option>
-              <option value="Contacted">Contacted</option>
-              <option value="Booked">Booked</option>
-              <option value="Cancelled">Cancelled</option>
-            </select>
-          </div>
-
-          <div style={{ overflowX: 'auto' }}>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Customer Info</th>
-                  <th>Interested Package</th>
-                  <th>Status</th>
-                  <th>Payment</th>
-                  <th>Message & Notes</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredInquiries.map((inq) => (
-                  <tr key={inq._id}>
-                    <td>
-                      <div style={{ fontWeight: 700 }}>{inq.name}</div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--medium)' }}>{inq.email}</div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--medium)' }}>{inq.phone}</div>
-                    </td>
-                    <td>
-                      <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{inq.packageId?.title || 'General Tour Inquiry'}</div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--primary)' }}>
-                        ₹{inq.packageId?.price ? inq.packageId.price.toLocaleString('en-IN') : 'N/A'}
-                      </div>
-                    </td>
-                    <td>
-                      <select
-                        className="form-control"
-                        style={{ fontSize: '0.8rem', padding: '4px 8px', width: 'auto' }}
-                        value={inq.status || 'Pending'}
-                        onChange={(e) => handleUpdateInquiry(inq._id, e.target.value, inq.paymentStatus, inq.notes)}
-                      >
-                        <option value="Pending">Pending</option>
-                        <option value="Contacted">Contacted</option>
-                        <option value="Booked">Booked</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </td>
-                    <td>
-                      <select
-                        className="form-control"
-                        style={{ fontSize: '0.8rem', padding: '4px 8px', width: 'auto' }}
-                        value={inq.paymentStatus || 'Pending'}
-                        onChange={(e) => handleUpdateInquiry(inq._id, inq.status, e.target.value, inq.notes)}
-                      >
-                        <option value="Pending">Unpaid</option>
-                        <option value="Partial">Partial</option>
-                        <option value="Paid">Paid Full</option>
-                      </select>
-                    </td>
-                    <td style={{ maxWidth: '250px' }}>
-                      <p style={{ margin: 0, fontSize: '0.85rem' }}>"{inq.message}"</p>
-                      {inq.notes && (
-                        <div style={{ fontSize: '0.75rem', color: 'var(--secondary)', marginTop: '4px', fontStyle: 'italic' }}>
-                          Note: {inq.notes}
+                <div className="panel">
+                  <div className="panel-header">
+                    <h2>Live packages</h2>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setActiveTab('packages')}>Manage</button>
+                  </div>
+                  <div className="panel-body">
+                    {packages.slice(0, 3).map((pkg) => (
+                      <div key={pkg._id} className="pkg-row">
+                        <div
+                          className="pkg-thumb"
+                          style={{ backgroundImage: `url('${pkg.image || 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=100&q=60'}')` }}
+                        />
+                        <div className="pkg-info">
+                          <strong>{pkg.title}</strong>
+                          <span>{pkg.duration || '5D'} · From ₹{typeof pkg.price === 'number' ? pkg.price.toLocaleString('en-IN') : pkg.price}</span>
                         </div>
-                      )}
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', gap: '6px', flexDirection: 'column' }}>
-                        <Button variant="outline" size="sm" onClick={() => setSelectedVoucher(inq)}>
-                          🖨️ Voucher
-                        </Button>
-                        <Button variant="danger" size="sm" onClick={() => handleDeleteInquiry(inq._id)}>
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* TAB 4: DESTINATIONS */}
-      {activeTab === 'destinations' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '30px' }}>
-          <div style={{ background: 'var(--white)', padding: '25px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '18px' }}>
-              {editingDestId ? 'Edit Destination' : 'Add New Destination'}
-            </h3>
-            <form onSubmit={handleSaveDestination}>
-              <div className="form-group">
-                <label>Destination Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={destName}
-                  onChange={(e) => setDestName(e.target.value)}
-                  placeholder="e.g. Manali, Himachal"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Image URL</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={destImage}
-                  onChange={(e) => setDestImage(e.target.value)}
-                  placeholder="https://..."
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Best Time to Visit</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={destBestTime}
-                  onChange={(e) => setDestBestTime(e.target.value)}
-                  placeholder="e.g. October to March"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Description</label>
-                <textarea
-                  className="form-control"
-                  value={destDesc}
-                  onChange={(e) => setDestDesc(e.target.value)}
-                  rows="3"
-                  required
-                ></textarea>
-              </div>
-              <Button type="submit" variant="primary" style={{ width: '100%' }}>
-                {editingDestId ? 'Update Destination' : 'Add Destination'}
-              </Button>
-            </form>
-          </div>
-
-          <div>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Image</th>
-                  <th>Name</th>
-                  <th>Best Time</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {destinations.map((dest) => (
-                  <tr key={dest._id}>
-                    <td>
-                      <img src={dest.image} alt={dest.name} style={{ width: '50px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
-                    </td>
-                    <td style={{ fontWeight: 700 }}>{dest.name}</td>
-                    <td>{dest.bestTimeToVisit}</td>
-                    <td>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <Button variant="outline" size="sm" onClick={() => handleEditDestination(dest)}>
-                          Edit
-                        </Button>
-                        <Button variant="danger" size="sm" onClick={() => handleDeleteDestination(dest._id || dest.id)}>
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* TAB 5: REVIEWS MODERATION */}
-      {activeTab === 'reviews' && (
-        <div>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '20px' }}>Customer Reviews & Ratings Moderation</h3>
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Customer</th>
-                <th>Package Title</th>
-                <th>Rating</th>
-                <th>Comment</th>
-                <th>Approved</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reviews.map((rev) => (
-                <tr key={rev._id}>
-                  <td style={{ fontWeight: 700 }}>{rev.customerName}</td>
-                  <td>{rev.packageTitle}</td>
-                  <td>{'⭐'.repeat(rev.rating || 5)}</td>
-                  <td style={{ maxWidth: '300px' }}>"{rev.comment}"</td>
-                  <td>
-                    <span className={`badge-status ${rev.approved ? 'badge-status-booked' : 'badge-status-pending'}`}>
-                      {rev.approved ? 'Approved' : 'Hidden'}
-                    </span>
-                  </td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <Button variant="outline" size="sm" onClick={() => handleToggleReviewApprove(rev)}>
-                        {rev.approved ? 'Hide' : 'Approve'}
-                      </Button>
-                      <Button variant="danger" size="sm" onClick={() => handleDeleteReview(rev._id)}>
-                        Delete
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* TAB 6: ACTIVITY LOGS & SETTINGS */}
-      {activeTab === 'activity' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
-          <div style={{ background: 'var(--white)', padding: '25px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '16px' }}>System Admin Profile</h3>
-            <p style={{ color: 'var(--medium)', fontSize: '0.9rem' }}>Logged in as: <strong>Admin User</strong></p>
-            <p style={{ color: 'var(--medium)', fontSize: '0.9rem' }}>Role: <strong>Super Administrator</strong></p>
-            <p style={{ color: 'var(--medium)', fontSize: '0.9rem' }}>Session Token: <strong>Active (JWT Verified)</strong></p>
-            <hr style={{ margin: '20px 0', borderTop: '1px solid var(--border)' }} />
-            <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '12px' }}>Database Maintenance</h4>
-            <Button variant="outline" size="sm" onClick={() => exportToCSV(packages, 'Travmitra_Packages')}>
-              Export Packages CSV
-            </Button>
-          </div>
-
-          <div style={{ background: 'var(--white)', padding: '25px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '16px' }}>Admin Activity Audit Stream</h3>
-            {activityLogs.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {activityLogs.map((log) => (
-                  <div key={log._id} style={{ borderLeft: '3px solid var(--primary)', paddingLeft: '12px' }}>
-                    <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{log.action}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--medium)' }}>{log.details}</div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--light-gray)', marginTop: '2px' }}>
-                      {new Date(log.createdAt).toLocaleString()}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p style={{ color: 'var(--medium)', fontSize: '0.85rem' }}>No recent audit activity recorded.</p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* CREATE / EDIT PACKAGE MODAL */}
-      {packageModalOpen && (
-        <div className="admin-modal-overlay">
-          <div className="admin-modal-content">
-            <div className="admin-modal-header">
-              <h3>{editingPackageId ? 'Edit Tour Package' : 'Create New Package'}</h3>
-              <button className="close-btn" onClick={() => setPackageModalOpen(false)}>&times;</button>
-            </div>
-
-            <form onSubmit={handleSavePackage}>
-              <div className="admin-modal-body">
-                <div className="form-group">
-                  <label>Package Title</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={pkgTitle}
-                    onChange={(e) => setPkgTitle(e.target.value)}
-                    placeholder="e.g. Exotic Goa Beach Gateway"
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Package Category / Tier</label>
-                  <select
-                    className="form-control"
-                    value={pkgCategory}
-                    onChange={(e) => setPkgCategory(e.target.value)}
-                  >
-                    <option value="Standard">Standard Tier</option>
-                    <option value="Deluxe">Deluxe Tier</option>
-                    <option value="Luxury">Luxury Tier</option>
-                  </select>
-                </div>
-
-                <div className="filters-grid" style={{ gridTemplateColumns: '1fr 1fr 1fr', gap: '15px' }}>
-                  <div className="form-group">
-                    <label>Price (₹)</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={pkgPrice}
-                      onChange={(e) => setPkgPrice(e.target.value)}
-                      placeholder="15000"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Duration</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={pkgDuration}
-                      onChange={(e) => setPkgDuration(e.target.value)}
-                      placeholder="5 Days / 4 Nights"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Destination</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={pkgDestination}
-                      onChange={(e) => setPkgDestination(e.target.value)}
-                      placeholder="Goa"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Itinerary Day Planning with Multi-Images */}
-                <div className="form-group" style={{ marginTop: '15px' }}>
-                  <label style={{ fontWeight: 700 }}>Day-Wise Itinerary Planning</label>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '8px' }}>
-                    {pkgItinerary.map((item, index) => (
-                      <div key={index} style={{ border: '1px solid var(--border)', padding: '15px', borderRadius: 'var(--radius-sm)', position: 'relative' }}>
-                        <span style={{ fontWeight: '700', fontSize: '0.85rem', color: 'var(--primary)' }}>Day {item.day}</span>
-                        {pkgItinerary.length > 1 && (
-                          <button
-                            type="button"
-                            className="close-btn"
-                            style={{ position: 'absolute', top: '10px', right: '15px', fontSize: '1.2rem' }}
-                            onClick={() => handleRemoveItineraryDay(index)}
-                          >
-                            &times;
-                          </button>
-                        )}
-                        <div className="form-group" style={{ marginTop: '8px' }}>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={item.title}
-                            onChange={(e) => handleItineraryChange(index, 'title', e.target.value)}
-                            placeholder="Day Title (e.g. Arrival & Sunset Beach Cruise)"
-                          />
-                        </div>
-
-                        <div className="form-group" style={{ marginTop: '10px' }}>
-                          <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--dark)' }}>Day Images (Optional)</label>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
-                            {(item.images || ['']).map((imgUrl, imgIdx) => (
-                              <div key={imgIdx} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  value={imgUrl}
-                                  onChange={(e) => handleItineraryDayImageChange(index, imgIdx, e.target.value)}
-                                  placeholder="Image URL (e.g. https://...)"
-                                />
-                                {(item.images || []).length > 1 && (
-                                  <Button
-                                    type="button"
-                                    variant="danger"
-                                    size="sm"
-                                    onClick={() => handleRemoveItineraryDayImage(index, imgIdx)}
-                                  >
-                                    &times;
-                                  </Button>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleAddItineraryDayImage(index)}
-                            style={{ marginTop: '6px', fontSize: '0.75rem', padding: '3px 10px' }}
-                          >
-                            + Add Image to Day {item.day}
-                          </Button>
-                        </div>
-
-                        <div className="form-group" style={{ marginBottom: 0, marginTop: '10px' }}>
-                          <textarea
-                            className="form-control"
-                            value={item.description}
-                            onChange={(e) => handleItineraryChange(index, 'description', e.target.value)}
-                            placeholder="Detailed description of activities for this day..."
-                            style={{ minHeight: '60px' }}
-                          ></textarea>
-                        </div>
+                        <div className="pkg-price">Live</div>
                       </div>
                     ))}
                   </div>
-                  <Button variant="outline" size="sm" onClick={handleAddItineraryDay} style={{ marginTop: '10px' }}>
-                    + Add Itinerary Day
-                  </Button>
                 </div>
               </div>
+            </div>
+          )}
 
-              <div className="admin-modal-footer">
-                <Button variant="outline" onClick={() => setPackageModalOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" variant="primary">
-                  Save Package
-                </Button>
+          {/* ENQUIRIES TAB */}
+          {activeTab === 'enquiries' && (
+            <div className="panel">
+              <div className="panel-header">
+                <h2>All enquiries</h2>
+                <button className="btn btn-ghost btn-sm">Export CSV</button>
+              </div>
+              <div className="filters">
+                <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                  <option value="">All statuses</option>
+                  <option value="New">New</option>
+                  <option value="In progress">In progress</option>
+                  <option value="Quoted">Quoted</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Closed">Closed</option>
+                </select>
+                <select value={pkgFilter} onChange={(e) => setPkgFilter(e.target.value)}>
+                  <option value="">All packages</option>
+                  <option value="Meghalaya">Meghalaya</option>
+                  <option value="Kaziranga">Kaziranga</option>
+                  <option value="Tawang">Tawang</option>
+                  <option value="Custom">Custom</option>
+                </select>
+                <input
+                  type="search"
+                  placeholder="Search name, phone, email…"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="panel-body">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Contact</th>
+                      <th>Interest</th>
+                      <th>Pax</th>
+                      <th>Assigned</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {inquiries.map((inq) => (
+                      <tr key={inq._id}>
+                        <td className="name-cell">
+                          <strong>{inq.name}</strong>
+                          <span>{inq.location || 'Delhi'}</span>
+                        </td>
+                        <td>{inq.contact || `${inq.phone || '+91 98xxx'} · ${inq.email || 'user@...'}`}</td>
+                        <td>{inq.interest || inq.packageId?.title || 'Tour Package'}</td>
+                        <td>{inq.pax || 2}</td>
+                        <td>{inq.assigned || '—'}</td>
+                        <td><span className={`status ${getStatusBadgeClass(inq.status || 'New')}`}>{inq.status || 'New'}</span></td>
+                        <td>{inq.date || 'Today'}</td>
+                        <td>
+                          <button className="btn btn-ghost btn-sm" onClick={() => setSelectedVoucher(inq)}>Open</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* PACKAGES TAB */}
+          {activeTab === 'packages' && (
+            <div className="panel">
+              <div className="panel-header">
+                <h2>Packages</h2>
+                <button className="btn btn-primary btn-sm" onClick={() => setPackageModalOpen(true)}>+ Add package</button>
+              </div>
+              <div className="panel-body">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Package</th>
+                      <th>Duration</th>
+                      <th>Standard</th>
+                      <th>Deluxe</th>
+                      <th>Luxury</th>
+                      <th>Status</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {packages.map((pkg) => (
+                      <tr key={pkg._id}>
+                        <td className="name-cell">
+                          <strong>{pkg.title}</strong>
+                          <span>{pkg.destination || 'North East'}</span>
+                        </td>
+                        <td>{pkg.duration || '5D / 4N'}</td>
+                        <td>{pkg.standard || (typeof pkg.price === 'number' ? `₹${pkg.price.toLocaleString('en-IN')}` : pkg.price)}</td>
+                        <td>{pkg.deluxe || '—'}</td>
+                        <td>{pkg.luxury || '—'}</td>
+                        <td><span className="status status-confirmed">{pkg.status || 'Published'}</span></td>
+                        <td><button className="btn btn-ghost btn-sm" onClick={() => setPackageModalOpen(true)}>Edit</button></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* DESTINATIONS TAB */}
+          {activeTab === 'destinations' && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1.5rem' }}>
+              <div className="panel" style={{ padding: '1.25rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Add Destination</h3>
+                <form onSubmit={handleSaveDestination}>
+                  <div style={{ marginBottom: '0.85rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.2rem' }}>Region Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      style={{ width: '100%', padding: '0.45rem 0.75rem', borderRadius: '8px', border: '1px solid var(--slate-200)' }}
+                      value={destName}
+                      onChange={(e) => setDestName(e.target.value)}
+                      placeholder="e.g. Nagaland"
+                      required
+                    />
+                  </div>
+                  <div style={{ marginBottom: '0.85rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.2rem' }}>Best Season</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      style={{ width: '100%', padding: '0.45rem 0.75rem', borderRadius: '8px', border: '1px solid var(--slate-200)' }}
+                      value={destBestTime}
+                      onChange={(e) => setDestBestTime(e.target.value)}
+                      placeholder="Oct – Mar"
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary btn-sm" style={{ width: '100%' }}>Save Destination</button>
+                </form>
+              </div>
+
+              <div className="panel">
+                <div className="panel-header">
+                  <h2>Destinations</h2>
+                </div>
+                <div className="panel-body">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Region</th>
+                        <th>Best season</th>
+                        <th>Linked packages</th>
+                        <th>Status</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {destinations.map((dest) => (
+                        <tr key={dest._id}>
+                          <td><strong>{dest.name}</strong></td>
+                          <td>{dest.bestTimeToVisit || 'Oct – May'}</td>
+                          <td>{dest.packagesCount || '1 package'}</td>
+                          <td><span className="status status-confirmed">Live</span></td>
+                          <td><button className="btn btn-ghost btn-sm">Edit</button></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* MEDIA TAB */}
+          {activeTab === 'media' && (
+            <div className="panel">
+              <div className="panel-header">
+                <h2>Media library</h2>
+                <button className="btn btn-primary btn-sm">Upload</button>
+              </div>
+              <div className="empty-hint">Upload images for packages, destinations and homepage. (Mock — no upload yet.)</div>
+            </div>
+          )}
+
+          {/* SETTINGS TAB */}
+          {activeTab === 'settings' && (
+            <div className="panel">
+              <div className="panel-header"><h2>Site settings</h2></div>
+              <div className="panel-body" style={{ padding: '1.25rem' }}>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-500)', marginBottom: '1rem' }}>Contact details shown on the public site and in the footer.</p>
+                <div style={{ display: 'grid', gap: '0.85rem', maxWidth: '420px' }}>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Phone<br />
+                    <input
+                      value={settingsPhone}
+                      onChange={(e) => setSettingsPhone(e.target.value)}
+                      style={{ width: '100%', marginTop: '0.3rem', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px', fontFamily: 'inherit' }}
+                    />
+                  </label>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Email<br />
+                    <input
+                      value={settingsEmail}
+                      onChange={(e) => setSettingsEmail(e.target.value)}
+                      style={{ width: '100%', marginTop: '0.3rem', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px', fontFamily: 'inherit' }}
+                    />
+                  </label>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>WhatsApp<br />
+                    <input
+                      value={settingsWhatsapp}
+                      onChange={(e) => setSettingsWhatsapp(e.target.value)}
+                      style={{ width: '100%', marginTop: '0.3rem', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px', fontFamily: 'inherit' }}
+                    />
+                  </label>
+                  <button className="btn btn-teal" style={{ width: 'fit-content' }} onClick={() => showToast('Settings saved successfully!', 'success')}>Save settings</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* CREATE PACKAGE MODAL */}
+      {packageModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div style={{ background: 'var(--white)', padding: '1.75rem', borderRadius: 'var(--radius)', width: 'min(500px, 90%)', boxShadow: 'var(--shadow-lg)' }}>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '1rem' }}>Add New Package</h3>
+            <form onSubmit={handleSavePackage}>
+              <div style={{ marginBottom: '0.85rem' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>Package Title</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  style={{ width: '100%', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px' }}
+                  value={pkgTitle}
+                  onChange={(e) => setPkgTitle(e.target.value)}
+                  placeholder="e.g. Meghalaya Highlights"
+                  required
+                />
+              </div>
+              <div style={{ marginBottom: '0.85rem' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>Destination / Region</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  style={{ width: '100%', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px' }}
+                  value={pkgDestination}
+                  onChange={(e) => setPkgDestination(e.target.value)}
+                  placeholder="Meghalaya"
+                  required
+                />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem', marginBottom: '0.85rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>Price (₹)</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    style={{ width: '100%', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px' }}
+                    value={pkgPrice}
+                    onChange={(e) => setPkgPrice(e.target.value)}
+                    placeholder="18900"
+                    required
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>Duration</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    style={{ width: '100%', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px' }}
+                    value={pkgDuration}
+                    onChange={(e) => setPkgDuration(e.target.value)}
+                    placeholder="5 Days / 4 Nights"
+                    required
+                  />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '0.75rem', justifySelf: 'end', marginTop: '1.25rem' }}>
+                <button type="button" className="btn btn-ghost" onClick={() => setPackageModalOpen(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary">Save Package</button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* PRINTABLE BOOKING VOUCHER MODAL */}
-      {selectedVoucher && (
-        <div className="voucher-overlay">
-          <div className="voucher-box">
-            <div className="voucher-header">
-              <div>
-                <div className="voucher-title">TRAVMITRA TRAVELS</div>
-                <div className="voucher-sub">Official Travel Confirmation & Booking Voucher</div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>VOUCHER NO:</div>
-                <div style={{ fontSize: '1rem', color: 'var(--primary)', fontWeight: 800 }}>#TVM-{selectedVoucher._id.slice(0, 6).toUpperCase()}</div>
-              </div>
-            </div>
-
-            <div className="voucher-section">
-              <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '8px' }}>Customer Information</h4>
-              <table className="voucher-table">
-                <tbody>
-                  <tr>
-                    <th>Lead Traveler</th>
-                    <td>{selectedVoucher.name}</td>
-                    <th>Phone</th>
-                    <td>{selectedVoucher.phone}</td>
-                  </tr>
-                  <tr>
-                    <th>Email Address</th>
-                    <td>{selectedVoucher.email}</td>
-                    <th>Booking Status</th>
-                    <td><strong style={{ color: '#059669' }}>{selectedVoucher.status || 'Confirmed'}</strong></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div className="voucher-section">
-              <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '8px' }}>Package & Service Details</h4>
-              <table className="voucher-table">
-                <tbody>
-                  <tr>
-                    <th>Package Title</th>
-                    <td>{selectedVoucher.packageId?.title || 'Custom Tour Package'}</td>
-                  </tr>
-                  <tr>
-                    <th>Destination</th>
-                    <td>{selectedVoucher.packageId?.destination || 'India'}</td>
-                  </tr>
-                  <tr>
-                    <th>Price Estimate</th>
-                    <td>₹{selectedVoucher.packageId?.price ? selectedVoucher.packageId.price.toLocaleString('en-IN') : 'N/A'}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div style={{ marginTop: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="no-print">
-              <Button variant="outline" onClick={() => setSelectedVoucher(null)}>
-                Close
-              </Button>
-              <Button variant="primary" onClick={() => window.print()}>
-                🖨️ Print / Download Voucher PDF
-              </Button>
-            </div>
           </div>
         </div>
       )}
