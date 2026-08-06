@@ -1,316 +1,326 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getPackage, submitInquiry } from '../services/api';
+import { useParams, Link } from 'react-router-dom';
+import { getPackage } from '../services/api';
 import Spinner from '../components/Spinner';
-import Button from '../components/Button';
-import { useToast } from '../context/ToastContext';
+
+// Default Meghalaya Highlights fallback package structure
+const defaultMeghalayaDetails = {
+  title: 'Meghalaya Highlights',
+  duration: '5 days / 4 nights',
+  route: 'Shillong · Cherrapunji · Dawki',
+  bestSeason: 'Oct – May',
+  subtitle: 'Living root bridges, cascading waterfalls, clean Khasi villages and the wettest places on earth — a classic first trip into the hills of Meghalaya.',
+  priceFrom: '18,900',
+  heroImage: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=1920&q=80',
+  highlights: [
+    'Double-decker living root bridge trek',
+    'Nohkalikai & Seven Sisters waterfalls',
+    'Crystal-clear Dawki river & Umngot',
+    'Shillong city & Ward’s Lake',
+    'Local Khasi villages & markets',
+    'Optional caving or boating'
+  ],
+  pricingTiers: [
+    {
+      id: 'standard',
+      name: 'Standard',
+      stars: '★★★ · 3-star hotels',
+      price: '₹18,900',
+      priceUnit: '/ person',
+      hotel: 'Clean, well-located 3★ stays in Shillong & Cherrapunji',
+      features: [
+        '3★ hotels / guesthouses',
+        'Private AC vehicle',
+        'Breakfast daily',
+        'Local guide on key days'
+      ],
+      featured: false,
+      btnClass: 'btn-outline'
+    },
+    {
+      id: 'deluxe',
+      name: 'Deluxe',
+      stars: '★★★★ · 4-star hotels',
+      price: '₹24,900',
+      priceUnit: '/ person',
+      hotel: 'Comfortable 4★ hotels with better views & amenities',
+      features: [
+        '4★ hotels / resorts',
+        'Private AC vehicle',
+        'Breakfast + 2 dinners',
+        'Dedicated local guide'
+      ],
+      featured: true,
+      btnClass: 'btn-primary'
+    },
+    {
+      id: 'luxury',
+      name: 'Luxury',
+      stars: '★★★★★ · 5-star / premium',
+      price: '₹34,900',
+      priceUnit: '/ person',
+      hotel: 'Premium resorts & boutique stays with top service',
+      features: [
+        '5★ / premium resorts',
+        'Premium private vehicle',
+        'All meals included',
+        'Private guide throughout'
+      ],
+      featured: false,
+      btnClass: 'btn-outline'
+    }
+  ],
+  itinerary: [
+    {
+      day: 'Day 1',
+      title: 'Arrive Guwahati → Shillong',
+      desc: 'Meet at Guwahati airport or railway station. Scenic drive to Shillong (approx. 3–3.5 hrs). Check-in, evening at leisure or Ward’s Lake & local market. Overnight Shillong.'
+    },
+    {
+      day: 'Day 2',
+      title: 'Shillong local · Umiam Lake',
+      desc: 'Morning city tour: Don Bosco Museum, Cathedral, Police Bazaar. Afternoon visit to Umiam (Barapani) Lake for views and optional boating. Overnight Shillong.'
+    },
+    {
+      day: 'Day 3',
+      title: 'Cherrapunji · Waterfalls & caves',
+      desc: 'Drive to Cherrapunji. Visit Nohkalikai Falls, Seven Sisters Falls, Mawsmai Cave. Evening free. Overnight Cherrapunji / Sohra.'
+    },
+    {
+      day: 'Day 4',
+      title: 'Living root bridge · Dawki',
+      desc: 'Trek to the double-decker living root bridge (moderate fitness). Later drive to Dawki for the clear Umngot river and Indo-Bangladesh border views. Return to Shillong. Overnight Shillong.'
+    },
+    {
+      day: 'Day 5',
+      title: 'Shillong → Guwahati departure',
+      desc: 'After breakfast, drive back to Guwahati for your onward flight or train. Trip ends with drop at airport / station.'
+    }
+  ],
+  inclusions: [
+    'Accommodation as per chosen category (twin share)',
+    'Daily breakfast (meals as per tier)',
+    'Private vehicle for all transfers & sightseeing',
+    'Driver allowances & parking',
+    'Entry fees to major points (as per itinerary)',
+    'Local guide on key activity days',
+    'Basic first-aid support'
+  ],
+  exclusions: [
+    'Flights / trains to Guwahati',
+    'Lunch & dinner (except where stated in tier)',
+    'Personal expenses & tips',
+    'Optional activities (boating, caving extras)',
+    'Travel insurance',
+    'Anything not listed under inclusions'
+  ],
+  sidebarFacts: {
+    duration: '5D / 4N',
+    startEnd: 'Guwahati',
+    season: 'Oct – May',
+    groupSize: '2 – 12',
+    difficulty: 'Easy – Moderate'
+  }
+};
 
 const PackageDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { showToast } = useToast();
-
-  const [pkg, setPkg] = useState(null);
+  const [pkgData, setPkgData] = useState(null);
   const [loading, setLoading] = useState(true);
-  
-  // Inquiry form states
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  });
-  const [inquiryLoading, setInquiryLoading] = useState(false);
-  const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    const fetchPackageDetails = async () => {
+    const fetchPackage = async () => {
       try {
         const data = await getPackage(id);
-        setPkg(data);
-        document.title = `${data.title} | Travmitra`;
-        
-        // Update meta description
-        const metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc) {
-          metaDesc.setAttribute('content', `${data.title} - ${data.duration} tour package. Browse itinerary, price, details, and book your package.`);
+        if (data && data.title) {
+          // Format API response into layout data structure
+          setPkgData({
+            title: data.title,
+            duration: data.duration || '5 days / 4 nights',
+            route: data.destination || 'North East India',
+            bestSeason: 'Oct – May',
+            subtitle: data.description,
+            priceFrom: typeof data.price === 'number' ? data.price.toLocaleString('en-IN') : data.price,
+            heroImage: (data.images && data.images[0]) || defaultMeghalayaDetails.heroImage,
+            highlights: data.highlights && data.highlights.length > 0 ? data.highlights : defaultMeghalayaDetails.highlights,
+            pricingTiers: defaultMeghalayaDetails.pricingTiers,
+            itinerary: data.itinerary && data.itinerary.length > 0 
+              ? data.itinerary.map(item => ({ day: `Day ${item.day}`, title: item.title, desc: item.description }))
+              : defaultMeghalayaDetails.itinerary,
+            inclusions: data.included && data.included.length > 0 ? data.included : defaultMeghalayaDetails.inclusions,
+            exclusions: data.excluded && data.excluded.length > 0 ? data.excluded : defaultMeghalayaDetails.exclusions,
+            sidebarFacts: {
+              duration: data.duration || '5D / 4N',
+              startEnd: 'Guwahati',
+              season: 'Oct – May',
+              groupSize: '2 – 12',
+              difficulty: 'Easy – Moderate'
+            }
+          });
+          document.title = `${data.title} | Travmitraa`;
+        } else {
+          setPkgData(defaultMeghalayaDetails);
+          document.title = `Meghalaya Highlights – 5 Days | Travmitraa`;
         }
       } catch (err) {
-        console.error(err);
-        showToast('Package not found or server error.', 'error');
-        navigate('/packages');
+        console.error('Fetching package failed, using default details:', err);
+        setPkgData(defaultMeghalayaDetails);
+        document.title = `Meghalaya Highlights – 5 Days | Travmitraa`;
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPackageDetails();
-  }, [id, navigate, showToast]);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-    if (errors[e.target.name]) {
-      setErrors({ ...errors, [e.target.name]: '' });
-    }
-  };
-
-  const validate = () => {
-    let tempErrors = {};
-    if (!formData.name.trim()) tempErrors.name = 'Name is required';
-    if (!formData.email.trim()) {
-      tempErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      tempErrors.email = 'Email format is invalid';
-    }
-    if (!formData.phone.trim()) {
-      tempErrors.phone = 'Phone number is required';
-    } else if (!/^\+?[0-9\s-]{10,14}$/.test(formData.phone.replace(/\s/g, ''))) {
-      tempErrors.phone = 'Phone number format is invalid';
-    }
-    setErrors(tempErrors);
-    return Object.keys(tempErrors).length === 0;
-  };
-
-  const handleInquirySubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) {
-      showToast('Please fix the errors before submitting', 'error');
-      return;
-    }
-
-    setInquiryLoading(true);
-    try {
-      const payload = {
-        ...formData,
-        packageId: id,
-        message: formData.message || `I am interested in booking the package: ${pkg.title}`
-      };
-      await submitInquiry(payload);
-      showToast('Booking inquiry submitted successfully! We will contact you soon.', 'success');
-      setFormData({ name: '', email: '', phone: '', message: '' });
-    } catch (err) {
-      console.error(err);
-      showToast(err.response?.data?.message || 'Failed to submit booking inquiry.', 'error');
-    } finally {
-      setInquiryLoading(false);
-    }
-  };
+    fetchPackage();
+  }, [id]);
 
   if (loading) {
     return <Spinner fullPage={true} />;
   }
 
-  if (!pkg) {
-    return null;
-  }
+  const data = pkgData || defaultMeghalayaDetails;
 
   return (
     <div>
-      {/* Banner Cover */}
-      <section className="detail-banner">
-        <img src={pkg.images[0] || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1600&q=80'} alt={pkg.title} />
-        <div className="detail-banner-content">
-          <div className="container">
-            <h1 style={{ color: 'var(--white)' }}>{pkg.title}</h1>
-            <ul className="detail-meta-list">
-              <li>
-                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-                  <circle cx="12" cy="9" r="2"/>
-                </svg>
-                {pkg.destination}
-              </li>
-              <li>
-                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                {pkg.duration}
-              </li>
-              <li>
-                <span className={`badge-category badge-category-${(pkg.category || 'Standard').toLowerCase()}`}>
-                  {pkg.category || 'Standard'}
-                </span>
-              </li>
-            </ul>
+      {/* Hero */}
+      <section className="pkg-hero" style={{ backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.5), rgba(15, 118, 110, 0.6)), url('${data.heroImage}')` }}>
+        <div className="container">
+          <div className="pkg-hero-inner">
+            <p className="pkg-breadcrumb">
+              <Link to="/packages">Packages</Link> · {data.route.split('·')[0].trim()}
+            </p>
+            <h1>{data.title}</h1>
+            <div className="pkg-hero-meta">
+              <span>{data.duration}</span>
+              <span>{data.route}</span>
+              <span>Best: {data.bestSeason}</span>
+            </div>
+            <p>{data.subtitle}</p>
+            <div className="pkg-hero-actions">
+              <a href="#pricing" className="btn btn-primary">See pricing</a>
+              <Link to="/contact" className="btn btn-white">Enquire now</Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Main Details & Inquiry Form Grid */}
-      <section className="container section">
-        <div className="detail-grid">
-          {/* Main Info Columns */}
-          <div>
-            {/* Overview / Description */}
-            <div className="detail-block">
-              <h2 className="detail-section-title">Tour Overview</h2>
-              <p style={{ color: 'var(--medium)', fontSize: '1rem', whiteSpace: 'pre-line' }}>
-                {pkg.description}
-              </p>
-            </div>
+      {/* Main Content Layout */}
+      <section className="pkg-content">
+        <div className="container">
+          <div className="pkg-layout">
 
-            {/* Tour Highlights */}
-            <div className="detail-block">
-              <h2 className="detail-section-title">Tour Highlights</h2>
-              <ul className="checklist checklist-inc" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <li>Explore top scenic landmarks</li>
-                <li>Hassle-free transfers and pickup</li>
-                <li>Experienced local driver & guide</li>
-                <li>Premium hotel accommodations</li>
-              </ul>
-            </div>
+            {/* Main Column */}
+            <div className="pkg-main">
 
-            {/* Itinerary Accordions */}
-            <div className="detail-block">
-              <h2 className="detail-section-title">Day-Wise Itinerary</h2>
-              {pkg.itinerary && pkg.itinerary.length > 0 ? (
-                <div className="itinerary-list">
-                  {pkg.itinerary.map((item) => {
-                    const dayImages = Array.isArray(item.images) && item.images.length > 0
-                      ? item.images.filter(Boolean)
-                      : (item.image ? [item.image] : []);
-                    return (
-                      <div key={item._id || item.day} className="itinerary-item">
-                        <div className="itinerary-day-badge">DAY {item.day}</div>
-                        <div className="itinerary-content">
-                          <h4>{item.title}</h4>
-                          <p>{item.description}</p>
-                          {dayImages.length > 0 && (
-                            <div className="itinerary-gallery" style={{ marginTop: '16px' }}>
-                              {dayImages.map((imgUrl, imgIdx) => (
-                                <div key={imgIdx} className="itinerary-image-wrapper">
-                                  <img src={imgUrl} alt={`${item.title} photo ${imgIdx + 1}`} className="itinerary-image" />
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p style={{ color: 'var(--medium)' }}>Itinerary details are not configured yet.</p>
-              )}
-            </div>
-
-            {/* Inclusions & Exclusions */}
-            <div className="detail-block">
-              <h2 className="detail-section-title">Inclusions & Exclusions</h2>
-              <div className="inc-exc-grid">
-                <div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--secondary)', marginBottom: '15px' }}>What's Included</h3>
-                  <ul className="checklist checklist-inc">
-                    {pkg.included && pkg.included.length > 0 ? (
-                      pkg.included.map((inc, index) => <li key={index}>{inc}</li>)
-                    ) : (
-                      <li>No inclusions listed.</li>
-                    )}
-                  </ul>
-                </div>
-                <div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--danger)', marginBottom: '15px' }}>What's Excluded</h3>
-                  <ul className="checklist checklist-exc">
-                    {pkg.excluded && pkg.excluded.length > 0 ? (
-                      pkg.excluded.map((exc, index) => <li key={index}>{exc}</li>)
-                    ) : (
-                      <li>No exclusions listed.</li>
-                    )}
-                  </ul>
-                </div>
+              {/* Trip Highlights */}
+              <div className="pkg-section">
+                <h2>Trip highlights</h2>
+                <ul className="highlights">
+                  {data.highlights.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
               </div>
-            </div>
 
-            {/* Image Gallery */}
-            {pkg.images && pkg.images.length > 0 && (
-              <div className="detail-block">
-                <h2 className="detail-section-title">Tour Gallery</h2>
-                <div className="gallery-grid">
-                  {pkg.images.map((imgUrl, index) => (
-                    <div key={index} className="gallery-item">
-                      <img src={imgUrl} alt={`${pkg.title} thumbnail ${index + 1}`} />
+              {/* Pricing Tiers */}
+              <div className="pkg-section" id="pricing">
+                <h2>Choose your category</h2>
+                <p>All prices are per person on twin-sharing basis. Single occupancy and group rates available on request.</p>
+                <div className="tiers">
+                  {data.pricingTiers.map((tier) => (
+                    <div key={tier.id} className={`tier-card ${tier.featured ? 'featured' : ''}`}>
+                      <div className="tier-name">{tier.name}</div>
+                      <div className="tier-stars">{tier.stars}</div>
+                      <div className="tier-price">{tier.price} <span>{tier.priceUnit}</span></div>
+                      <div className="tier-hotel">{tier.hotel}</div>
+                      <ul className="tier-list">
+                        {tier.features.map((feat, i) => (
+                          <li key={i}>{feat}</li>
+                        ))}
+                      </ul>
+                      <Link
+                        to="/contact"
+                        className={`btn ${tier.btnClass}`}
+                        style={{ width: '100%', justifyContent: 'center' }}
+                      >
+                        Select {tier.name}
+                      </Link>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-          </div>
 
-          {/* Sidebar Booking Inquiry Form */}
-          <div>
-            <div className="inquiry-sidebar">
-              <h3>Interested in this tour?</h3>
-              <p style={{ color: 'var(--medium)', fontSize: '0.85rem', marginBottom: '8px' }}>Package Cost</p>
-              <div className="inquiry-sidebar-price">
-                ₹{pkg.price.toLocaleString('en-IN')} <span>/ person</span>
+              {/* Day-wise Itinerary */}
+              <div className="pkg-section">
+                <h2>Day-wise itinerary</h2>
+                <ul className="itinerary">
+                  {data.itinerary.map((dayItem, idx) => (
+                    <li key={idx} className="day">
+                      <div className="day-num">{dayItem.day}</div>
+                      <div>
+                        <h3>{dayItem.title}</h3>
+                        <p>{dayItem.desc}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-              <form onSubmit={handleInquirySubmit}>
-                <div className="form-group">
-                  <label htmlFor="inq-name">Your Name *</label>
-                  <input
-                    type="text"
-                    id="inq-name"
-                    name="name"
-                    className="form-control"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Enter your name"
-                  />
-                  {errors.name && <span style={{ color: 'var(--danger)', fontSize: '0.75rem' }}>{errors.name}</span>}
+              {/* Inclusions & Exclusions */}
+              <div className="pkg-section">
+                <h2>Inclusions & exclusions</h2>
+                <div className="inc-grid">
+                  <div className="inc-box include">
+                    <h3>Included</h3>
+                    <ul>
+                      {data.inclusions.map((inc, i) => (
+                        <li key={i}>{inc}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="inc-box exclude">
+                    <h3>Not included</h3>
+                    <ul>
+                      {data.exclusions.map((exc, i) => (
+                        <li key={i}>{exc}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
+              </div>
 
-                <div className="form-group">
-                  <label htmlFor="inq-email">Your Email *</label>
-                  <input
-                    type="email"
-                    id="inq-email"
-                    name="email"
-                    className="form-control"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Enter your email"
-                  />
-                  {errors.email && <span style={{ color: 'var(--danger)', fontSize: '0.75rem' }}>{errors.email}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="inq-phone">Phone Number *</label>
-                  <input
-                    type="tel"
-                    id="inq-phone"
-                    name="phone"
-                    className="form-control"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="Enter your mobile number"
-                  />
-                  {errors.phone && <span style={{ color: 'var(--danger)', fontSize: '0.75rem' }}>{errors.phone}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="inq-message">Additional Notes (Optional)</label>
-                  <textarea
-                    id="inq-message"
-                    name="message"
-                    className="form-control"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="e.g. Travel dates, number of people..."
-                  ></textarea>
-                </div>
-
-                <Button type="submit" variant="primary" style={{ width: '100%', marginTop: '10px' }} disabled={inquiryLoading}>
-                  {inquiryLoading ? 'Sending Inquiry...' : 'Submit Inquiry'}
-                </Button>
-              </form>
             </div>
+
+            {/* Sidebar */}
+            <aside className="sidebar">
+              <h3>{data.title}</h3>
+              <p className="sidebar-from">From <strong>₹{data.priceFrom}</strong> / person</p>
+              <ul className="sidebar-facts">
+                <li><span>Duration</span><span>{data.sidebarFacts.duration}</span></li>
+                <li><span>Start / End</span><span>{data.sidebarFacts.startEnd}</span></li>
+                <li><span>Best season</span><span>{data.sidebarFacts.season}</span></li>
+                <li><span>Group size</span><span>{data.sidebarFacts.groupSize}</span></li>
+                <li><span>Difficulty</span><span>{data.sidebarFacts.difficulty}</span></li>
+              </ul>
+              <Link to="/contact" className="btn btn-primary">Enquire about this trip</Link>
+              <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="btn btn-outline">
+                WhatsApp us
+              </a>
+              <p className="sidebar-note">Prices vary by season & group size. We’ll send a final quote after your dates.</p>
+            </aside>
+
           </div>
         </div>
       </section>
+
+      {/* CTA Band */}
+      <div className="container">
+        <div className="cta-band">
+          <h2>Want this itinerary adjusted?</h2>
+          <p>Add an extra night, skip a trek, or combine with Kaziranga — we customise freely.</p>
+          <Link to="/contact" className="btn btn-white">Talk to us</Link>
+        </div>
+      </div>
     </div>
   );
 };
