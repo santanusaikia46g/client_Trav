@@ -1,228 +1,268 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { getPackages } from '../services/api';
-import Card from '../components/Card';
-import Button from '../components/Button';
-import SkeletonCard from '../components/SkeletonCard';
-import { useToast } from '../context/ToastContext';
 
-// Hook to parse query parameters
+const defaultPackages = [
+  {
+    _id: 'meghalaya-1',
+    badge: 'Meghalaya',
+    title: 'Meghalaya Highlights',
+    duration: '5 days',
+    route: 'Shillong · Cherrapunji',
+    description: 'Living root bridges, waterfalls, clean villages and the wettest places on earth. A classic first trip into the hills.',
+    price: 18900,
+    priceLabel: '/ person',
+    image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
+    buttonText: 'Enquire',
+    buttonStyle: 'btn-outline',
+    link: '/contact'
+  },
+  {
+    _id: 'assam-1',
+    badge: 'Assam',
+    title: 'Kaziranga Safari',
+    duration: '3 days',
+    route: 'Kaziranga NP',
+    description: 'One-horned rhinos, early morning jeep safaris and quiet stays near the park. Ideal as a short break or add-on.',
+    price: 12500,
+    priceLabel: '/ person',
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
+    buttonText: 'Enquire',
+    buttonStyle: 'btn-outline',
+    link: '/contact'
+  },
+  {
+    _id: 'arunachal-1',
+    badge: 'Arunachal',
+    title: 'Tawang Circuit',
+    duration: '7 days',
+    route: 'Tawang · Sela Pass',
+    description: 'High mountain monastery, clear lakes, Sela Pass and quiet Buddhist culture. For those who like altitude and calm.',
+    price: 34900,
+    priceLabel: '/ person',
+    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
+    buttonText: 'Enquire',
+    buttonStyle: 'btn-outline',
+    link: '/contact'
+  },
+  {
+    _id: 'sikkim-1',
+    badge: 'Sikkim',
+    title: 'Sikkim Essentials',
+    duration: '6 days',
+    route: 'Gangtok · North Sikkim',
+    description: 'Mountain views, monasteries, lakes and the road to high passes. A balanced mix of comfort and scenery.',
+    price: 28500,
+    priceLabel: '/ person',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
+    buttonText: 'Enquire',
+    buttonStyle: 'btn-outline',
+    link: '/contact'
+  },
+  {
+    _id: 'multistate-1',
+    badge: 'Multi-state',
+    title: 'Assam + Meghalaya',
+    duration: '8 days',
+    route: 'Kaziranga · Shillong',
+    description: 'Wildlife in the morning, root bridges and waterfalls in the afternoon. Two very different landscapes in one trip.',
+    price: 32900,
+    priceLabel: '/ person',
+    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
+    buttonText: 'Enquire',
+    buttonStyle: 'btn-outline',
+    link: '/contact'
+  },
+  {
+    _id: 'custom-1',
+    badge: 'Custom',
+    title: 'Fully Custom Trip',
+    duration: 'Flexible',
+    route: 'Your route',
+    description: 'Tell us your dates, interests and budget. We’ll design a North East itinerary that fits — solo, couple or group.',
+    price: 'On request',
+    priceLabel: '',
+    image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80',
+    buttonText: 'Plan with us',
+    buttonStyle: 'btn-primary',
+    link: '/contact'
+  }
+];
+
+const filterCategories = ['All', 'Meghalaya', 'Assam', 'Arunachal', 'Sikkim', 'Multi-state'];
+
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
 };
 
 const Packages = () => {
   const queryParams = useQuery();
-  const initialDestination = queryParams.get('destination') || '';
-  const { showToast } = useToast();
-
-  const [packages, setPackages] = useState([]);
+  const initialDest = queryParams.get('destination') || 'All';
+  
+  const [activeFilter, setActiveFilter] = useState(
+    filterCategories.includes(initialDest) ? initialDest : 'All'
+  );
+  const [dbPackages, setDbPackages] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Filter States
-  const [search, setSearch] = useState('');
-  const [destination, setDestination] = useState(initialDestination);
-  const [category, setCategory] = useState('');
-  const [duration, setDuration] = useState('');
-  const [maxPrice, setMaxPrice] = useState(40000);
-
   useEffect(() => {
-    document.title = 'Tour Packages | Travmitra';
+    document.title = 'Tour Packages – Travmitraa | North East India';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
-      metaDesc.setAttribute('content', 'Browse through our premium domestic and international travel packages. Filter by budget, duration, category, and destination to find the perfect tour.');
+      metaDesc.setAttribute(
+        'content',
+        'Curated trips across the North East — from short escapes to longer circuits. Customise any itinerary to match your pace.'
+      );
     }
   }, []);
 
-  // Fetch packages whenever filter conditions change
   useEffect(() => {
-    const fetchFilteredPackages = async () => {
-      setLoading(true);
+    const fetchPackages = async () => {
       try {
-        const params = {
-          search: search.trim() || undefined,
-          destination: destination || undefined,
-          category: category || undefined,
-          duration: duration || undefined,
-          maxPrice: maxPrice || undefined
-        };
-        const data = await getPackages(params);
-        setPackages(data);
+        const data = await getPackages();
+        if (Array.isArray(data) && data.length > 0) {
+          setDbPackages(data);
+        }
       } catch (err) {
-        console.error(err);
-        showToast('Error loading packages. Please try again.', 'error');
+        console.error('Error loading DB packages:', err);
       } finally {
         setLoading(false);
       }
     };
+    fetchPackages();
+  }, []);
 
-    // Debounce search typing to avoid excessive API requests
-    const timeoutId = setTimeout(() => {
-      fetchFilteredPackages();
-    }, 300);
+  // Filter logic: combine API packages if available, otherwise filter defaultPackages
+  const displayPackages = React.useMemo(() => {
+    if (dbPackages.length > 0) {
+      return dbPackages
+        .map((pkg) => ({
+          _id: pkg._id,
+          badge: pkg.destination || 'North East',
+          title: pkg.title,
+          duration: pkg.duration || 'Custom',
+          route: pkg.destination || 'North East India',
+          description: pkg.description,
+          price: typeof pkg.price === 'number' ? `From ₹${pkg.price.toLocaleString('en-IN')}` : pkg.price,
+          priceLabel: typeof pkg.price === 'number' ? '/ person' : '',
+          image: (pkg.images && pkg.images[0]) || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
+          buttonText: 'Enquire',
+          buttonStyle: 'btn-outline',
+          link: `/contact`
+        }))
+        .filter((pkg) => {
+          if (activeFilter === 'All') return true;
+          return pkg.badge.toLowerCase().includes(activeFilter.toLowerCase());
+        });
+    }
 
-    return () => clearTimeout(timeoutId);
-  }, [search, destination, category, duration, maxPrice, showToast]);
-
-  const handleResetFilters = () => {
-    setSearch('');
-    setDestination('');
-    setCategory('');
-    setDuration('');
-    setMaxPrice(40000);
-  };
+    // Default static fallbacks
+    return defaultPackages.filter((pkg) => {
+      if (activeFilter === 'All') return true;
+      return pkg.badge.toLowerCase() === activeFilter.toLowerCase();
+    });
+  }, [dbPackages, activeFilter]);
 
   return (
-    <div className="container section">
-      <h1 className="section-title text-center">Our Travel Packages</h1>
-      <p className="section-subtitle text-center">
-        Browse and filter our custom packages to find your ideal getaway.
-      </p>
-
-      {/* Filters Form Wrapper */}
-      <div className="packages-filter-wrap">
-        <div className="filters-grid" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr' }}>
-          {/* Text Search */}
-          <div className="filter-group">
-            <label className="filter-label">Search Tours</label>
-            <input
-              type="text"
-              placeholder="e.g. Beaches, Trekking..."
-              className="filter-input"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-
-          {/* Destination Selector */}
-          <div className="filter-group">
-            <label className="filter-label">Destination</label>
-            <select
-              className="filter-input"
-              value={destination}
-              onChange={(e) => setDestination(e.target.value)}
-            >
-              <option value="">All Destinations</option>
-              <option value="Goa">Goa</option>
-              <option value="Ladakh">Ladakh</option>
-              <option value="Kerala">Kerala</option>
-              <option value="Rajasthan">Rajasthan</option>
-              <option value="Himachal">Himachal</option>
-            </select>
-          </div>
-
-          {/* Category Selector */}
-          <div className="filter-group">
-            <label className="filter-label">Category</label>
-            <select
-              className="filter-input"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="">All Categories</option>
-              <option value="Standard">Standard</option>
-              <option value="Deluxe">Deluxe</option>
-              <option value="Luxury">Luxury</option>
-            </select>
-          </div>
-
-          {/* Duration Selector */}
-          <div className="filter-group">
-            <label className="filter-label">Duration</label>
-            <select
-              className="filter-input"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-            >
-              <option value="">Any Duration</option>
-              <option value="4 Days">4 Days / 3 Nights</option>
-              <option value="5 Days">5 Days / 4 Nights</option>
-              <option value="6 Days">6 Days / 5 Nights</option>
-            </select>
-          </div>
-
-          {/* Clear Filters Button */}
-          <Button variant="outline" size="sm" onClick={handleResetFilters}>
-            Reset Filters
-          </Button>
+    <div>
+      {/* Page Hero */}
+      <section className="page-hero">
+        <div className="container">
+          <h1>Tour packages</h1>
+          <p>
+            Curated trips across the North East — from short escapes to longer circuits. Customise any itinerary to match your pace.
+          </p>
         </div>
+      </section>
 
-        {/* Budget Range Selector */}
-        <div style={{ marginTop: '20px', borderTop: '1px solid var(--border)', paddingTop: '15px' }}>
-          <div className="filter-group" style={{ maxWidth: '400px' }}>
-            <div className="range-labels">
-              <span className="filter-label">Max Budget: ₹{maxPrice.toLocaleString('en-IN')}</span>
-            </div>
-            <input
-              type="range"
-              min="10000"
-              max="50000"
-              step="2000"
-              className="filter-range"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
-            />
-            <div className="range-labels">
-              <span>₹10,000</span>
-              <span>₹50,000</span>
-            </div>
+      {/* Filter Bar */}
+      <div className="filters">
+        <div className="container">
+          <div className="filter-bar">
+            {filterCategories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                className={`filter-btn ${activeFilter === cat ? 'active' : ''}`}
+                onClick={() => setActiveFilter(cat)}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Package Listings Grid */}
-      {loading ? (
-        <div className="packages-grid">
-          <SkeletonCard count={3} />
-        </div>
-      ) : packages.length === 0 ? (
-        <div className="empty-state">
-          <svg fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <h3>No Packages Found</h3>
-          <p>We couldn't find any packages matching your search criteria. Try modifying your filters.</p>
-          <Button variant="primary" onClick={handleResetFilters}>
-            Clear Filters
-          </Button>
-        </div>
-      ) : (
-        <div className="packages-grid">
-          {packages.map((pkg) => (
-            <Card key={pkg._id} className="package-card">
-              <div className="package-card-img">
-                <img src={pkg.images[0] || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80'} alt={pkg.title} />
-                <span className="package-card-tag">{pkg.duration}</span>
-                <span className={`badge-category badge-category-${(pkg.category || 'Standard').toLowerCase()} package-card-category-badge`}>
-                  {pkg.category || 'Standard'}
-                </span>
-              </div>
-              <div className="package-card-content">
-                <div className="package-card-meta">
-                  <span>
-                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{ verticalAlign: 'middle' }}>
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-                      <circle cx="12" cy="9" r="2"/>
-                    </svg>
-                    {pkg.destination}
-                  </span>
-                </div>
-                <h3 className="package-card-title">{pkg.title}</h3>
-                <p className="package-card-desc">{pkg.description}</p>
-                <div className="package-card-footer">
-                  <div className="package-card-price">
-                    <span>Starting from</span> <br />
-                    ₹{pkg.price.toLocaleString('en-IN')}
+      {/* Packages Grid */}
+      <section className="packages-section">
+        <div className="container">
+          {loading ? (
+            <div className="packages-grid">
+              {[1, 2, 3].map((n) => (
+                <div key={n} className="package-card" style={{ height: '380px', opacity: 0.6 }} />
+              ))}
+            </div>
+          ) : displayPackages.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+              <h3>No packages found for "{activeFilter}"</h3>
+              <p style={{ color: 'var(--slate-500)', marginTop: '0.5rem' }}>
+                We can customize a specific itinerary for you in this region!
+              </p>
+              <Link to="/contact" className="btn btn-primary" style={{ marginTop: '1.25rem' }}>
+                Request Custom Itinerary
+              </Link>
+            </div>
+          ) : (
+            <div className="packages-grid">
+              {displayPackages.map((pkg) => (
+                <article key={pkg._id} className="package-card">
+                  <div
+                    className="package-img"
+                    style={{ backgroundImage: `url('${pkg.image}')` }}
+                  >
+                    <span className="package-badge">{pkg.badge}</span>
                   </div>
-                  <Link to={`/packages/${pkg._id}`}>
-                    <Button variant="primary" size="sm">View Details</Button>
-                  </Link>
-                </div>
-              </div>
-            </Card>
-          ))}
+                  <div className="package-body">
+                    <h3>{pkg.title}</h3>
+                    <div className="package-meta">
+                      <span>{pkg.duration}</span>
+                      <span>{pkg.route}</span>
+                    </div>
+                    <p>{pkg.description}</p>
+                    <div className="package-footer">
+                      <div className="package-price">
+                        {typeof pkg.price === 'number' ? `From ₹${pkg.price.toLocaleString('en-IN')}` : pkg.price}{' '}
+                        {pkg.priceLabel && <span>{pkg.priceLabel}</span>}
+                      </div>
+                      <Link to={pkg.link} className={`btn ${pkg.buttonStyle}`}>
+                        {pkg.buttonText}
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+
+          <p className="packages-note">
+            Prices are indicative and depend on season, group size and stay category.{' '}
+            <Link to="/contact">Talk to us</Link> for an exact quote.
+          </p>
         </div>
-      )}
+      </section>
+
+      {/* CTA */}
+      <div className="container">
+        <div className="cta-band">
+          <h2>Don’t see the exact trip you want?</h2>
+          <p>
+            Most of our journeys are built around you. Share your dates and ideas — we’ll shape something that fits.
+          </p>
+          <Link to="/contact" className="btn btn-white">
+            Start planning
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
