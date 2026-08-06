@@ -3,123 +3,160 @@ import { useParams, Link } from 'react-router-dom';
 import { getPackage } from '../services/api';
 import Spinner from '../components/Spinner';
 
-// Default Meghalaya Highlights fallback package structure
-const defaultMeghalayaDetails = {
-  title: 'Meghalaya Highlights',
-  duration: '5 days / 4 nights',
-  route: 'Shillong · Cherrapunji · Dawki',
-  bestSeason: 'Oct – May',
-  subtitle: 'Living root bridges, cascading waterfalls, clean Khasi villages and the wettest places on earth — a classic first trip into the hills of Meghalaya.',
-  priceFrom: '18,900',
-  heroImage: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=1920&q=80',
-  highlights: [
-    'Double-decker living root bridge trek',
-    'Nohkalikai & Seven Sisters waterfalls',
-    'Crystal-clear Dawki river & Umngot',
-    'Shillong city & Ward’s Lake',
-    'Local Khasi villages & markets',
-    'Optional caving or boating'
-  ],
-  pricingTiers: [
-    {
-      id: 'standard',
-      name: 'Standard',
-      stars: '★★★ · 3-star hotels',
-      price: '₹18,900',
-      priceUnit: '/ person',
-      hotel: 'Clean, well-located 3★ stays in Shillong & Cherrapunji',
-      features: [
-        '3★ hotels / guesthouses',
-        'Private AC vehicle',
-        'Breakfast daily',
-        'Local guide on key days'
-      ],
-      featured: false,
-      btnClass: 'btn-outline'
-    },
-    {
-      id: 'deluxe',
-      name: 'Deluxe',
-      stars: '★★★★ · 4-star hotels',
-      price: '₹24,900',
-      priceUnit: '/ person',
-      hotel: 'Comfortable 4★ hotels with better views & amenities',
-      features: [
-        '4★ hotels / resorts',
-        'Private AC vehicle',
-        'Breakfast + 2 dinners',
-        'Dedicated local guide'
-      ],
-      featured: true,
-      btnClass: 'btn-primary'
-    },
-    {
-      id: 'luxury',
-      name: 'Luxury',
-      stars: '★★★★★ · 5-star / premium',
-      price: '₹34,900',
-      priceUnit: '/ person',
-      hotel: 'Premium resorts & boutique stays with top service',
-      features: [
-        '5★ / premium resorts',
-        'Premium private vehicle',
-        'All meals included',
-        'Private guide throughout'
-      ],
-      featured: false,
-      btnClass: 'btn-outline'
-    }
-  ],
-  itinerary: [
-    {
-      day: 'Day 1',
-      title: 'Arrive Guwahati → Shillong',
-      desc: 'Meet at Guwahati airport or railway station. Scenic drive to Shillong (approx. 3–3.5 hrs). Check-in, evening at leisure or Ward’s Lake & local market. Overnight Shillong.'
-    },
-    {
-      day: 'Day 2',
-      title: 'Shillong local · Umiam Lake',
-      desc: 'Morning city tour: Don Bosco Museum, Cathedral, Police Bazaar. Afternoon visit to Umiam (Barapani) Lake for views and optional boating. Overnight Shillong.'
-    },
-    {
-      day: 'Day 3',
-      title: 'Cherrapunji · Waterfalls & caves',
-      desc: 'Drive to Cherrapunji. Visit Nohkalikai Falls, Seven Sisters Falls, Mawsmai Cave. Evening free. Overnight Cherrapunji / Sohra.'
-    },
-    {
-      day: 'Day 4',
-      title: 'Living root bridge · Dawki',
-      desc: 'Trek to the double-decker living root bridge (moderate fitness). Later drive to Dawki for the clear Umngot river and Indo-Bangladesh border views. Return to Shillong. Overnight Shillong.'
-    },
-    {
-      day: 'Day 5',
-      title: 'Shillong → Guwahati departure',
-      desc: 'After breakfast, drive back to Guwahati for your onward flight or train. Trip ends with drop at airport / station.'
-    }
-  ],
-  inclusions: [
-    'Accommodation as per chosen category (twin share)',
-    'Daily breakfast (meals as per tier)',
-    'Private vehicle for all transfers & sightseeing',
-    'Driver allowances & parking',
-    'Entry fees to major points (as per itinerary)',
-    'Local guide on key activity days',
-    'Basic first-aid support'
-  ],
-  exclusions: [
-    'Flights / trains to Guwahati',
-    'Lunch & dinner (except where stated in tier)',
-    'Personal expenses & tips',
-    'Optional activities (boating, caving extras)',
-    'Travel insurance',
-    'Anything not listed under inclusions'
-  ],
-  sidebarFacts: {
-    duration: '5D / 4N',
-    startEnd: 'Guwahati',
-    season: 'Oct – May',
-    groupSize: '2 – 12',
-    difficulty: 'Easy – Moderate'
+// Regional fallback packages dictionary
+const regionalPackageDetails = {
+  'meghalaya-1': {
+    title: 'Meghalaya Highlights',
+    duration: '5 days / 4 nights',
+    route: 'Shillong · Cherrapunji · Dawki',
+    bestSeason: 'Oct – May',
+    subtitle: 'Living root bridges, cascading waterfalls, clean Khasi villages and the wettest places on earth — a classic first trip into the hills of Meghalaya.',
+    priceFrom: '18,900',
+    heroImage: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=1920&q=80',
+    highlights: [
+      'Double-decker living root bridge trek',
+      'Nohkalikai & Seven Sisters waterfalls',
+      'Crystal-clear Dawki river & Umngot',
+      'Shillong city & Ward’s Lake',
+      'Local Khasi villages & markets',
+      'Optional caving or boating'
+    ],
+    pricingTiers: [
+      { id: 'std', name: 'Standard', stars: '★★★ · 3-star hotels', price: '₹18,900', priceUnit: '/ person', hotel: 'Clean 3★ stays in Shillong & Cherrapunji', features: ['3★ hotels / guesthouses', 'Private AC vehicle', 'Breakfast daily', 'Local guide on key days'], featured: false, btnClass: 'btn-outline' },
+      { id: 'dlx', name: 'Deluxe', stars: '★★★★ · 4-star hotels', price: '₹24,900', priceUnit: '/ person', hotel: 'Comfortable 4★ hotels with views', features: ['4★ hotels / resorts', 'Private AC vehicle', 'Breakfast + 2 dinners', 'Dedicated local guide'], featured: true, btnClass: 'btn-primary' },
+      { id: 'lux', name: 'Luxury', stars: '★★★★★ · 5-star / premium', price: '₹34,900', priceUnit: '/ person', hotel: 'Premium resorts & boutique stays', features: ['5★ / premium resorts', 'Premium private vehicle', 'All meals included', 'Private guide throughout'], featured: false, btnClass: 'btn-outline' }
+    ],
+    itinerary: [
+      { day: 'Day 1', title: 'Arrive Guwahati → Shillong', desc: 'Meet at Guwahati airport or station. Scenic drive to Shillong (approx. 3.5 hrs). Check-in, evening at Ward’s Lake. Overnight Shillong.' },
+      { day: 'Day 2', title: 'Shillong local · Umiam Lake', desc: 'Visit Don Bosco Museum, Cathedral, Police Bazaar, and Umiam Lake. Overnight Shillong.' },
+      { day: 'Day 3', title: 'Cherrapunji · Waterfalls & caves', desc: 'Drive to Cherrapunji. Visit Nohkalikai Falls, Seven Sisters Falls, and Mawsmai Cave. Overnight Cherrapunji.' },
+      { day: 'Day 4', title: 'Living root bridge · Dawki', desc: 'Trek to the double-decker living root bridge. Drive to Dawki for Umngot river boating. Return to Shillong.' },
+      { day: 'Day 5', title: 'Shillong → Guwahati departure', desc: 'Breakfast, scenic drive back to Guwahati airport or station for onward journey.' }
+    ],
+    inclusions: ['Twin-share accommodation', 'Daily breakfast', 'Private AC vehicle for all transfers', 'Entry fees & parking', 'Local guide on key days'],
+    exclusions: ['Flights / trains', 'Lunch & dinner', 'Personal expenses & tips', 'Optional boating extras'],
+    sidebarFacts: { duration: '5D / 4N', startEnd: 'Guwahati', season: 'Oct – May', groupSize: '2 – 12', difficulty: 'Easy – Moderate' }
+  },
+  'assam-1': {
+    title: 'Kaziranga Safari',
+    duration: '3 days / 2 nights',
+    route: 'Kaziranga National Park',
+    bestSeason: 'Nov – Apr',
+    subtitle: 'One-horned rhinos, early morning jeep safaris, wild elephant herds and quiet stays near the national park.',
+    priceFrom: '12,500',
+    heroImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80',
+    highlights: [
+      'Early morning Elephant safari in Central Range',
+      'Jeep safari in Western Range (Bagori)',
+      'Tea garden estate walkthrough',
+      'Orchid Park & cultural dance performance',
+      'Assamese traditional cuisine sampling'
+    ],
+    pricingTiers: [
+      { id: 'std', name: 'Standard', stars: '★★★ · Safari Lodge', price: '₹12,500', priceUnit: '/ person', hotel: 'Cozy jungle lodge near park gate', features: ['Jungle lodge stay', '1 Jeep Safari included', 'Breakfast & Dinner', 'Park naturalist guide'], featured: false, btnClass: 'btn-outline' },
+      { id: 'dlx', name: 'Deluxe', stars: '★★★★ · Eco Resort', price: '₹16,900', priceUnit: '/ person', hotel: 'Eco-resort with pool & garden views', features: ['4★ Eco Resort', '1 Jeep + 1 Elephant Safari', 'All meals included', 'Private park guide'], featured: true, btnClass: 'btn-primary' }
+    ],
+    itinerary: [
+      { day: 'Day 1', title: 'Guwahati → Kaziranga', desc: 'Pick up from Guwahati and drive to Kaziranga National Park (approx. 4 hrs). Check-in and evening cultural show.' },
+      { day: 'Day 2', title: 'Kaziranga Safaris', desc: 'Early morning Elephant safari followed by breakfast. Afternoon Jeep safari deep inside the park.' },
+      { day: 'Day 3', title: 'Kaziranga → Guwahati', desc: 'Visit Kaziranga Orchid Park, then drive back to Guwahati for departure.' }
+    ],
+    inclusions: ['Lodge/Resort accommodation', 'Daily breakfast & dinner', 'Jeep safari charges & permits', 'Private transfer vehicle'],
+    exclusions: ['Camera fees', 'Airfare/Train tickets', 'Personal expenses'],
+    sidebarFacts: { duration: '3D / 2N', startEnd: 'Guwahati', season: 'Nov – Apr', groupSize: '2 – 8', difficulty: 'Easy' }
+  },
+  'arunachal-1': {
+    title: 'Tawang Circuit',
+    duration: '7 days / 6 nights',
+    route: 'Tawang · Sela Pass · Dirang',
+    bestSeason: 'Oct – May',
+    subtitle: 'High mountain monastery, crystal clear lakes, snow-capped Sela Pass and serene Buddhist culture.',
+    priceFrom: '34,900',
+    heroImage: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1920&q=80',
+    highlights: [
+      'Tawang Monastery (2nd largest in Asia)',
+      'Sela Pass at 13,700 feet & Sela Lake',
+      'Bum La Pass (Indo-China Border)',
+      'Madhuri Lake (Sangetsar Tso)',
+      'Jaswant Garh War Memorial & Dirang valley'
+    ],
+    pricingTiers: [
+      { id: 'std', name: 'Standard', stars: '★★★ · Mountain Hotel', price: '₹34,900', priceUnit: '/ person', hotel: 'Comfortable heated stays in Tawang & Dirang', features: ['Mountain hotels', 'Inland Permit (ILP) support', 'SUV Vehicle (Innova/Scorpio)', 'Daily Breakfast'], featured: true, btnClass: 'btn-primary' }
+    ],
+    itinerary: [
+      { day: 'Day 1', title: 'Guwahati → Tezpur / Bhalukpong', desc: 'Drive from Guwahati to Bhalukpong at the foothills of Arunachal Pradesh.' },
+      { day: 'Day 2', title: 'Bhalukpong → Dirang', desc: 'Drive through Apple orchards and kiwi farms to Dirang valley. Visit Dirang Dzong.' },
+      { day: 'Day 3', title: 'Dirang → Tawang via Sela Pass', desc: 'Cross Sela Pass (13,700 ft) and visit Jaswant Garh. Arrive in Tawang.' },
+      { day: 'Day 4', title: 'Tawang Monastery & City', desc: 'Explore Tawang Monastery, Ani Gompa, and War Memorial.' },
+      { day: 'Day 5', title: 'Bum La Pass & Madhuri Lake', desc: 'Excursion to Indo-China border at Bum La and Sangetsar Lake.' },
+      { day: 'Day 6', title: 'Tawang → Bomdila', desc: 'Scenic drive back through Bomdila Monastery.' },
+      { day: 'Day 7', title: 'Bomdila → Guwahati', desc: 'Drive back to Guwahati airport/station for departure.' }
+    ],
+    inclusions: ['Hotel accommodation', 'ILP permits', 'SUV transport', 'Daily breakfast'],
+    exclusions: ['Bum La Pass local vehicle union charges', 'Meals except breakfast', 'Personal items'],
+    sidebarFacts: { duration: '7D / 6N', startEnd: 'Guwahati', season: 'Oct – May', groupSize: '2 – 6', difficulty: 'Moderate' }
+  },
+  'sikkim-1': {
+    title: 'Sikkim Essentials',
+    duration: '6 days / 5 nights',
+    route: 'Gangtok · Lachen · Lachung · Yumthang',
+    bestSeason: 'Mar – Jun, Oct – Dec',
+    subtitle: 'High mountain passes, sacred Gurudongmar Lake, rhododendron valleys, and majestic Kanchenjunga views.',
+    priceFrom: '28,500',
+    heroImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1920&q=80',
+    highlights: [
+      'Tsomgo Lake & Baba Mandir near Nathula Pass',
+      'High altitude Gurudongmar Lake (17,800 ft)',
+      'Yumthang Valley of Flowers',
+      'Rumtek & Enchey Monasteries in Gangtok',
+      'Panoramic Kanchenjunga views from Tashi Viewpoint'
+    ],
+    pricingTiers: [
+      { id: 'std', name: 'Standard', stars: '★★★ · Gangtok Hotel', price: '₹28,500', priceUnit: '/ person', hotel: 'Comfortable stays in Gangtok & North Sikkim lodges', features: ['3★ hotels & North Sikkim homestays', 'Sikkim PAP permits', 'Private vehicle', 'Daily breakfast & North Sikkim meals'], featured: true, btnClass: 'btn-primary' }
+    ],
+    itinerary: [
+      { day: 'Day 1', title: 'Bagdogra / NJP → Gangtok', desc: 'Arrive at airport/railway station and drive to Gangtok (approx. 4.5 hrs).' },
+      { day: 'Day 2', title: 'Tsomgo Lake & Baba Mandir', desc: 'Day excursion to glacial Tsomgo Lake and Baba Harbhajan Singh Mandir.' },
+      { day: 'Day 3', title: 'Gangtok → Lachen', desc: 'Drive north to Lachen village via Seven Sister Waterfalls.' },
+      { day: 'Day 4', title: 'Gurudongmar Lake → Lachung', desc: 'Early morning drive to Gurudongmar Lake (17,800 ft), then transfer to Lachung.' },
+      { day: 'Day 5', title: 'Yumthang Valley → Gangtok', desc: 'Visit Zero Point / Yumthang Valley of Flowers, then return to Gangtok.' },
+      { day: 'Day 6', title: 'Gangtok → Bagdogra / NJP', desc: 'Departure transfer back to Bagdogra airport / NJP station.' }
+    ],
+    inclusions: ['Accommodation', 'North Sikkim permits', 'Transport', 'Breakfast & North Sikkim all meals'],
+    exclusions: ['Nathula Pass union extra', 'Airfare/Train tickets', 'Personal expenses'],
+    sidebarFacts: { duration: '6D / 5N', startEnd: 'Bagdogra / NJP', season: 'Oct – Jun', groupSize: '2 – 8', difficulty: 'Moderate' }
+  },
+  'multistate-1': {
+    title: 'Assam + Meghalaya',
+    duration: '8 days / 7 nights',
+    route: 'Kaziranga · Guwahati · Shillong · Cherrapunji',
+    bestSeason: 'Oct – Apr',
+    subtitle: 'Wildlife safaris in Kaziranga combined with waterfalls, root bridges, and pine forests of Meghalaya.',
+    priceFrom: '32,900',
+    heroImage: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80',
+    highlights: [
+      'Jeep and Elephant safaris in Kaziranga National Park',
+      'Kamakhya Temple blessing in Guwahati',
+      'Living Root Bridge trek in Cherrapunji',
+      'Clear Umngot River in Dawki',
+      'Shillong pine forests & Umiam Lake'
+    ],
+    pricingTiers: [
+      { id: 'std', name: 'Standard', stars: '★★★ · Hotels & Lodges', price: '₹32,900', priceUnit: '/ person', hotel: 'Top-rated stays across Assam & Meghalaya', features: ['3★ stays throughout', 'Kaziranga safaris included', 'Private vehicle', 'Daily breakfast'], featured: true, btnClass: 'btn-primary' }
+    ],
+    itinerary: [
+      { day: 'Day 1', title: 'Arrive Guwahati → Kaziranga', desc: 'Pick up at Guwahati airport/station and drive straight to Kaziranga National Park.' },
+      { day: 'Day 2', title: 'Kaziranga Safaris', desc: 'Morning elephant safari and afternoon jeep safari in Kaziranga.' },
+      { day: 'Day 3', title: 'Kaziranga → Shillong', desc: 'Drive from Kaziranga to Shillong via Umiam Lake.' },
+      { day: 'Day 4', title: 'Shillong → Cherrapunji', desc: 'Sightseeing of Nohkalikai, Mawsmai cave, and stay in Cherrapunji.' },
+      { day: 'Day 5', title: 'Root Bridge Trek', desc: 'Trek to Nongriat double-decker living root bridge.' },
+      { day: 'Day 6', title: 'Dawki & Mawlynnong', desc: 'Visit Asia’s cleanest village Mawlynnong and crystal clear Dawki river.' },
+      { day: 'Day 7', title: 'Dawki → Shillong', desc: 'Return to Shillong for local handicraft shopping and Ward Lake.' },
+      { day: 'Day 8', title: 'Shillong → Guwahati Departure', desc: 'Visit Kamakhya Temple in Guwahati before departure drop.' }
+    ],
+    inclusions: ['Hotel stays', 'Safaris in Kaziranga', 'Private AC vehicle', 'Breakfast daily'],
+    exclusions: ['Airfare', 'Lunches & dinners', 'Entry/camera fees'],
+    sidebarFacts: { duration: '8D / 7N', startEnd: 'Guwahati', season: 'Oct – Apr', groupSize: '2 – 10', difficulty: 'Moderate' }
   }
 };
 
@@ -130,10 +167,18 @@ const PackageDetails = () => {
 
   useEffect(() => {
     const fetchPackage = async () => {
+      // 1. Check if ID matches a regional fallback static key
+      if (regionalPackageDetails[id]) {
+        setPkgData(regionalPackageDetails[id]);
+        document.title = `${regionalPackageDetails[id].title} | Travmitraa`;
+        setLoading(false);
+        return;
+      }
+
+      // 2. Try fetching from database API
       try {
         const data = await getPackage(id);
         if (data && data.title) {
-          // Format API response into layout data structure
           setPkgData({
             title: data.title,
             duration: data.duration || '5 days / 4 nights',
@@ -141,14 +186,14 @@ const PackageDetails = () => {
             bestSeason: 'Oct – May',
             subtitle: data.description,
             priceFrom: typeof data.price === 'number' ? data.price.toLocaleString('en-IN') : data.price,
-            heroImage: (data.images && data.images[0]) || defaultMeghalayaDetails.heroImage,
-            highlights: data.highlights && data.highlights.length > 0 ? data.highlights : defaultMeghalayaDetails.highlights,
-            pricingTiers: defaultMeghalayaDetails.pricingTiers,
+            heroImage: (data.images && data.images[0]) || regionalPackageDetails['meghalaya-1'].heroImage,
+            highlights: data.highlights && data.highlights.length > 0 ? data.highlights : regionalPackageDetails['meghalaya-1'].highlights,
+            pricingTiers: regionalPackageDetails['meghalaya-1'].pricingTiers,
             itinerary: data.itinerary && data.itinerary.length > 0 
               ? data.itinerary.map(item => ({ day: `Day ${item.day}`, title: item.title, desc: item.description }))
-              : defaultMeghalayaDetails.itinerary,
-            inclusions: data.included && data.included.length > 0 ? data.included : defaultMeghalayaDetails.inclusions,
-            exclusions: data.excluded && data.excluded.length > 0 ? data.excluded : defaultMeghalayaDetails.exclusions,
+              : regionalPackageDetails['meghalaya-1'].itinerary,
+            inclusions: data.included && data.included.length > 0 ? data.included : regionalPackageDetails['meghalaya-1'].inclusions,
+            exclusions: data.excluded && data.excluded.length > 0 ? data.excluded : regionalPackageDetails['meghalaya-1'].exclusions,
             sidebarFacts: {
               duration: data.duration || '5D / 4N',
               startEnd: 'Guwahati',
@@ -159,13 +204,13 @@ const PackageDetails = () => {
           });
           document.title = `${data.title} | Travmitraa`;
         } else {
-          setPkgData(defaultMeghalayaDetails);
-          document.title = `Meghalaya Highlights – 5 Days | Travmitraa`;
+          setPkgData(regionalPackageDetails['meghalaya-1']);
+          document.title = `Meghalaya Highlights | Travmitraa`;
         }
       } catch (err) {
         console.error('Fetching package failed, using default details:', err);
-        setPkgData(defaultMeghalayaDetails);
-        document.title = `Meghalaya Highlights – 5 Days | Travmitraa`;
+        setPkgData(regionalPackageDetails['meghalaya-1']);
+        document.title = `Meghalaya Highlights | Travmitraa`;
       } finally {
         setLoading(false);
       }
@@ -178,7 +223,7 @@ const PackageDetails = () => {
     return <Spinner fullPage={true} />;
   }
 
-  const data = pkgData || defaultMeghalayaDetails;
+  const data = pkgData || regionalPackageDetails['meghalaya-1'];
 
   return (
     <div>

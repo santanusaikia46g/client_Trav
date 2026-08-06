@@ -15,7 +15,7 @@ const defaultPackages = [
     image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
     buttonText: 'Enquire',
     buttonStyle: 'btn-outline',
-    link: '/contact'
+    link: '/packages/meghalaya-1'
   },
   {
     _id: 'assam-1',
@@ -29,7 +29,7 @@ const defaultPackages = [
     image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
     buttonText: 'Enquire',
     buttonStyle: 'btn-outline',
-    link: '/contact'
+    link: '/packages/assam-1'
   },
   {
     _id: 'arunachal-1',
@@ -43,7 +43,7 @@ const defaultPackages = [
     image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
     buttonText: 'Enquire',
     buttonStyle: 'btn-outline',
-    link: '/contact'
+    link: '/packages/arunachal-1'
   },
   {
     _id: 'sikkim-1',
@@ -57,7 +57,7 @@ const defaultPackages = [
     image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
     buttonText: 'Enquire',
     buttonStyle: 'btn-outline',
-    link: '/contact'
+    link: '/packages/sikkim-1'
   },
   {
     _id: 'multistate-1',
@@ -71,7 +71,7 @@ const defaultPackages = [
     image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
     buttonText: 'Enquire',
     buttonStyle: 'btn-outline',
-    link: '/contact'
+    link: '/packages/multistate-1'
   },
   {
     _id: 'custom-1',
@@ -148,7 +148,7 @@ const Packages = () => {
           image: (pkg.images && pkg.images[0]) || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
           buttonText: 'Enquire',
           buttonStyle: 'btn-outline',
-          link: `/contact`
+          link: `/packages/${pkg._id}`
         }))
         .filter((pkg) => {
           if (activeFilter === 'All') return true;
@@ -216,14 +216,13 @@ const Packages = () => {
             <div className="packages-grid">
               {displayPackages.map((pkg) => (
                 <article key={pkg._id} className="package-card">
-                  <div
-                    className="package-img"
-                    style={{ backgroundImage: `url('${pkg.image}')` }}
-                  >
+                  <Link to={pkg.link} className="package-img" style={{ backgroundImage: `url('${pkg.image}')`, display: 'block' }}>
                     <span className="package-badge">{pkg.badge}</span>
-                  </div>
+                  </Link>
                   <div className="package-body">
-                    <h3>{pkg.title}</h3>
+                    <Link to={pkg.link}>
+                      <h3 style={{ color: 'var(--slate-900)' }}>{pkg.title}</h3>
+                    </Link>
                     <div className="package-meta">
                       <span>{pkg.duration}</span>
                       <span>{pkg.route}</span>
