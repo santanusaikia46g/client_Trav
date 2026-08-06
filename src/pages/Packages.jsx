@@ -13,7 +13,7 @@ const defaultPackages = [
     price: 18900,
     priceLabel: '/ person',
     image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
-    buttonText: 'Enquire',
+    buttonText: 'View Details',
     buttonStyle: 'btn-outline',
     link: '/packages/meghalaya-1'
   },
@@ -27,7 +27,7 @@ const defaultPackages = [
     price: 12500,
     priceLabel: '/ person',
     image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
-    buttonText: 'Enquire',
+    buttonText: 'View Details',
     buttonStyle: 'btn-outline',
     link: '/packages/assam-1'
   },
@@ -41,7 +41,7 @@ const defaultPackages = [
     price: 34900,
     priceLabel: '/ person',
     image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
-    buttonText: 'Enquire',
+    buttonText: 'View Details',
     buttonStyle: 'btn-outline',
     link: '/packages/arunachal-1'
   },
@@ -55,7 +55,7 @@ const defaultPackages = [
     price: 28500,
     priceLabel: '/ person',
     image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
-    buttonText: 'Enquire',
+    buttonText: 'View Details',
     buttonStyle: 'btn-outline',
     link: '/packages/sikkim-1'
   },
@@ -69,7 +69,7 @@ const defaultPackages = [
     price: 32900,
     priceLabel: '/ person',
     image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
-    buttonText: 'Enquire',
+    buttonText: 'View Details',
     buttonStyle: 'btn-outline',
     link: '/packages/multistate-1'
   },
@@ -146,7 +146,7 @@ const Packages = () => {
           price: typeof pkg.price === 'number' ? `From ₹${pkg.price.toLocaleString('en-IN')}` : pkg.price,
           priceLabel: typeof pkg.price === 'number' ? '/ person' : '',
           image: (pkg.images && pkg.images[0]) || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
-          buttonText: 'Enquire',
+          buttonText: 'View Details',
           buttonStyle: 'btn-outline',
           link: `/packages/${pkg._id}`
         }))
@@ -216,7 +216,7 @@ const Packages = () => {
             <div className="packages-grid">
               {displayPackages.map((pkg) => (
                 <article key={pkg._id} className="package-card">
-                  <Link to={pkg.link} className="package-img" style={{ backgroundImage: `url('${pkg.image}')`, display: 'block' }}>
+                  <Link to={pkg.link} className="package-img" style={{ backgroundImage: `url('${pkg.image}')` }}>
                     <span className="package-badge">{pkg.badge}</span>
                   </Link>
                   <div className="package-body">
