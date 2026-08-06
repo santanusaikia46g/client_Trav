@@ -73,6 +73,11 @@ const Navbar = () => {
                 Admin Panel
               </NavLink>
             </li>
+            <li>
+              <Link to="/contact" className="btn btn-primary" onClick={closeMenu} style={{ padding: '0.5rem 1.25rem', fontSize: '0.9rem' }}>
+                Plan a Trip
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

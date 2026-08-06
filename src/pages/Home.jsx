@@ -10,33 +10,56 @@ const testimonials = [
     name: 'Suresh Kumar',
     location: 'Delhi',
     rating: 5,
-    quote: 'Our trip to Goa organized by Travmitra was absolutely seamless. From the airport pickup to the heritage site tours, everything was top-notch. Highly recommended!',
+    quote: 'Our trip to Meghalaya organized by Travmitraa was absolutely seamless. From root bridge treks to homestays, everything was top-notch. Highly recommended!',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80'
   },
   {
     name: 'Priyanka Sen',
     location: 'Kolkata',
     rating: 5,
-    quote: 'Ladakh was on my bucket list for years, but I was scared of altitude sickness. Travmitra guide stayed with us, checked our oxygen levels, and planned a slow acclimation. Simply excellent care!',
+    quote: 'Tawang monastery and Sela Pass were on my bucket list for years. Travmitraa arranged permits, great vehicle and experienced local driver. Incredible care!',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80'
   },
   {
     name: 'Abhishek Roy',
     location: 'Mumbai',
     rating: 4,
-    quote: 'Great rates and very clear itinerary. The Munnar resort stay in Kerala was beautiful. The only downside was a small delay in the private vehicle arrival on Day 3, but the driver compensated for it.',
+    quote: 'Kaziranga safari and Majuli village tour were unforgettable. Prompt helpline and local guides who know every hidden gem in Assam.',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80'
   }
 ];
 
 const HERO_IMAGES = [
-  'https://images.unsplash.com/photo-1602020234671-15fd6180428d?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1613725194245-d8e21cf5d42e?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1659267695704-842a53942bcd?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1621789547000-b74d615ce6c5?q=80&w=1334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1686472886489-1d2d7e08ff9c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1625654325562-762dcec9e6f2?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1521437620269-f477f5437820?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80'
+];
+
+const FALLBACK_DESTINATIONS = [
+  {
+    _id: 'fallback-1',
+    name: 'Meghalaya Highlands',
+    description: 'Living root bridges, waterfalls, clean villages and the wettest places on earth.',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
+    meta: 'Meghalaya · 5–7 days',
+    priceText: 'From ₹28,500'
+  },
+  {
+    _id: 'fallback-2',
+    name: 'Kaziranga National Park',
+    description: 'Home to the one-horned rhino. Jeep safaris at dawn through grasslands and wetlands.',
+    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=800&q=80',
+    meta: 'Assam · 3–4 days',
+    priceText: 'From ₹18,900'
+  },
+  {
+    _id: 'fallback-3',
+    name: 'Tawang & Arunachal',
+    description: 'High mountain monastery, Sela Pass, clear lakes and quiet Buddhist culture.',
+    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
+    meta: 'Arunachal · 6–8 days',
+    priceText: 'From ₹34,900'
+  }
 ];
 
 const Home = () => {
@@ -48,7 +71,7 @@ const Home = () => {
   useEffect(() => {
     const slideTimer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 4500);
+    }, 5000);
     return () => clearInterval(slideTimer);
   }, []);
 
@@ -61,10 +84,13 @@ const Home = () => {
   };
 
   useEffect(() => {
-    document.title = 'Travmitra | Explore The World With Us';
+    document.title = 'Travmitraa – North East India Travel';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
-      metaDesc.setAttribute('content', 'Travmitra is a premium travel agency offering affordable, custom tour packages, expert guides, and 24/7 client support. Book your dream vacation today!');
+      metaDesc.setAttribute(
+        'content',
+        'Explore living root bridges, misty hills, one-horned rhinos and mountain monasteries with Travmitraa.'
+      );
     }
 
     const fetchData = async () => {
@@ -73,11 +99,11 @@ const Home = () => {
           getPackages(),
           getDestinations()
         ]);
-        // Get first 3 packages & first 6 destinations for clean home page layout
         setPackages(pkgsData.slice(0, 3));
-        setDestinations(destsData.slice(0, 6));
+        setDestinations(destsData.length > 0 ? destsData.slice(0, 6) : FALLBACK_DESTINATIONS);
       } catch (err) {
         console.error('Failed to load home page data:', err);
+        setDestinations(FALLBACK_DESTINATIONS);
       } finally {
         setLoading(false);
       }
@@ -88,7 +114,7 @@ const Home = () => {
 
   return (
     <div>
-      {/* 1. Hero Section with Auto-Scroll / Interactive Slider */}
+      {/* Hero Section */}
       <section className="hero">
         <div className="hero-slider">
           {HERO_IMAGES.map((imgUrl, idx) => (
@@ -96,7 +122,7 @@ const Home = () => {
               key={idx}
               className={`hero-slide ${idx === currentSlide ? 'active' : ''}`}
               style={{
-                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)), url(${imgUrl})`
+                backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url(${imgUrl})`
               }}
             />
           ))}
@@ -111,13 +137,16 @@ const Home = () => {
 
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="hero-content">
-            <h1>Explore The World With Travmitra</h1>
+            <h1>
+              Let's travel <span style={{ color: '#fdba74' }}>together</span>
+            </h1>
             <p>
-              Plan your next getaway with verified local guides, custom tour structures, and absolute safety. Adventure is calling!
+              Explore living root bridges, misty hills, one-horned rhinos and mountain monasteries. We plan the details so you can enjoy the North East at your own pace.
             </p>
-            <Link to="/packages">
-              <Button variant="primary">Explore Packages</Button>
-            </Link>
+            <div className="hero-actions" style={{ display: 'flex', gap: '0.9rem', flexWrap: 'wrap' }}>
+              <a href="#destinations" className="btn btn-primary">Explore destinations</a>
+              <Link to="/contact" className="btn btn-white">Talk to an expert</Link>
+            </div>
           </div>
         </div>
 
@@ -133,33 +162,35 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 2. Popular Destinations */}
-      <section className="section" style={{ backgroundColor: 'var(--white)' }}>
-        <div className="container text-center">
-          <h2 className="section-title">Popular Destinations</h2>
-          <p className="section-subtitle">Choose from our highest-rated travel regions this season.</p>
+      {/* Destinations */}
+      <section className="destinations" id="destinations" style={{ padding: '5rem 0' }}>
+        <div className="container">
+          <div className="section-header">
+            <h2>Popular North East destinations</h2>
+            <p>Hand-picked places that show the real character of the region.</p>
+          </div>
 
           {loading ? (
             <Spinner />
-          ) : destinations.length === 0 ? (
-            <p style={{ color: 'var(--medium)' }}>No destinations available at the moment.</p>
           ) : (
-            <div className="destinations-grid">
-              {destinations.map((dest) => (
-                <Link key={dest._id} to={`/packages?destination=${dest.name}`}>
-                  <div className="destination-card">
-                    <img src={dest.image} alt={dest.name} />
-                    <div className="destination-card-overlay">
-                      <h3>{dest.name}</h3>
-                      <p>View packages &rarr;</p>
+            <div className="dest-grid">
+              {(destinations.length > 0 ? destinations : FALLBACK_DESTINATIONS).map((dest) => (
+                <article key={dest._id || dest.name} className="dest-card">
+                  <img src={dest.image} alt={dest.name} />
+                  <div className="dest-body">
+                    <h3>{dest.name}</h3>
+                    <p>{dest.description || 'Explore scenic landscapes, cultural heritage, and guided excursions.'}</p>
+                    <div className="dest-meta">
+                      <span className="location">{dest.meta || `${dest.name} · Tour`}</span>
+                      <span className="price">{dest.priceText || (dest.price ? `From ₹${dest.price.toLocaleString('en-IN')}` : 'Best Rates')}</span>
                     </div>
                   </div>
-                </Link>
+                </article>
               ))}
             </div>
           )}
 
-          <div style={{ marginTop: '40px' }}>
+          <div style={{ textAlign: 'center', marginTop: '3rem' }}>
             <Link to="/destinations">
               <Button variant="outline">View All Destinations</Button>
             </Link>
@@ -167,10 +198,10 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 3. Featured Packages */}
-      <section className="section" style={{ backgroundColor: 'var(--light)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+      {/* Featured Packages */}
+      <section className="section" style={{ backgroundColor: 'var(--white)' }}>
         <div className="container text-center">
-          <h2 className="section-title">Featured Packages</h2>
+          <h2 className="section-title">Featured Tour Packages</h2>
           <p className="section-subtitle">Our best-selling vacation bundles with comprehensive inclusions.</p>
 
           {loading ? (
@@ -223,56 +254,51 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 4. Why Choose Us */}
-      <section className="section" style={{ backgroundColor: 'var(--white)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
-        <div className="container text-center">
-          <h2 className="section-title">Why Choose Us</h2>
-          <p className="section-subtitle">We design our services to offer you comfort, affordability, and excitement.</p>
-          <div className="features-grid">
-            <div className="feature-card">
+      {/* Why Choose Us */}
+      <section id="why" className="section" style={{ backgroundColor: 'var(--slate-50)' }}>
+        <div className="container">
+          <div className="section-header">
+            <h2>Why travel the North East with us</h2>
+            <p>We know the permits, the roads and the people who make the trip special.</p>
+          </div>
+
+          <div className="features">
+            <div className="feature">
               <div className="feature-icon">
-                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h3>Affordable Trips</h3>
-              <p>Best price guarantee with absolutely transparent charges. No hidden expenses.</p>
+              <h3>Local know-how</h3>
+              <p>ILPs, best seasons, reliable drivers and stays that feel like home — sorted for you.</p>
             </div>
-            <div className="feature-card">
+
+            <div className="feature">
               <div className="feature-icon">
-                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                  <circle cx="9" cy="7" r="4"/>
-                  <path d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <h3>Trusted Guides</h3>
-              <p>Passionate local guides who share deep insights, history, and secrets of each town.</p>
+              <h3>Real experiences</h3>
+              <p>Homestays, village walks, root-bridge treks and early morning safaris with people who live there.</p>
             </div>
-            <div className="feature-card">
+
+            <div className="feature">
               <div className="feature-icon">
-                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <h3>Custom Packages</h3>
-              <p>Get tailormade adjustments to hotel categories, dates, and sightseeing layouts easily.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path d="M3 18v-6a9 9 0 0118 0v6M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3"/>
-                </svg>
-              </div>
-              <h3>24/7 Support</h3>
-              <p>A direct, prompt helpline ready to support you at any stage during your travels.</p>
+              <h3>Support that stays</h3>
+              <p>From Guwahati arrival to the last mountain road, someone from our team is reachable.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. Testimonials */}
-      <section className="section">
+      {/* Testimonials */}
+      <section className="section" style={{ backgroundColor: 'var(--white)' }}>
         <div className="container text-center">
           <h2 className="section-title">What Our Travelers Say</h2>
           <p className="section-subtitle">Feedback and ratings from our recent vacationers.</p>
@@ -283,7 +309,7 @@ const Home = () => {
                   {Array(5)
                     .fill(0)
                     .map((_, i) => (
-                      <span key={i} style={{ color: i < test.rating ? '#ffb703' : '#e5e7eb' }}>&#9733;</span>
+                      <span key={i} style={{ color: i < test.rating ? '#f59e0b' : '#e2e8f0' }}>&#9733;</span>
                     ))}
                 </div>
                 <p className="testimonial-quote">"{test.quote}"</p>
@@ -300,16 +326,14 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 6. Contact CTA Section */}
-      <section className="container" style={{ marginBottom: '80px' }}>
-        <div className="contact-cta">
-          <h2>Ready To Plan Your Next Trip?</h2>
-          <p>
-            Let our tour planners help you design a customized itinerary. Send us your requirements, and we will get back to you within 24 hours.
-          </p>
-          <Link to="/contact">
-            <Button variant="outline" className="btn-white">Get Free Consultation</Button>
-          </Link>
+      {/* CTA */}
+      <section id="book" style={{ padding: '4rem 0 5rem' }}>
+        <div className="container">
+          <div className="cta-band">
+            <h2>Ready to explore the North East?</h2>
+            <p>Tell us your dates, pace and interests. We’ll shape a trip through the hills, parks and valleys that fits you.</p>
+            <Link to="/contact" className="btn btn-white">Start planning</Link>
+          </div>
         </div>
       </section>
     </div>
