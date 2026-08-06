@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Logo from './Logo';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -8,8 +9,8 @@ const Footer = () => {
     <footer className="footer" id="contact" style={{ background: 'var(--slate-900)', color: '#94a3b8' }}>
       <div className="container footer-grid">
         <div className="footer-col">
-          <Link to="/" className="logo" style={{ color: 'var(--white)', marginBottom: '1rem', display: 'inline-block' }}>
-            <img src="/logo.png" alt="Travmitraa" className="logo-img" style={{ height: '42px', filter: 'brightness(1.1)' }} />
+          <Link to="/" style={{ marginBottom: '1rem', display: 'inline-block' }}>
+            <Logo />
           </Link>
           <p style={{ fontSize: '0.95rem', lineHeight: '1.65', color: '#94a3b8', marginBottom: '1.25rem' }}>
             Your companion for North East India. Thoughtful itineraries across Assam, Meghalaya, Arunachal, Sikkim and beyond.

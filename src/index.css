@@ -240,12 +240,21 @@ button, input, select, textarea {
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--dark);
-  display: flex;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
+  user-select: none;
+}
+
+.logo .trav {
+  color: var(--teal);
+}
+
+.logo .mitraa {
+  color: var(--coral);
 }
 
 .logo-img {
@@ -254,10 +263,6 @@ button, input, select, textarea {
   max-width: 160px;
   object-fit: contain;
   transition: var(--transition);
-}
-
-.logo span {
-  color: var(--primary);
 }
 
 .nav-menu {
