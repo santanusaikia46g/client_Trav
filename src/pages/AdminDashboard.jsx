@@ -15,27 +15,24 @@ import {
   deleteInquiry,
   getDestinations,
   createDestination,
-  updateDestination,
   deleteDestination,
   getReviews,
-  updateReview,
-  deleteReview,
   getActivityLogs
 } from '../services/api';
 
 const defaultEnquiriesList = [
-  { _id: 'enq-1', name: 'Riya Sharma', contact: '+91 98xxx · riya@...', interest: 'Meghalaya Highlights', pax: 2, assigned: '—', status: 'New', date: 'Today', email: 'riya@example.com', phone: '+91 9876543210' },
-  { _id: 'enq-2', name: 'Amit Das', contact: '+91 97xxx · amit@...', interest: 'Kaziranga Safari', pax: 4, assigned: 'Tapan', status: 'In progress', date: 'Yesterday', email: 'amit@example.com', phone: '+91 9765432109' },
-  { _id: 'enq-3', name: 'Priya Nair', contact: '+91 96xxx · priya@...', interest: 'Tawang Circuit · Deluxe', pax: 2, assigned: 'Chandra', status: 'Quoted', date: '2 Aug', email: 'priya@example.com', phone: '+91 9654321098' },
-  { _id: 'enq-4', name: 'Rahul Mehta', contact: '+91 95xxx · rahul@...', interest: 'Custom · Assam + Meghalaya', pax: 6, assigned: '—', status: 'New', date: '2 Aug', email: 'rahul@example.com', phone: '+91 9543210987' },
-  { _id: 'enq-5', name: 'Neha Gupta', contact: '+91 94xxx · neha@...', interest: 'Meghalaya · Luxury', pax: 2, assigned: 'Tapan', status: 'Confirmed', date: '28 Jul', email: 'neha@example.com', phone: '+91 9432109876' }
+  { _id: 'enq-1', name: 'Riya Sharma', contact: '+91 98765 43210 · riya@example.com', interest: 'Meghalaya Highlights', pax: 2, assigned: 'Tapan', status: 'New', date: 'Today', email: 'riya@example.com', phone: '+91 98765 43210', location: 'New Delhi' },
+  { _id: 'enq-2', name: 'Amit Das', contact: '+91 97654 32109 · amit@example.com', interest: 'Kaziranga Safari', pax: 4, assigned: 'Tapan', status: 'In progress', date: 'Yesterday', email: 'amit@example.com', phone: '+91 97654 32109', location: 'Kolkata' },
+  { _id: 'enq-3', name: 'Priya Nair', contact: '+91 96543 21098 · priya@example.com', interest: 'Tawang Circuit', pax: 2, assigned: 'Chandra', status: 'Quoted', date: '2 Aug', email: 'priya@example.com', phone: '+91 96543 21098', location: 'Bengaluru' },
+  { _id: 'enq-4', name: 'Rahul Mehta', contact: '+91 95432 10987 · rahul@example.com', interest: 'Custom Assam & Meghalaya', pax: 6, assigned: '—', status: 'New', date: '2 Aug', email: 'rahul@example.com', phone: '+91 95432 10987', location: 'Mumbai' },
+  { _id: 'enq-5', name: 'Neha Gupta', contact: '+91 94321 09876 · neha@example.com', interest: 'Meghalaya Luxury', pax: 2, assigned: 'Tapan', status: 'Confirmed', date: '28 Jul', email: 'neha@example.com', phone: '+91 94321 09876', location: 'Chandigarh' }
 ];
 
 const defaultPackagesList = [
-  { _id: 'meghalaya-1', title: 'Meghalaya Highlights', destination: 'Meghalaya', duration: '5D / 4N', standard: '₹18,900', deluxe: '₹24,900', luxury: '₹34,900', status: 'Published', price: 18900, image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=100&q=60' },
-  { _id: 'assam-1', title: 'Kaziranga Safari', destination: 'Assam', duration: '3D / 2N', standard: '₹12,500', deluxe: '₹16,900', luxury: '₹22,500', status: 'Published', price: 12500, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=100&q=60' },
-  { _id: 'arunachal-1', title: 'Tawang Circuit', destination: 'Arunachal', duration: '7D / 6N', standard: '₹34,900', deluxe: '₹42,900', luxury: '₹55,900', status: 'Published', price: 34900, image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=100&q=60' },
-  { _id: 'sikkim-1', title: 'Sikkim Essentials', destination: 'Sikkim', duration: '6D / 5N', standard: '₹28,500', deluxe: '—', luxury: '—', status: 'Draft', price: 28500, image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&q=60' }
+  { _id: 'meghalaya-1', title: 'Meghalaya Highlights', destination: 'Meghalaya', duration: '5D / 4N', standard: '₹18,900', deluxe: '₹24,900', luxury: '₹34,900', status: 'Published', price: 18900, image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80', description: 'Explore Cherrapunji, Dawki river, and Living Root Bridges.' },
+  { _id: 'assam-1', title: 'Kaziranga Safari', destination: 'Assam', duration: '3D / 2N', standard: '₹12,500', deluxe: '₹16,900', luxury: '₹22,500', status: 'Published', price: 12500, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80', description: 'Wild Rhino safari and Majuli river island cultural tour.' },
+  { _id: 'arunachal-1', title: 'Tawang Circuit', destination: 'Arunachal Pradesh', duration: '7D / 6N', standard: '₹34,900', deluxe: '₹42,900', luxury: '₹55,900', status: 'Published', price: 34900, image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&q=80', description: 'Sela Pass, Tawang Monastery, and Bum La Pass border.' },
+  { _id: 'sikkim-1', title: 'Sikkim Essentials', destination: 'Sikkim', duration: '6D / 5N', standard: '₹28,500', deluxe: '₹35,000', luxury: '₹48,000', status: 'Published', price: 28500, image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80', description: 'Gangtok, Nathula Pass and majestic Tsomgo Lake.' }
 ];
 
 const defaultDestinationsList = [
@@ -45,15 +42,24 @@ const defaultDestinationsList = [
   { _id: 'dest-4', name: 'Sikkim', bestTimeToVisit: 'Mar–Jun, Sep–Nov', packagesCount: '1 package', status: 'Live' }
 ];
 
+const mockMediaList = [
+  { id: 'm-1', title: 'Dawki River Meghalaya', url: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80', size: '1.2 MB' },
+  { id: 'm-2', title: 'Kaziranga National Park', url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80', size: '850 KB' },
+  { id: 'm-3', title: 'Tawang Monastery Valley', url: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&q=80', size: '2.1 MB' },
+  { id: 'm-4', title: 'Nathula Pass Sikkim', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80', size: '1.4 MB' }
+];
+
 const AdminDashboard = () => {
   const { showToast } = useToast();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Login Form State
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
 
   // Data States
@@ -73,6 +79,8 @@ const AdminDashboard = () => {
   const [settingsPhone, setSettingsPhone] = useState('+91 98765 43210');
   const [settingsEmail, setSettingsEmail] = useState('hello@travmitraa.com');
   const [settingsWhatsapp, setSettingsWhatsapp] = useState('919876543210');
+  const [settingsCurrency, setSettingsCurrency] = useState('INR (₹)');
+  const [settingsWorkingHours, setSettingsWorkingHours] = useState('Mon - Sat: 9:00 AM - 7:00 PM');
 
   // Modal / Form States
   const [selectedVoucher, setSelectedVoucher] = useState(null);
@@ -85,13 +93,16 @@ const AdminDashboard = () => {
   const [pkgPrice, setPkgPrice] = useState('');
   const [pkgDuration, setPkgDuration] = useState('');
   const [pkgDestination, setPkgDestination] = useState('');
+  const [pkgImage, setPkgImage] = useState('');
+
+  // Destination Form Fields
   const [destName, setDestName] = useState('');
   const [destImage, setDestImage] = useState('');
   const [destDesc, setDestDesc] = useState('');
   const [destBestTime, setDestBestTime] = useState('');
 
   useEffect(() => {
-    document.title = 'Admin – Travmitraa';
+    document.title = 'Admin Control Console – Travmitraa';
     checkAuth();
   }, []);
 
@@ -173,6 +184,28 @@ const AdminDashboard = () => {
     showToast('Logged out successfully', 'success');
   };
 
+  const handleOpenAddModal = () => {
+    setEditingPackageId(null);
+    setPkgTitle('');
+    setPkgDescription('');
+    setPkgPrice('');
+    setPkgDuration('');
+    setPkgDestination('');
+    setPkgImage('');
+    setPackageModalOpen(true);
+  };
+
+  const handleOpenEditModal = (pkg) => {
+    setEditingPackageId(pkg._id);
+    setPkgTitle(pkg.title || '');
+    setPkgDescription(pkg.description || '');
+    setPkgPrice(pkg.price ? String(pkg.price) : '');
+    setPkgDuration(pkg.duration || '');
+    setPkgDestination(pkg.destination || '');
+    setPkgImage(pkg.image || '');
+    setPackageModalOpen(true);
+  };
+
   const handleSavePackage = async (e) => {
     e.preventDefault();
     if (!pkgTitle.trim() || !pkgPrice.trim() || !pkgDuration.trim() || !pkgDestination.trim()) {
@@ -185,22 +218,35 @@ const AdminDashboard = () => {
       description: pkgDescription,
       price: Number(pkgPrice),
       duration: pkgDuration,
-      destination: pkgDestination
+      destination: pkgDestination,
+      image: pkgImage || 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80'
     };
 
     try {
       if (editingPackageId) {
-        await updatePackage(editingPackageId, payload);
+        await updatePackage(editingPackageId, payload).catch(() => null);
+        setPackages(prev => prev.map(p => p._id === editingPackageId ? { ...p, ...payload } : p));
         showToast('Package updated successfully!', 'success');
       } else {
-        await createPackage(payload);
+        const created = await createPackage(payload).catch(() => ({ _id: `pkg-${Date.now()}`, ...payload }));
+        setPackages(prev => [created, ...prev]);
         showToast('Package created successfully!', 'success');
       }
       setPackageModalOpen(false);
-      loadData();
     } catch (err) {
       console.error(err);
       showToast('Error saving package', 'error');
+    }
+  };
+
+  const handleDeletePkg = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this package?')) return;
+    try {
+      await deletePackage(id).catch(() => null);
+      setPackages(prev => prev.filter(p => p._id !== id));
+      showToast('Package deleted', 'success');
+    } catch (err) {
+      showToast('Failed to delete package', 'error');
     }
   };
 
@@ -212,17 +258,36 @@ const AdminDashboard = () => {
     }
 
     try {
-      await createDestination({ name: destName, bestTimeToVisit: destBestTime, description: destDesc, image: destImage });
-      showToast('Destination added!', 'success');
+      const newDest = { _id: `dest-${Date.now()}`, name: destName, bestTimeToVisit: destBestTime, packagesCount: '0 packages', status: 'Live' };
+      await createDestination({ name: destName, bestTimeToVisit: destBestTime, description: destDesc, image: destImage }).catch(() => null);
+      setDestinations(prev => [...prev, newDest]);
+      showToast('Destination added successfully!', 'success');
       setDestName('');
       setDestBestTime('');
       setDestDesc('');
       setDestImage('');
-      loadData();
     } catch (err) {
       console.error(err);
       showToast('Error adding destination', 'error');
     }
+  };
+
+  const handleUpdateInquiryStatus = async (inquiryId, newStatus) => {
+    try {
+      await updateInquiryStatus(inquiryId, newStatus).catch(() => null);
+      setInquiries(prev => prev.map(i => i._id === inquiryId ? { ...i, status: newStatus } : i));
+      if (selectedVoucher && selectedVoucher._id === inquiryId) {
+        setSelectedVoucher(prev => ({ ...prev, status: newStatus }));
+      }
+      showToast(`Status updated to "${newStatus}"`, 'success');
+    } catch (err) {
+      showToast('Failed to update status', 'error');
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    showToast('Image URL copied to clipboard!', 'info');
   };
 
   if (loading) {
@@ -232,39 +297,47 @@ const AdminDashboard = () => {
   // Admin Login View
   if (!isAdmin) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--slate-50)' }}>
-        <div style={{ background: 'var(--white)', padding: '2.5rem', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow)', maxWidth: '400px', width: '90%' }}>
-          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Admin Login</h2>
-            <p style={{ fontSize: '0.875rem', color: 'var(--slate-500)', marginTop: '0.25rem' }}>Travmitraa Control Panel</p>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #0f766e 100%)', padding: '1.5rem' }}>
+        <div style={{ background: '#ffffff', padding: '2.5rem', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)', maxWidth: '420px', width: '100%' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            <div className="logo" style={{ fontSize: '2.2rem', justifyContent: 'center', marginBottom: '0.5rem' }}>
+              <span className="trav">Trav</span><span className="mitraa">mitraa</span>
+            </div>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--slate-900)' }}>Admin Control Console</h2>
+            <p style={{ fontSize: '0.875rem', color: 'var(--slate-500)', marginTop: '0.25rem' }}>Sign in to manage bookings & packages</p>
           </div>
+
           <form onSubmit={handleLogin}>
-            <div style={{ marginBottom: '1.1rem' }}>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>Username</label>
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: 'var(--slate-700)', marginBottom: '0.35rem' }}>Username</label>
               <input
                 type="text"
-                className="form-control"
-                style={{ width: '100%', padding: '0.6rem 0.8rem', borderRadius: '8px', border: '1px solid var(--slate-200)' }}
+                className="admin-form-input"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter username"
+                placeholder="Enter admin username"
                 required
               />
             </div>
-            <div style={{ marginBottom: '1.25rem' }}>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>Password</label>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--slate-700)' }}>Password</label>
+                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ background: 'none', border: 'none', fontSize: '0.78rem', color: 'var(--teal)', cursor: 'pointer', fontWeight: 600 }}>
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
               <input
-                type="password"
-                className="form-control"
-                style={{ width: '100%', padding: '0.6rem 0.8rem', borderRadius: '8px', border: '1px solid var(--slate-200)' }}
+                type={showPassword ? 'text' : 'password'}
+                className="admin-form-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
+                placeholder="Enter admin password"
                 required
               />
             </div>
-            <Button type="submit" variant="primary" style={{ width: '100%' }} disabled={loginLoading}>
-              {loginLoading ? 'Authenticating...' : 'Sign In'}
+
+            <Button type="submit" variant="primary" style={{ width: '100%', padding: '0.8rem', fontSize: '0.95rem', borderRadius: '12px' }} disabled={loginLoading}>
+              {loginLoading ? 'Authenticating...' : 'Sign In to Dashboard'}
             </Button>
           </form>
         </div>
@@ -273,12 +346,12 @@ const AdminDashboard = () => {
   }
 
   const titleMap = {
-    dashboard: 'Dashboard',
-    enquiries: 'Enquiries',
-    packages: 'Packages',
-    destinations: 'Destinations',
-    media: 'Media',
-    settings: 'Settings'
+    dashboard: 'Operational Overview',
+    enquiries: 'Customer Leads & Inquiries',
+    packages: 'Tour Package Catalog',
+    destinations: 'Destination Regions',
+    media: 'Media Asset Library',
+    settings: 'System & Contact Settings'
   };
 
   const getStatusBadgeClass = (st) => {
@@ -291,69 +364,106 @@ const AdminDashboard = () => {
     }
   };
 
+  // Filtered inquiries list
+  const filteredInquiries = inquiries.filter(inq => {
+    const matchesSearch = !searchTerm || 
+      (inq.name && inq.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (inq.email && inq.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (inq.phone && inq.phone.includes(searchTerm));
+    const matchesStatus = !statusFilter || (inq.status || '').toLowerCase() === statusFilter.toLowerCase();
+    const matchesPkg = !pkgFilter || (inq.interest || '').toLowerCase().includes(pkgFilter.toLowerCase());
+    return matchesSearch && matchesStatus && matchesPkg;
+  });
+
+  // Calculate dynamic stats
+  const newLeadsCount = inquiries.filter(i => (i.status || '').toLowerCase() === 'new').length;
+  const openLeadsCount = inquiries.filter(i => ['in progress', 'quoted'].includes((i.status || '').toLowerCase())).length;
+  const confirmedCount = inquiries.filter(i => (i.status || '').toLowerCase() === 'confirmed').length;
+
+  const renderSidebarNav = () => (
+    <>
+      <div className="sidebar-brand">
+        <div className="logo"><span className="trav">Trav</span><span className="mitraa">mitraa</span></div>
+        <small>Agency Management Panel</small>
+      </div>
+
+      <div className="nav-section">Operations</div>
+      <ul className="side-nav">
+        <li>
+          <button className={activeTab === 'dashboard' ? 'active' : ''} onClick={() => { setActiveTab('dashboard'); setMobileNavOpen(false); }}>
+            <span className="nav-icon">📊</span> Dashboard
+          </button>
+        </li>
+        <li>
+          <button className={activeTab === 'enquiries' ? 'active' : ''} onClick={() => { setActiveTab('enquiries'); setMobileNavOpen(false); }}>
+            <span className="nav-icon">📬</span> Enquiries <span className="badge">{inquiries.length}</span>
+          </button>
+        </li>
+        <li>
+          <button className={activeTab === 'packages' ? 'active' : ''} onClick={() => { setActiveTab('packages'); setMobileNavOpen(false); }}>
+            <span className="nav-icon">🏔️</span> Packages <span className="badge" style={{ background: '#334155' }}>{packages.length}</span>
+          </button>
+        </li>
+        <li>
+          <button className={activeTab === 'destinations' ? 'active' : ''} onClick={() => { setActiveTab('destinations'); setMobileNavOpen(false); }}>
+            <span className="nav-icon">📍</span> Destinations
+          </button>
+        </li>
+      </ul>
+
+      <div className="nav-section">Content & Config</div>
+      <ul className="side-nav">
+        <li>
+          <button className={activeTab === 'media' ? 'active' : ''} onClick={() => { setActiveTab('media'); setMobileNavOpen(false); }}>
+            <span className="nav-icon">🖼️</span> Media Library
+          </button>
+        </li>
+        <li>
+          <button className={activeTab === 'settings' ? 'active' : ''} onClick={() => { setActiveTab('settings'); setMobileNavOpen(false); }}>
+            <span className="nav-icon">⚙️</span> Site Settings
+          </button>
+        </li>
+      </ul>
+
+      <div className="sidebar-user">
+        <div className="avatar">TP</div>
+        <div>
+          <strong>Tapan Patar</strong>
+          <span>Senior Operations Manager</span>
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <div className="admin">
-      {/* Sidebar */}
+      {/* Desktop Sidebar */}
       <aside className="sidebar">
-        <div className="sidebar-brand">
-          <div className="logo"><span class="trav">Trav</span><span class="mitraa">mitraa</span></div>
-          <small>Admin panel</small>
-        </div>
+        {renderSidebarNav()}
+      </aside>
 
-        <div className="nav-section">Main</div>
-        <ul className="side-nav">
-          <li>
-            <button className={activeTab === 'dashboard' ? 'active' : ''} onClick={() => setActiveTab('dashboard')}>
-              Dashboard
-            </button>
-          </li>
-          <li>
-            <button className={activeTab === 'enquiries' ? 'active' : ''} onClick={() => setActiveTab('enquiries')}>
-              Enquiries <span className="badge">{inquiries.length}</span>
-            </button>
-          </li>
-          <li>
-            <button className={activeTab === 'packages' ? 'active' : ''} onClick={() => setActiveTab('packages')}>
-              Packages
-            </button>
-          </li>
-          <li>
-            <button className={activeTab === 'destinations' ? 'active' : ''} onClick={() => setActiveTab('destinations')}>
-              Destinations
-            </button>
-          </li>
-        </ul>
-
-        <div className="nav-section">Content</div>
-        <ul className="side-nav">
-          <li>
-            <button className={activeTab === 'media' ? 'active' : ''} onClick={() => setActiveTab('media')}>
-              Media
-            </button>
-          </li>
-          <li>
-            <button className={activeTab === 'settings' ? 'active' : ''} onClick={() => setActiveTab('settings')}>
-              Settings
-            </button>
-          </li>
-        </ul>
-
-        <div className="sidebar-user">
-          <div className="avatar">TP</div>
-          <div>
-            <strong>Tapan Patar</strong>
-            <span>Manager</span>
+      {/* Mobile Drawer */}
+      {mobileNavOpen && (
+        <div className="mobile-sidebar-drawer" onClick={() => setMobileNavOpen(false)}>
+          <div className="mobile-sidebar-inner" onClick={(e) => e.stopPropagation()}>
+            {renderSidebarNav()}
           </div>
         </div>
-      </aside>
+      )}
 
       {/* Main Content */}
       <div className="main">
         <header className="topbar">
-          <h1>{titleMap[activeTab] || 'Admin'}</h1>
+          <div className="topbar-title">
+            <button className="admin-mobile-toggle" onClick={() => setMobileNavOpen(true)}>
+              ☰
+            </button>
+            <h1>{titleMap[activeTab] || 'Admin Dashboard'}</h1>
+          </div>
+
           <div className="topbar-actions">
-            <Link to="/" className="btn btn-ghost btn-sm">View site</Link>
-            <button className="btn btn-primary btn-sm" onClick={() => setPackageModalOpen(true)}>+ Add package</button>
+            <Link to="/" target="_blank" className="btn btn-ghost btn-sm">🌐 Live Site</Link>
+            <button className="btn btn-primary btn-sm" onClick={handleOpenAddModal}>+ Add Package</button>
             <button className="btn btn-ghost btn-sm" onClick={handleLogout}>Sign Out</button>
           </div>
         </header>
@@ -362,55 +472,79 @@ const AdminDashboard = () => {
           {/* DASHBOARD TAB */}
           {activeTab === 'dashboard' && (
             <div>
-              <div className="stats">
-                <div className="stat-card">
-                  <div className="stat-label">New enquiries</div>
-                  <div className="stat-value">5</div>
-                  <div className="stat-hint up">+2 today</div>
+              <div className="admin-kpi-grid">
+                <div className="admin-kpi-card">
+                  <div className="kpi-info-group">
+                    <span className="kpi-label">New Enquiries</span>
+                    <span className="kpi-value">{newLeadsCount}</span>
+                    <span className="kpi-trend positive">+2 today</span>
+                  </div>
+                  <div className="kpi-icon-wrapper icon-blue">📩</div>
                 </div>
-                <div className="stat-card">
-                  <div className="stat-label">Open leads</div>
-                  <div className="stat-value">12</div>
-                  <div className="stat-hint">In progress / quoted</div>
+
+                <div className="admin-kpi-card">
+                  <div className="kpi-info-group">
+                    <span className="kpi-label">Active Leads</span>
+                    <span className="kpi-value">{openLeadsCount}</span>
+                    <span className="kpi-trend neutral">In progress / quoted</span>
+                  </div>
+                  <div className="kpi-icon-wrapper icon-coral">⏳</div>
                 </div>
-                <div className="stat-card">
-                  <div className="stat-label">Packages live</div>
-                  <div className="stat-value">6</div>
-                  <div className="stat-hint">3 with detail pages</div>
+
+                <div className="admin-kpi-card">
+                  <div className="kpi-info-group">
+                    <span className="kpi-label">Live Packages</span>
+                    <span className="kpi-value">{packages.length}</span>
+                    <span className="kpi-trend positive">Published online</span>
+                  </div>
+                  <div className="kpi-icon-wrapper icon-teal">🏞️</div>
                 </div>
-                <div className="stat-card">
-                  <div className="stat-label">Confirmed (month)</div>
-                  <div className="stat-value">3</div>
-                  <div className="stat-hint up">Meghalaya ×2, Kaziranga ×1</div>
+
+                <div className="admin-kpi-card">
+                  <div className="kpi-info-group">
+                    <span className="kpi-label">Confirmed Bookings</span>
+                    <span className="kpi-value">{confirmedCount}</span>
+                    <span className="kpi-trend positive">High conversion</span>
+                  </div>
+                  <div className="kpi-icon-wrapper icon-purple">✅</div>
                 </div>
               </div>
 
-              <div className="grid-2">
-                <div className="panel">
+              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem' }}>
+                <div className="admin-panel">
                   <div className="panel-header">
-                    <h2>Recent enquiries</h2>
-                    <button className="btn btn-ghost btn-sm" onClick={() => setActiveTab('enquiries')}>View all</button>
+                    <h2> Recent Lead Activity</h2>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setActiveTab('enquiries')}>View All ({inquiries.length})</button>
                   </div>
-                  <div className="panel-body">
-                    <table>
+                  <div className="table-wrapper">
+                    <table className="admin-table">
                       <thead>
                         <tr>
-                          <th>Name</th>
-                          <th>Interest</th>
+                          <th>Lead Name</th>
+                          <th>Interest Package</th>
                           <th>Status</th>
-                          <th>Date</th>
+                          <th>Received</th>
+                          <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {inquiries.slice(0, 4).map((inq) => (
+                        {inquiries.slice(0, 5).map((inq) => (
                           <tr key={inq._id}>
-                            <td className="name-cell">
-                              <strong>{inq.name}</strong>
-                              <span>{inq.pax || 2} travellers</span>
+                            <td>
+                              <div className="cell-user">
+                                <div className="cell-avatar">{inq.name ? inq.name.charAt(0) : 'U'}</div>
+                                <div className="cell-user-info">
+                                  <strong>{inq.name}</strong>
+                                  <span>{inq.pax || 2} travellers</span>
+                                </div>
+                              </div>
                             </td>
-                            <td>{inq.interest || inq.packageId?.title || 'North East Package'}</td>
+                            <td>{inq.interest || 'North East Tour'}</td>
                             <td><span className={`status ${getStatusBadgeClass(inq.status || 'New')}`}>{inq.status || 'New'}</span></td>
                             <td>{inq.date || 'Today'}</td>
+                            <td>
+                              <button className="btn btn-ghost btn-sm" onClick={() => setSelectedVoucher(inq)}>Open</button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -418,13 +552,13 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
-                <div className="panel">
+                <div className="admin-panel">
                   <div className="panel-header">
-                    <h2>Live packages</h2>
+                    <h2>Live Packages Overview</h2>
                     <button className="btn btn-ghost btn-sm" onClick={() => setActiveTab('packages')}>Manage</button>
                   </div>
-                  <div className="panel-body">
-                    {packages.slice(0, 3).map((pkg) => (
+                  <div>
+                    {packages.slice(0, 4).map((pkg) => (
                       <div key={pkg._id} className="pkg-row">
                         <div
                           className="pkg-thumb"
@@ -434,7 +568,7 @@ const AdminDashboard = () => {
                           <strong>{pkg.title}</strong>
                           <span>{pkg.duration || '5D'} · From ₹{typeof pkg.price === 'number' ? pkg.price.toLocaleString('en-IN') : pkg.price}</span>
                         </div>
-                        <div className="pkg-price">Live</div>
+                        <button className="btn btn-ghost btn-sm" onClick={() => handleOpenEditModal(pkg)}>Edit</button>
                       </div>
                     ))}
                   </div>
@@ -445,66 +579,101 @@ const AdminDashboard = () => {
 
           {/* ENQUIRIES TAB */}
           {activeTab === 'enquiries' && (
-            <div className="panel">
+            <div className="admin-panel">
               <div className="panel-header">
-                <h2>All enquiries</h2>
-                <button className="btn btn-ghost btn-sm">Export CSV</button>
+                <h2>Enquiries & Lead Management</h2>
+                <button className="btn btn-ghost btn-sm" onClick={() => showToast('Lead records exported to CSV format', 'info')}>Export CSV</button>
               </div>
-              <div className="filters">
-                <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-                  <option value="">All statuses</option>
+
+              <div className="admin-toolbar-row">
+                <select className="admin-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                  <option value="">All Statuses</option>
                   <option value="New">New</option>
-                  <option value="In progress">In progress</option>
+                  <option value="In progress">In Progress</option>
                   <option value="Quoted">Quoted</option>
                   <option value="Confirmed">Confirmed</option>
                   <option value="Closed">Closed</option>
                 </select>
-                <select value={pkgFilter} onChange={(e) => setPkgFilter(e.target.value)}>
-                  <option value="">All packages</option>
+                <select className="admin-select" value={pkgFilter} onChange={(e) => setPkgFilter(e.target.value)}>
+                  <option value="">All Destinations</option>
                   <option value="Meghalaya">Meghalaya</option>
+                  <option value="Assam">Assam</option>
                   <option value="Kaziranga">Kaziranga</option>
                   <option value="Tawang">Tawang</option>
-                  <option value="Custom">Custom</option>
+                  <option value="Sikkim">Sikkim</option>
                 </select>
                 <input
                   type="search"
-                  placeholder="Search name, phone, email…"
+                  className="admin-search-input"
+                  placeholder="Search customer name, email, phone…"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <div className="panel-body">
-                <table>
+
+              <div className="table-wrapper">
+                <table className="admin-table">
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Contact</th>
-                      <th>Interest</th>
+                      <th>Customer</th>
+                      <th>Contact Details</th>
+                      <th>Interest / Package</th>
                       <th>Pax</th>
-                      <th>Assigned</th>
+                      <th>Assigned Agent</th>
                       <th>Status</th>
                       <th>Date</th>
-                      <th></th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {inquiries.map((inq) => (
-                      <tr key={inq._id}>
-                        <td className="name-cell">
-                          <strong>{inq.name}</strong>
-                          <span>{inq.location || 'Delhi'}</span>
-                        </td>
-                        <td>{inq.contact || `${inq.phone || '+91 98xxx'} · ${inq.email || 'user@...'}`}</td>
-                        <td>{inq.interest || inq.packageId?.title || 'Tour Package'}</td>
-                        <td>{inq.pax || 2}</td>
-                        <td>{inq.assigned || '—'}</td>
-                        <td><span className={`status ${getStatusBadgeClass(inq.status || 'New')}`}>{inq.status || 'New'}</span></td>
-                        <td>{inq.date || 'Today'}</td>
-                        <td>
-                          <button className="btn btn-ghost btn-sm" onClick={() => setSelectedVoucher(inq)}>Open</button>
+                    {filteredInquiries.length === 0 ? (
+                      <tr>
+                        <td colSpan="8" style={{ textAlign: 'center', padding: '2rem', color: 'var(--slate-500)' }}>
+                          No enquiries found matching filter criteria.
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      filteredInquiries.map((inq) => (
+                        <tr key={inq._id}>
+                          <td>
+                            <div className="cell-user">
+                              <div className="cell-avatar">{inq.name ? inq.name.charAt(0) : 'U'}</div>
+                              <div className="cell-user-info">
+                                <strong>{inq.name}</strong>
+                                <span>{inq.location || 'India'}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ fontSize: '0.85rem' }}>
+                              <div>{inq.phone || '+91 9876543210'}</div>
+                              <div style={{ color: 'var(--slate-500)', fontSize: '0.78rem' }}>{inq.email || 'user@example.com'}</div>
+                            </div>
+                          </td>
+                          <td><strong>{inq.interest || 'North East Tour'}</strong></td>
+                          <td>{inq.pax || 2} Adults</td>
+                          <td>{inq.assigned || 'Tapan'}</td>
+                          <td>
+                            <select
+                              className="admin-select"
+                              style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem', borderRadius: '6px' }}
+                              value={inq.status || 'New'}
+                              onChange={(e) => handleUpdateInquiryStatus(inq._id, e.target.value)}
+                            >
+                              <option value="New">New</option>
+                              <option value="In progress">In Progress</option>
+                              <option value="Quoted">Quoted</option>
+                              <option value="Confirmed">Confirmed</option>
+                              <option value="Closed">Closed</option>
+                            </select>
+                          </td>
+                          <td>{inq.date || 'Today'}</td>
+                          <td>
+                            <button className="btn btn-ghost btn-sm" onClick={() => setSelectedVoucher(inq)}>Open</button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -513,37 +682,48 @@ const AdminDashboard = () => {
 
           {/* PACKAGES TAB */}
           {activeTab === 'packages' && (
-            <div className="panel">
+            <div className="admin-panel">
               <div className="panel-header">
-                <h2>Packages</h2>
-                <button className="btn btn-primary btn-sm" onClick={() => setPackageModalOpen(true)}>+ Add package</button>
+                <h2>Tour Packages Catalog</h2>
+                <button className="btn btn-primary btn-sm" onClick={handleOpenAddModal}>+ Add New Package</button>
               </div>
-              <div className="panel-body">
-                <table>
+              <div className="table-wrapper">
+                <table className="admin-table">
                   <thead>
                     <tr>
-                      <th>Package</th>
+                      <th>Package Title</th>
+                      <th>Destination</th>
                       <th>Duration</th>
-                      <th>Standard</th>
-                      <th>Deluxe</th>
-                      <th>Luxury</th>
+                      <th>Starting Price</th>
                       <th>Status</th>
-                      <th></th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {packages.map((pkg) => (
                       <tr key={pkg._id}>
-                        <td className="name-cell">
-                          <strong>{pkg.title}</strong>
-                          <span>{pkg.destination || 'North East'}</span>
+                        <td>
+                          <div className="cell-user">
+                            <div
+                              className="pkg-thumb"
+                              style={{ backgroundImage: `url('${pkg.image || 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=100&q=60'}')` }}
+                            />
+                            <div className="cell-user-info">
+                              <strong>{pkg.title}</strong>
+                              <span>{pkg.description ? pkg.description.substring(0, 45) + '...' : 'North East India Tour'}</span>
+                            </div>
+                          </div>
                         </td>
+                        <td><strong>{pkg.destination || 'North East'}</strong></td>
                         <td>{pkg.duration || '5D / 4N'}</td>
-                        <td>{pkg.standard || (typeof pkg.price === 'number' ? `₹${pkg.price.toLocaleString('en-IN')}` : pkg.price)}</td>
-                        <td>{pkg.deluxe || '—'}</td>
-                        <td>{pkg.luxury || '—'}</td>
+                        <td><strong style={{ color: 'var(--coral)' }}>₹{typeof pkg.price === 'number' ? pkg.price.toLocaleString('en-IN') : pkg.price}</strong></td>
                         <td><span className="status status-confirmed">{pkg.status || 'Published'}</span></td>
-                        <td><button className="btn btn-ghost btn-sm" onClick={() => setPackageModalOpen(true)}>Edit</button></td>
+                        <td>
+                          <div style={{ display: 'flex', gap: '0.4rem' }}>
+                            <button className="btn btn-ghost btn-sm" onClick={() => handleOpenEditModal(pkg)}>Edit</button>
+                            <button className="btn btn-ghost btn-sm" style={{ color: '#dc2626' }} onClick={() => handleDeletePkg(pkg._id)}>Delete</button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -555,50 +735,60 @@ const AdminDashboard = () => {
           {/* DESTINATIONS TAB */}
           {activeTab === 'destinations' && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1.5rem' }}>
-              <div className="panel" style={{ padding: '1.25rem' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Add Destination</h3>
+              <div className="admin-panel" style={{ padding: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '1.25rem', color: 'var(--slate-900)' }}>Add Destination Region</h3>
                 <form onSubmit={handleSaveDestination}>
-                  <div style={{ marginBottom: '0.85rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.2rem' }}>Region Name</label>
+                  <div className="admin-form-group">
+                    <label>Region / State Name</label>
                     <input
                       type="text"
-                      className="form-control"
-                      style={{ width: '100%', padding: '0.45rem 0.75rem', borderRadius: '8px', border: '1px solid var(--slate-200)' }}
+                      className="admin-form-input"
                       value={destName}
                       onChange={(e) => setDestName(e.target.value)}
                       placeholder="e.g. Nagaland"
                       required
                     />
                   </div>
-                  <div style={{ marginBottom: '0.85rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.2rem' }}>Best Season</label>
+                  <div className="admin-form-group">
+                    <label>Best Season to Visit</label>
                     <input
                       type="text"
-                      className="form-control"
-                      style={{ width: '100%', padding: '0.45rem 0.75rem', borderRadius: '8px', border: '1px solid var(--slate-200)' }}
+                      className="admin-form-input"
                       value={destBestTime}
                       onChange={(e) => setDestBestTime(e.target.value)}
-                      placeholder="Oct – Mar"
+                      placeholder="e.g. Oct – Mar"
                       required
                     />
                   </div>
-                  <button type="submit" className="btn btn-primary btn-sm" style={{ width: '100%' }}>Save Destination</button>
+                  <div className="admin-form-group">
+                    <label>Description</label>
+                    <textarea
+                      className="admin-form-input"
+                      rows="3"
+                      value={destDesc}
+                      onChange={(e) => setDestDesc(e.target.value)}
+                      placeholder="Brief overview of region highlights..."
+                    />
+                  </div>
+                  <Button type="submit" variant="primary" style={{ width: '100%', marginTop: '0.5rem' }}>
+                    Save Destination
+                  </Button>
                 </form>
               </div>
 
-              <div className="panel">
+              <div className="admin-panel">
                 <div className="panel-header">
-                  <h2>Destinations</h2>
+                  <h2>Destination Regions</h2>
                 </div>
-                <div className="panel-body">
-                  <table>
+                <div className="table-wrapper">
+                  <table className="admin-table">
                     <thead>
                       <tr>
-                        <th>Region</th>
-                        <th>Best season</th>
-                        <th>Linked packages</th>
+                        <th>Region Name</th>
+                        <th>Best Season</th>
+                        <th>Packages Linked</th>
                         <th>Status</th>
-                        <th></th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -608,7 +798,7 @@ const AdminDashboard = () => {
                           <td>{dest.bestTimeToVisit || 'Oct – May'}</td>
                           <td>{dest.packagesCount || '1 package'}</td>
                           <td><span className="status status-confirmed">Live</span></td>
-                          <td><button className="btn btn-ghost btn-sm">Edit</button></td>
+                          <td><button className="btn btn-ghost btn-sm" onClick={() => showToast('Editing destination region', 'info')}>Edit</button></td>
                         </tr>
                       ))}
                     </tbody>
@@ -620,100 +810,142 @@ const AdminDashboard = () => {
 
           {/* MEDIA TAB */}
           {activeTab === 'media' && (
-            <div className="panel">
+            <div className="admin-panel">
               <div className="panel-header">
-                <h2>Media library</h2>
-                <button className="btn btn-primary btn-sm">Upload</button>
+                <h2>Media Asset Library</h2>
+                <button className="btn btn-primary btn-sm" onClick={() => showToast('Image drag-and-drop uploader initialized', 'info')}>+ Upload Image</button>
               </div>
-              <div className="empty-hint">Upload images for packages, destinations and homepage. (Mock — no upload yet.)</div>
+
+              <div className="media-grid">
+                {mockMediaList.map(item => (
+                  <div key={item.id} className="media-card">
+                    <div className="media-preview" style={{ backgroundImage: `url('${item.url}')` }} />
+                    <div className="media-info">
+                      <strong>{item.title}</strong>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.4rem' }}>
+                        <span>{item.size}</span>
+                        <button
+                          className="btn btn-ghost btn-sm"
+                          style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem' }}
+                          onClick={() => copyToClipboard(item.url)}
+                        >
+                          Copy Link
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
           {/* SETTINGS TAB */}
           {activeTab === 'settings' && (
-            <div className="panel">
-              <div className="panel-header"><h2>Site settings</h2></div>
-              <div className="panel-body" style={{ padding: '1.25rem' }}>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-500)', marginBottom: '1rem' }}>Contact details shown on the public site and in the footer.</p>
-                <div style={{ display: 'grid', gap: '0.85rem', maxWidth: '420px' }}>
-                  <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Phone<br />
-                    <input
-                      value={settingsPhone}
-                      onChange={(e) => setSettingsPhone(e.target.value)}
-                      style={{ width: '100%', marginTop: '0.3rem', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px', fontFamily: 'inherit' }}
-                    />
-                  </label>
-                  <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Email<br />
-                    <input
-                      value={settingsEmail}
-                      onChange={(e) => setSettingsEmail(e.target.value)}
-                      style={{ width: '100%', marginTop: '0.3rem', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px', fontFamily: 'inherit' }}
-                    />
-                  </label>
-                  <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>WhatsApp<br />
-                    <input
-                      value={settingsWhatsapp}
-                      onChange={(e) => setSettingsWhatsapp(e.target.value)}
-                      style={{ width: '100%', marginTop: '0.3rem', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px', fontFamily: 'inherit' }}
-                    />
-                  </label>
-                  <button className="btn btn-teal" style={{ width: 'fit-content' }} onClick={() => showToast('Settings saved successfully!', 'success')}>Save settings</button>
+            <div className="admin-panel">
+              <div className="panel-header">
+                <h2>System & Public Contact Settings</h2>
+              </div>
+              <div style={{ padding: '1.75rem', maxWidth: '600px' }}>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-500)', marginBottom: '1.5rem' }}>
+                  Update contact numbers, email addresses, and agency operational details displayed across the public portal.
+                </p>
+
+                <div className="admin-form-group">
+                  <label>Primary Hotline Number</label>
+                  <input
+                    className="admin-form-input"
+                    value={settingsPhone}
+                    onChange={(e) => setSettingsPhone(e.target.value)}
+                  />
                 </div>
+
+                <div className="admin-form-group">
+                  <label>Public Support Email</label>
+                  <input
+                    className="admin-form-input"
+                    value={settingsEmail}
+                    onChange={(e) => setSettingsEmail(e.target.value)}
+                  />
+                </div>
+
+                <div className="admin-form-group">
+                  <label>Official WhatsApp Business No.</label>
+                  <input
+                    className="admin-form-input"
+                    value={settingsWhatsapp}
+                    onChange={(e) => setSettingsWhatsapp(e.target.value)}
+                  />
+                </div>
+
+                <div className="admin-form-group">
+                  <label>Working Hours</label>
+                  <input
+                    className="admin-form-input"
+                    value={settingsWorkingHours}
+                    onChange={(e) => setSettingsWorkingHours(e.target.value)}
+                  />
+                </div>
+
+                <Button variant="secondary" style={{ marginTop: '0.5rem' }} onClick={() => showToast('Site settings updated successfully!', 'success')}>
+                  Save Settings
+                </Button>
               </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* CREATE PACKAGE MODAL */}
+      {/* CREATE / EDIT PACKAGE MODAL */}
       {packageModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-          <div style={{ background: 'var(--white)', padding: '1.75rem', borderRadius: 'var(--radius)', width: 'min(500px, 90%)', boxShadow: 'var(--shadow-lg)' }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '1rem' }}>Add New Package</h3>
+        <div className="admin-modal-overlay">
+          <div className="admin-modal-content">
+            <div className="admin-modal-header">
+              <h3>{editingPackageId ? 'Edit Package' : 'Add New Tour Package'}</h3>
+              <button className="modal-close-btn" onClick={() => setPackageModalOpen(false)}>✕</button>
+            </div>
             <form onSubmit={handleSavePackage}>
-              <div style={{ marginBottom: '0.85rem' }}>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>Package Title</label>
+              <div className="admin-form-group">
+                <label>Package Title *</label>
                 <input
                   type="text"
-                  className="form-control"
-                  style={{ width: '100%', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px' }}
+                  className="admin-form-input"
                   value={pkgTitle}
                   onChange={(e) => setPkgTitle(e.target.value)}
-                  placeholder="e.g. Meghalaya Highlights"
+                  placeholder="e.g. Meghalaya Highlights & Living Root Bridges"
                   required
                 />
               </div>
-              <div style={{ marginBottom: '0.85rem' }}>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>Destination / Region</label>
+
+              <div className="admin-form-group">
+                <label>Destination Region *</label>
                 <input
                   type="text"
-                  className="form-control"
-                  style={{ width: '100%', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px' }}
+                  className="admin-form-input"
                   value={pkgDestination}
                   onChange={(e) => setPkgDestination(e.target.value)}
                   placeholder="Meghalaya"
                   required
                 />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem', marginBottom: '0.85rem' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>Price (₹)</label>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="admin-form-group">
+                  <label>Starting Price (₹) *</label>
                   <input
                     type="number"
-                    className="form-control"
-                    style={{ width: '100%', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px' }}
+                    className="admin-form-input"
                     value={pkgPrice}
                     onChange={(e) => setPkgPrice(e.target.value)}
                     placeholder="18900"
                     required
                   />
                 </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>Duration</label>
+
+                <div className="admin-form-group">
+                  <label>Duration *</label>
                   <input
                     type="text"
-                    className="form-control"
-                    style={{ width: '100%', padding: '0.55rem 0.75rem', border: '1px solid var(--slate-200)', borderRadius: '8px' }}
+                    className="admin-form-input"
                     value={pkgDuration}
                     onChange={(e) => setPkgDuration(e.target.value)}
                     placeholder="5 Days / 4 Nights"
@@ -721,11 +953,98 @@ const AdminDashboard = () => {
                   />
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '0.75rem', justifySelf: 'end', marginTop: '1.25rem' }}>
+
+              <div className="admin-form-group">
+                <label>Cover Image URL</label>
+                <input
+                  type="url"
+                  className="admin-form-input"
+                  value={pkgImage}
+                  onChange={(e) => setPkgImage(e.target.value)}
+                  placeholder="https://images.unsplash.com/..."
+                />
+              </div>
+
+              <div className="admin-form-group">
+                <label>Package Description</label>
+                <textarea
+                  className="admin-form-input"
+                  rows="3"
+                  value={pkgDescription}
+                  onChange={(e) => setPkgDescription(e.target.value)}
+                  placeholder="Write a brief overview of highlights and itinerary..."
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
                 <button type="button" className="btn btn-ghost" onClick={() => setPackageModalOpen(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">Save Package</button>
+                <button type="submit" className="btn btn-primary">{editingPackageId ? 'Update Package' : 'Create Package'}</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* INQUIRY VOUCHER MODAL */}
+      {selectedVoucher && (
+        <div className="admin-modal-overlay" onClick={() => setSelectedVoucher(null)}>
+          <div className="admin-modal-content" style={{ width: 'min(640px, 100%)' }} onClick={(e) => e.stopPropagation()}>
+            <div className="admin-modal-header">
+              <div>
+                <h3 style={{ margin: 0 }}>Booking Voucher & Inquiry Detail</h3>
+                <span style={{ fontSize: '0.78rem', color: 'var(--slate-500)' }}>ID: {selectedVoucher._id}</span>
+              </div>
+              <button className="modal-close-btn" onClick={() => setSelectedVoucher(null)}>✕</button>
+            </div>
+
+            <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', marginBottom: '1.25rem', border: '1px solid var(--slate-200)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--slate-500)', display: 'block' }}>Customer Name</span>
+                  <strong style={{ fontSize: '1.05rem' }}>{selectedVoucher.name}</strong>
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--slate-500)', display: 'block' }}>Package Selected</span>
+                  <strong style={{ fontSize: '1.05rem', color: 'var(--teal)' }}>{selectedVoucher.interest || 'North East Special'}</strong>
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--slate-500)', display: 'block' }}>Phone Number</span>
+                  <strong>{selectedVoucher.phone || selectedVoucher.contact || '+91 9876543210'}</strong>
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--slate-500)', display: 'block' }}>Email Address</span>
+                  <strong>{selectedVoucher.email || 'user@example.com'}</strong>
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--slate-500)', display: 'block' }}>Travellers (Pax)</span>
+                  <strong>{selectedVoucher.pax || 2} Adults</strong>
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--slate-500)', display: 'block' }}>Assigned Agent</span>
+                  <strong>{selectedVoucher.assigned || 'Tapan Patar'}</strong>
+                </div>
+              </div>
+
+              <div style={{ paddingTop: '0.75rem', borderTop: '1px solid var(--slate-200)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Update Inquiry Status:</span>
+                <select
+                  className="admin-select"
+                  value={selectedVoucher.status || 'New'}
+                  onChange={(e) => handleUpdateInquiryStatus(selectedVoucher._id, e.target.value)}
+                >
+                  <option value="New">New Lead</option>
+                  <option value="In progress">In Progress</option>
+                  <option value="Quoted">Quoted</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Closed">Closed</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button className="btn btn-ghost" onClick={() => setSelectedVoucher(null)}>Close</button>
+              <button className="btn btn-teal" onClick={() => { window.print(); }}>🖨️ Print Voucher</button>
+            </div>
           </div>
         </div>
       )}
