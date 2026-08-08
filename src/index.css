@@ -3863,7 +3863,7 @@ footer {
 .admin-modal-content {
   background: var(--white);
   border-radius: 16px;
-  width: min(560px, 100%);
+  width: min(680px, 100%);
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -3875,7 +3875,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   padding-bottom: 0.85rem;
   border-bottom: 1px solid var(--slate-100);
 }
@@ -3906,6 +3906,37 @@ footer {
   color: var(--slate-900);
 }
 
+/* Modal Sub-Tabs for Detailed Package Creation */
+.modal-nav-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--slate-200);
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+}
+
+.modal-tab-btn {
+  padding: 0.55rem 0.9rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--slate-500);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.modal-tab-btn:hover {
+  color: var(--slate-900);
+}
+
+.modal-tab-btn.active {
+  color: var(--teal);
+  border-bottom-color: var(--teal);
+}
+
 /* Form Controls in Modal */
 .admin-form-group {
   margin-bottom: 1rem;
@@ -3934,6 +3965,38 @@ footer {
 .admin-form-input:focus {
   border-color: var(--teal);
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+}
+
+.admin-form-hint {
+  font-size: 0.75rem;
+  color: var(--slate-500);
+  margin-top: 0.25rem;
+}
+
+/* Dynamic Itinerary Builder Cards */
+.itinerary-builder-card {
+  background: #f8fafc;
+  border: 1px solid var(--slate-200);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.85rem;
+  position: relative;
+}
+
+.itinerary-builder-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+}
+
+.itinerary-day-tag {
+  background: #ccfbf1;
+  color: var(--teal);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
 }
 
 /* Mobile responsive drawer */

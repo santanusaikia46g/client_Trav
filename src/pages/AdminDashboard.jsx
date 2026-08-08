@@ -29,10 +29,91 @@ const defaultEnquiriesList = [
 ];
 
 const defaultPackagesList = [
-  { _id: 'meghalaya-1', title: 'Meghalaya Highlights', destination: 'Meghalaya', duration: '5D / 4N', standard: '₹18,900', deluxe: '₹24,900', luxury: '₹34,900', status: 'Published', price: 18900, image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80', description: 'Explore Cherrapunji, Dawki river, and Living Root Bridges.' },
-  { _id: 'assam-1', title: 'Kaziranga Safari', destination: 'Assam', duration: '3D / 2N', standard: '₹12,500', deluxe: '₹16,900', luxury: '₹22,500', status: 'Published', price: 12500, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80', description: 'Wild Rhino safari and Majuli river island cultural tour.' },
-  { _id: 'arunachal-1', title: 'Tawang Circuit', destination: 'Arunachal Pradesh', duration: '7D / 6N', standard: '₹34,900', deluxe: '₹42,900', luxury: '₹55,900', status: 'Published', price: 34900, image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&q=80', description: 'Sela Pass, Tawang Monastery, and Bum La Pass border.' },
-  { _id: 'sikkim-1', title: 'Sikkim Essentials', destination: 'Sikkim', duration: '6D / 5N', standard: '₹28,500', deluxe: '₹35,000', luxury: '₹48,000', status: 'Published', price: 28500, image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80', description: 'Gangtok, Nathula Pass and majestic Tsomgo Lake.' }
+  {
+    _id: 'meghalaya-1',
+    title: 'Meghalaya Highlights',
+    destination: 'Meghalaya',
+    duration: '5D / 4N',
+    standard: '₹18,900',
+    deluxe: '₹24,900',
+    luxury: '₹34,900',
+    status: 'Published',
+    price: 18900,
+    image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80',
+    description: 'Explore Cherrapunji, Dawki river, and Living Root Bridges.',
+    highlights: ['Double-decker living root bridge trek', 'Nohkalikai & Seven Sisters waterfalls', 'Crystal-clear Dawki river', 'Shillong city & Ward’s Lake'],
+    included: ['3★ / 4★ Hotel Accommodation', 'Daily breakfast', 'Private AC vehicle', 'Driver allowances & entry tickets'],
+    excluded: ['Airfare / train tickets', 'Lunch & dinner', 'Personal expenses'],
+    itinerary: [
+      { day: 1, title: 'Guwahati → Shillong', desc: 'Pick up & scenic drive to Shillong. Check in and visit Ward’s Lake.' },
+      { day: 2, title: 'Shillong → Cherrapunji', desc: 'Visit Nohkalikai Falls, Seven Sisters Falls & Mawsmai Cave.' },
+      { day: 3, title: 'Living Root Bridge Trek', desc: 'Trek to Nongriat double-decker living root bridge.' },
+      { day: 4, title: 'Dawki Boating & Mawlynnong', desc: 'Crystal clear Umngot river boating and cleanest village tour.' },
+      { day: 5, title: 'Shillong → Guwahati Departure', desc: 'Return drive to Guwahati airport/railway station.' }
+    ]
+  },
+  {
+    _id: 'assam-1',
+    title: 'Kaziranga Safari',
+    destination: 'Assam',
+    duration: '3D / 2N',
+    standard: '₹12,500',
+    deluxe: '₹16,900',
+    luxury: '₹22,500',
+    status: 'Published',
+    price: 12500,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80',
+    description: 'Wild Rhino safari and Majuli river island cultural tour.',
+    highlights: ['Jeep & Elephant Safaris in Kaziranga NP', 'One-horned Rhinoceros Sighting', 'Orchid Park visit'],
+    included: ['3★ Eco Resort Stay', 'Jeep Safari Pass', 'Daily Breakfast', 'Private transfers'],
+    excluded: ['Camera fees', 'Personal expenses'],
+    itinerary: [
+      { day: 1, title: 'Guwahati → Kaziranga', desc: 'Pick up and transfer to Kaziranga jungle resort.' },
+      { day: 2, title: 'Kaziranga Safaris', desc: 'Early morning safari & afternoon Jeep safari.' },
+      { day: 3, title: 'Kaziranga → Guwahati Departure', desc: 'Return drive to Guwahati.' }
+    ]
+  },
+  {
+    _id: 'arunachal-1',
+    title: 'Tawang Circuit',
+    destination: 'Arunachal Pradesh',
+    duration: '7D / 6N',
+    standard: '₹34,900',
+    deluxe: '₹42,900',
+    luxury: '₹55,900',
+    status: 'Published',
+    price: 34900,
+    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&q=80',
+    description: 'Sela Pass, Tawang Monastery, and Bum La Pass border.',
+    highlights: ['Sela Pass at 13,700 ft', 'Tawang Monastery', 'Sangetsar (Madhuri) Lake'],
+    included: ['Boutique mountain stays', 'Inner Line Permit (ILP)', '4x4 SUV Transfer'],
+    excluded: ['Bum La Pass surcharge', 'Airfare/Train tickets'],
+    itinerary: [
+      { day: 1, title: 'Guwahati → Dirang', desc: 'Drive to Eastern Himalayas.' },
+      { day: 2, title: 'Dirang → Sela Pass → Tawang', desc: 'Drive across Sela Pass to Tawang.' },
+      { day: 3, title: 'Tawang Monastery Tour', desc: 'Explore Tawang Monastery and War Memorial.' }
+    ]
+  },
+  {
+    _id: 'sikkim-1',
+    title: 'Sikkim Essentials',
+    destination: 'Sikkim',
+    duration: '6D / 5N',
+    standard: '₹28,500',
+    deluxe: '₹35,000',
+    luxury: '₹48,000',
+    status: 'Published',
+    price: 28500,
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',
+    description: 'Gangtok, Nathula Pass and majestic Tsomgo Lake.',
+    highlights: ['Glacial Tsomgo Lake', 'Rumtek Monastery', 'Kanchenjunga views'],
+    included: ['3★ Hotel Stays', 'Tsomgo Lake Permits', 'Daily Breakfast'],
+    excluded: ['Nathula Pass fee', 'Airfare/Train tickets'],
+    itinerary: [
+      { day: 1, title: 'Bagdogra → Gangtok', desc: 'Transfer to Gangtok and MG Marg walk.' },
+      { day: 2, title: 'Tsomgo Lake Excursion', desc: 'Visit high altitude Tsomgo Lake.' }
+    ]
+  }
 ];
 
 const defaultDestinationsList = [
@@ -68,7 +149,6 @@ const AdminDashboard = () => {
   const [destinations, setDestinations] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [activityLogs, setActivityLogs] = useState([]);
-  const [dataLoading, setDataLoading] = useState(false);
 
   // Filters
   const [searchTerm, setSearchTerm] = useState('');
@@ -79,21 +159,30 @@ const AdminDashboard = () => {
   const [settingsPhone, setSettingsPhone] = useState('+91 98765 43210');
   const [settingsEmail, setSettingsEmail] = useState('hello@travmitraa.com');
   const [settingsWhatsapp, setSettingsWhatsapp] = useState('919876543210');
-  const [settingsCurrency, setSettingsCurrency] = useState('INR (₹)');
   const [settingsWorkingHours, setSettingsWorkingHours] = useState('Mon - Sat: 9:00 AM - 7:00 PM');
 
   // Modal / Form States
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [packageModalOpen, setPackageModalOpen] = useState(false);
   const [editingPackageId, setEditingPackageId] = useState(null);
+  const [modalTab, setModalTab] = useState('basic'); // 'basic' | 'tiers' | 'highlights' | 'itinerary'
 
-  // Form Fields
+  // Detailed Package Form Fields
   const [pkgTitle, setPkgTitle] = useState('');
   const [pkgDescription, setPkgDescription] = useState('');
   const [pkgPrice, setPkgPrice] = useState('');
+  const [pkgPriceDeluxe, setPkgPriceDeluxe] = useState('');
+  const [pkgPriceLuxury, setPkgPriceLuxury] = useState('');
   const [pkgDuration, setPkgDuration] = useState('');
   const [pkgDestination, setPkgDestination] = useState('');
+  const [pkgCategory, setPkgCategory] = useState('Standard');
   const [pkgImage, setPkgImage] = useState('');
+  const [pkgHighlights, setPkgHighlights] = useState('');
+  const [pkgInclusions, setPkgInclusions] = useState('');
+  const [pkgExclusions, setPkgExclusions] = useState('');
+  const [pkgItinerary, setPkgItinerary] = useState([
+    { day: 1, title: '', desc: '' }
+  ]);
 
   // Destination Form Fields
   const [destName, setDestName] = useState('');
@@ -133,7 +222,6 @@ const AdminDashboard = () => {
   };
 
   const loadData = async () => {
-    setDataLoading(true);
     try {
       const [pkgs, inqs, dests] = await Promise.all([
         getPackages().catch(() => []),
@@ -152,8 +240,6 @@ const AdminDashboard = () => {
       setPackages(defaultPackagesList);
       setInquiries(defaultEnquiriesList);
       setDestinations(defaultDestinationsList);
-    } finally {
-      setDataLoading(false);
     }
   };
 
@@ -186,56 +272,115 @@ const AdminDashboard = () => {
 
   const handleOpenAddModal = () => {
     setEditingPackageId(null);
+    setModalTab('basic');
     setPkgTitle('');
     setPkgDescription('');
     setPkgPrice('');
+    setPkgPriceDeluxe('');
+    setPkgPriceLuxury('');
     setPkgDuration('');
     setPkgDestination('');
+    setPkgCategory('Standard');
     setPkgImage('');
+    setPkgHighlights('Living root bridge trek\nNohkalikai waterfalls\nDawki crystal river boating\nTraditional Khasi village tour');
+    setPkgInclusions('Accommodation in chosen category\nDaily breakfast\nPrivate AC vehicle for transfers\nDriver allowances & taxes');
+    setPkgExclusions('Airfare / train tickets\nPersonal expenses & tips\nLunch & dinner unless specified');
+    setPkgItinerary([
+      { day: 1, title: 'Arrival & Hotel Check-in', desc: 'Pick up from airport or railway station and transfer to hotel. Evening at leisure.' },
+      { day: 2, title: 'Full Day Sightseeing Tour', desc: 'Visit famous waterfalls, caves, and scenic mountain viewpoints.' }
+    ]);
     setPackageModalOpen(true);
   };
 
   const handleOpenEditModal = (pkg) => {
     setEditingPackageId(pkg._id);
+    setModalTab('basic');
     setPkgTitle(pkg.title || '');
-    setPkgDescription(pkg.description || '');
+    setPkgDescription(pkg.description || pkg.subtitle || '');
     setPkgPrice(pkg.price ? String(pkg.price) : '');
+    setPkgPriceDeluxe(pkg.deluxe ? pkg.deluxe.replace(/[^0-9]/g, '') : '');
+    setPkgPriceLuxury(pkg.luxury ? pkg.luxury.replace(/[^0-9]/g, '') : '');
     setPkgDuration(pkg.duration || '');
     setPkgDestination(pkg.destination || '');
-    setPkgImage(pkg.image || '');
+    setPkgImage(pkg.image || pkg.heroImage || '');
+    setPkgCategory(pkg.category || 'Standard');
+
+    setPkgHighlights(Array.isArray(pkg.highlights) ? pkg.highlights.join('\n') : (pkg.highlights || ''));
+    setPkgInclusions(Array.isArray(pkg.included) ? pkg.included.join('\n') : (Array.isArray(pkg.inclusions) ? pkg.inclusions.join('\n') : (pkg.included || '')));
+    setPkgExclusions(Array.isArray(pkg.excluded) ? pkg.excluded.join('\n') : (Array.isArray(pkg.exclusions) ? pkg.exclusions.join('\n') : (pkg.excluded || '')));
+
+    if (Array.isArray(pkg.itinerary) && pkg.itinerary.length > 0) {
+      setPkgItinerary(pkg.itinerary.map((item, idx) => ({
+        day: idx + 1,
+        title: item.title || '',
+        desc: item.desc || item.description || ''
+      })));
+    } else {
+      setPkgItinerary([
+        { day: 1, title: 'Arrival & Hotel Check-in', desc: 'Pick up and check-in to hotel.' }
+      ]);
+    }
     setPackageModalOpen(true);
+  };
+
+  const handleAddItineraryDay = () => {
+    setPkgItinerary(prev => [
+      ...prev,
+      { day: prev.length + 1, title: '', desc: '' }
+    ]);
+  };
+
+  const handleRemoveItineraryDay = (index) => {
+    setPkgItinerary(prev => {
+      const updated = prev.filter((_, i) => i !== index);
+      return updated.map((item, i) => ({ ...item, day: i + 1 }));
+    });
+  };
+
+  const handleUpdateItineraryDay = (index, field, value) => {
+    setPkgItinerary(prev => prev.map((item, i) => i === index ? { ...item, [field]: value } : item));
   };
 
   const handleSavePackage = async (e) => {
     e.preventDefault();
     if (!pkgTitle.trim() || !pkgPrice.trim() || !pkgDuration.trim() || !pkgDestination.trim()) {
-      showToast('Please fill in required package fields', 'error');
+      showToast('Please fill in required basic fields (Title, Destination, Price, Duration)', 'error');
+      setModalTab('basic');
       return;
     }
 
+    const formattedPrice = Number(pkgPrice);
     const payload = {
       title: pkgTitle,
       description: pkgDescription,
-      price: Number(pkgPrice),
+      price: formattedPrice,
+      standard: `₹${formattedPrice.toLocaleString('en-IN')}`,
+      deluxe: pkgPriceDeluxe ? `₹${Number(pkgPriceDeluxe).toLocaleString('en-IN')}` : '—',
+      luxury: pkgPriceLuxury ? `₹${Number(pkgPriceLuxury).toLocaleString('en-IN')}` : '—',
       duration: pkgDuration,
       destination: pkgDestination,
-      image: pkgImage || 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80'
+      category: pkgCategory,
+      image: pkgImage || 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80',
+      highlights: pkgHighlights.split('\n').map(s => s.trim()).filter(Boolean),
+      included: pkgInclusions.split('\n').map(s => s.trim()).filter(Boolean),
+      excluded: pkgExclusions.split('\n').map(s => s.trim()).filter(Boolean),
+      itinerary: pkgItinerary.filter(i => i.title.trim()).map((item, i) => ({ day: i + 1, title: item.title, desc: item.desc }))
     };
 
     try {
       if (editingPackageId) {
         await updatePackage(editingPackageId, payload).catch(() => null);
         setPackages(prev => prev.map(p => p._id === editingPackageId ? { ...p, ...payload } : p));
-        showToast('Package updated successfully!', 'success');
+        showToast('Package updated with full details!', 'success');
       } else {
         const created = await createPackage(payload).catch(() => ({ _id: `pkg-${Date.now()}`, ...payload }));
         setPackages(prev => [created, ...prev]);
-        showToast('Package created successfully!', 'success');
+        showToast('Detailed package created successfully!', 'success');
       }
       setPackageModalOpen(false);
     } catch (err) {
       console.error(err);
-      showToast('Error saving package', 'error');
+      showToast('Error saving detailed package', 'error');
     }
   };
 
@@ -375,7 +520,6 @@ const AdminDashboard = () => {
     return matchesSearch && matchesStatus && matchesPkg;
   });
 
-  // Calculate dynamic stats
   const newLeadsCount = inquiries.filter(i => (i.status || '').toLowerCase() === 'new').length;
   const openLeadsCount = inquiries.filter(i => ['in progress', 'quoted'].includes((i.status || '').toLowerCase())).length;
   const confirmedCount = inquiries.filter(i => (i.status || '').toLowerCase() === 'confirmed').length;
@@ -513,7 +657,7 @@ const AdminDashboard = () => {
               <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem' }}>
                 <div className="admin-panel">
                   <div className="panel-header">
-                    <h2> Recent Lead Activity</h2>
+                    <h2>Recent Lead Activity</h2>
                     <button className="btn btn-ghost btn-sm" onClick={() => setActiveTab('enquiries')}>View All ({inquiries.length})</button>
                   </div>
                   <div className="table-wrapper">
@@ -694,7 +838,9 @@ const AdminDashboard = () => {
                       <th>Package Title</th>
                       <th>Destination</th>
                       <th>Duration</th>
-                      <th>Starting Price</th>
+                      <th>Standard</th>
+                      <th>Deluxe</th>
+                      <th>Luxury</th>
                       <th>Status</th>
                       <th>Actions</th>
                     </tr>
@@ -716,11 +862,13 @@ const AdminDashboard = () => {
                         </td>
                         <td><strong>{pkg.destination || 'North East'}</strong></td>
                         <td>{pkg.duration || '5D / 4N'}</td>
-                        <td><strong style={{ color: 'var(--coral)' }}>₹{typeof pkg.price === 'number' ? pkg.price.toLocaleString('en-IN') : pkg.price}</strong></td>
+                        <td><strong style={{ color: 'var(--slate-900)' }}>{pkg.standard || (typeof pkg.price === 'number' ? `₹${pkg.price.toLocaleString('en-IN')}` : pkg.price)}</strong></td>
+                        <td><span style={{ color: 'var(--teal)', fontWeight: 600 }}>{pkg.deluxe || '—'}</span></td>
+                        <td><span style={{ color: 'var(--coral)', fontWeight: 600 }}>{pkg.luxury || '—'}</span></td>
                         <td><span className="status status-confirmed">{pkg.status || 'Published'}</span></td>
                         <td>
                           <div style={{ display: 'flex', gap: '0.4rem' }}>
-                            <button className="btn btn-ghost btn-sm" onClick={() => handleOpenEditModal(pkg)}>Edit</button>
+                            <button className="btn btn-ghost btn-sm" onClick={() => handleOpenEditModal(pkg)}>Edit Details</button>
                             <button className="btn btn-ghost btn-sm" style={{ color: '#dc2626' }} onClick={() => handleDeletePkg(pkg._id)}>Delete</button>
                           </div>
                         </td>
@@ -895,90 +1043,271 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* CREATE / EDIT PACKAGE MODAL */}
+      {/* ENHANCED CREATE / EDIT PACKAGE MODAL WITH DETAILS */}
       {packageModalOpen && (
         <div className="admin-modal-overlay">
           <div className="admin-modal-content">
             <div className="admin-modal-header">
-              <h3>{editingPackageId ? 'Edit Package' : 'Add New Tour Package'}</h3>
+              <h3>{editingPackageId ? 'Edit Package Details' : 'Create New Detailed Package'}</h3>
               <button className="modal-close-btn" onClick={() => setPackageModalOpen(false)}>✕</button>
             </div>
+
+            {/* Modal Sub-Tabs */}
+            <div className="modal-nav-tabs">
+              <button className={`modal-tab-btn ${modalTab === 'basic' ? 'active' : ''}`} onClick={() => setModalTab('basic')}>
+                1. Basic Details
+              </button>
+              <button className={`modal-tab-btn ${modalTab === 'tiers' ? 'active' : ''}`} onClick={() => setModalTab('tiers')}>
+                2. Tiered Pricing
+              </button>
+              <button className={`modal-tab-btn ${modalTab === 'highlights' ? 'active' : ''}`} onClick={() => setModalTab('highlights')}>
+                3. Highlights & Inclusions
+              </button>
+              <button className={`modal-tab-btn ${modalTab === 'itinerary' ? 'active' : ''}`} onClick={() => setModalTab('itinerary')}>
+                4. Day-wise Itinerary ({pkgItinerary.length})
+              </button>
+            </div>
+
             <form onSubmit={handleSavePackage}>
-              <div className="admin-form-group">
-                <label>Package Title *</label>
-                <input
-                  type="text"
-                  className="admin-form-input"
-                  value={pkgTitle}
-                  onChange={(e) => setPkgTitle(e.target.value)}
-                  placeholder="e.g. Meghalaya Highlights & Living Root Bridges"
-                  required
-                />
-              </div>
+              {/* TAB 1: BASIC DETAILS */}
+              {modalTab === 'basic' && (
+                <div>
+                  <div className="admin-form-group">
+                    <label>Package Title *</label>
+                    <input
+                      type="text"
+                      className="admin-form-input"
+                      value={pkgTitle}
+                      onChange={(e) => setPkgTitle(e.target.value)}
+                      placeholder="e.g. Meghalaya Highlights & Living Root Bridges"
+                      required
+                    />
+                  </div>
 
-              <div className="admin-form-group">
-                <label>Destination Region *</label>
-                <input
-                  type="text"
-                  className="admin-form-input"
-                  value={pkgDestination}
-                  onChange={(e) => setPkgDestination(e.target.value)}
-                  placeholder="Meghalaya"
-                  required
-                />
-              </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="admin-form-group">
+                      <label>Destination Region *</label>
+                      <input
+                        type="text"
+                        className="admin-form-input"
+                        value={pkgDestination}
+                        onChange={(e) => setPkgDestination(e.target.value)}
+                        placeholder="e.g. Meghalaya"
+                        required
+                      />
+                    </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div className="admin-form-group">
-                  <label>Starting Price (₹) *</label>
-                  <input
-                    type="number"
-                    className="admin-form-input"
-                    value={pkgPrice}
-                    onChange={(e) => setPkgPrice(e.target.value)}
-                    placeholder="18900"
-                    required
-                  />
+                    <div className="admin-form-group">
+                      <label>Duration *</label>
+                      <input
+                        type="text"
+                        className="admin-form-input"
+                        value={pkgDuration}
+                        onChange={(e) => setPkgDuration(e.target.value)}
+                        placeholder="e.g. 5 Days / 4 Nights"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label>Cover Image URL</label>
+                    <input
+                      type="url"
+                      className="admin-form-input"
+                      value={pkgImage}
+                      onChange={(e) => setPkgImage(e.target.value)}
+                      placeholder="https://images.unsplash.com/photo-..."
+                    />
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label>Package Overview / Subtitle</label>
+                    <textarea
+                      className="admin-form-input"
+                      rows="3"
+                      value={pkgDescription}
+                      onChange={(e) => setPkgDescription(e.target.value)}
+                      placeholder="Living root bridges, cascading waterfalls, clean Khasi villages and wettest places on earth..."
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 2: TIERED PRICING */}
+              {modalTab === 'tiers' && (
+                <div>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--slate-500)', marginBottom: '1.25rem' }}>
+                    Set starting prices for different travel categories (Standard 3★, Deluxe 4★, Luxury 5★).
+                  </p>
+
+                  <div className="admin-form-group">
+                    <label>Standard Category Base Price (₹) *</label>
+                    <input
+                      type="number"
+                      className="admin-form-input"
+                      value={pkgPrice}
+                      onChange={(e) => setPkgPrice(e.target.value)}
+                      placeholder="18900"
+                      required
+                    />
+                    <span className="admin-form-hint">Displayed as starting price across package cards.</span>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="admin-form-group">
+                      <label>Deluxe Tier Price (₹)</label>
+                      <input
+                        type="number"
+                        className="admin-form-input"
+                        value={pkgPriceDeluxe}
+                        onChange={(e) => setPkgPriceDeluxe(e.target.value)}
+                        placeholder="24900"
+                      />
+                      <span className="admin-form-hint">4-Star hotel tier</span>
+                    </div>
+
+                    <div className="admin-form-group">
+                      <label>Luxury Tier Price (₹)</label>
+                      <input
+                        type="number"
+                        className="admin-form-input"
+                        value={pkgPriceLuxury}
+                        onChange={(e) => setPkgPriceLuxury(e.target.value)}
+                        placeholder="34900"
+                      />
+                      <span className="admin-form-hint">5-Star / Resort tier</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: HIGHLIGHTS & INCLUSIONS */}
+              {modalTab === 'highlights' && (
+                <div>
+                  <div className="admin-form-group">
+                    <label>Trip Key Highlights (One item per line)</label>
+                    <textarea
+                      className="admin-form-input"
+                      rows="4"
+                      value={pkgHighlights}
+                      onChange={(e) => setPkgHighlights(e.target.value)}
+                      placeholder={'Double-decker living root bridge trek\nNohkalikai & Seven Sisters waterfalls\nCrystal-clear Dawki river & Umngot\nShillong city & Ward’s Lake'}
+                    />
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="admin-form-group">
+                      <label>Included Facilities (One per line)</label>
+                      <textarea
+                        className="admin-form-input"
+                        rows="4"
+                        value={pkgInclusions}
+                        onChange={(e) => setPkgInclusions(e.target.value)}
+                        placeholder={'3★ / 4★ Hotel Accommodation\nDaily breakfast\nPrivate AC vehicle\nDriver allowances & entry permits'}
+                      />
+                    </div>
+
+                    <div className="admin-form-group">
+                      <label>Excluded Facilities (One per line)</label>
+                      <textarea
+                        className="admin-form-input"
+                        rows="4"
+                        value={pkgExclusions}
+                        onChange={(e) => setPkgExclusions(e.target.value)}
+                        placeholder={'Airfare / Train tickets\nLunch & dinner\nPersonal expenses & tips'}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 4: DAY-BY-DAY ITINERARY BUILDER */}
+              {modalTab === 'itinerary' && (
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--slate-500)' }}>Build detailed day-by-day travel plan</span>
+                    <button type="button" className="btn btn-teal btn-sm" onClick={handleAddItineraryDay}>+ Add Day</button>
+                  </div>
+
+                  {pkgItinerary.map((item, index) => (
+                    <div key={index} className="itinerary-builder-card">
+                      <div className="itinerary-builder-header">
+                        <span className="itinerary-day-tag">Day {index + 1}</span>
+                        {pkgItinerary.length > 1 && (
+                          <button
+                            type="button"
+                            style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}
+                            onClick={() => handleRemoveItineraryDay(index)}
+                          >
+                            Remove Day
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="admin-form-group" style={{ marginBottom: '0.5rem' }}>
+                        <input
+                          type="text"
+                          className="admin-form-input"
+                          value={item.title}
+                          onChange={(e) => handleUpdateItineraryDay(index, 'title', e.target.value)}
+                          placeholder={`Day ${index + 1} Title (e.g. Guwahati Arrival → Shillong)`}
+                        />
+                      </div>
+
+                      <div className="admin-form-group" style={{ margin: 0 }}>
+                        <textarea
+                          className="admin-form-input"
+                          rows="2"
+                          value={item.desc}
+                          onChange={(e) => handleUpdateItineraryDay(index, 'desc', e.target.value)}
+                          placeholder="Describe activities, travel route, and overnight stay..."
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Modal Footer Controls */}
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--slate-100)' }}>
+                <div>
+                  {modalTab !== 'basic' && (
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => {
+                        if (modalTab === 'tiers') setModalTab('basic');
+                        else if (modalTab === 'highlights') setModalTab('tiers');
+                        else if (modalTab === 'itinerary') setModalTab('highlights');
+                      }}
+                    >
+                      ← Back
+                    </button>
+                  )}
                 </div>
 
-                <div className="admin-form-group">
-                  <label>Duration *</label>
-                  <input
-                    type="text"
-                    className="admin-form-input"
-                    value={pkgDuration}
-                    onChange={(e) => setPkgDuration(e.target.value)}
-                    placeholder="5 Days / 4 Nights"
-                    required
-                  />
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <button type="button" className="btn btn-ghost" onClick={() => setPackageModalOpen(false)}>Cancel</button>
+
+                  {modalTab !== 'itinerary' ? (
+                    <button
+                      type="button"
+                      className="btn btn-teal"
+                      onClick={() => {
+                        if (modalTab === 'basic') setModalTab('tiers');
+                        else if (modalTab === 'tiers') setModalTab('highlights');
+                        else if (modalTab === 'highlights') setModalTab('itinerary');
+                      }}
+                    >
+                      Next Step →
+                    </button>
+                  ) : (
+                    <button type="submit" className="btn btn-primary">
+                      {editingPackageId ? 'Save Package Details' : 'Create Detailed Package'}
+                    </button>
+                  )}
                 </div>
-              </div>
-
-              <div className="admin-form-group">
-                <label>Cover Image URL</label>
-                <input
-                  type="url"
-                  className="admin-form-input"
-                  value={pkgImage}
-                  onChange={(e) => setPkgImage(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
-                />
-              </div>
-
-              <div className="admin-form-group">
-                <label>Package Description</label>
-                <textarea
-                  className="admin-form-input"
-                  rows="3"
-                  value={pkgDescription}
-                  onChange={(e) => setPkgDescription(e.target.value)}
-                  placeholder="Write a brief overview of highlights and itinerary..."
-                />
-              </div>
-
-              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
-                <button type="button" className="btn btn-ghost" onClick={() => setPackageModalOpen(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">{editingPackageId ? 'Update Package' : 'Create Package'}</button>
               </div>
             </form>
           </div>
