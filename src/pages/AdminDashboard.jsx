@@ -20,6 +20,41 @@ import {
   getActivityLogs
 } from '../services/api';
 
+const PRESET_COVER_IMAGES = [
+  { label: 'Living Root Bridge', url: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=800&q=80' },
+  { label: 'Kaziranga Safari', url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80' },
+  { label: 'Tawang Monastery', url: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800&q=80' },
+  { label: 'Sikkim Lakes', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80' },
+  { label: 'Brahmaputra Sunset', url: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=80' }
+];
+
+const HIGHLIGHT_PRESETS = [
+  'Cherrapunji & Nohkalikai Waterfalls',
+  'Double-Decker Living Root Bridge Trek',
+  'Crystal-Clear Dawki River Boating',
+  'Kaziranga Rhino Wildlife Safari',
+  'Tawang Monastery & Sela Pass',
+  'Gangtok & High Altitude Lakes',
+  'Mawlynnong Clean Village Tour'
+];
+
+const INCLUSION_PRESETS = [
+  '3★ / 4★ Hotel Accommodation',
+  'Daily Breakfast at Hotels',
+  'Private AC Vehicle & Driver Charges',
+  'Inner Line Permit (ILP) Processing',
+  'Experienced Local Tour Escort',
+  'Entry Tickets & Boat Charges'
+];
+
+const EXCLUSION_PRESETS = [
+  'Airfare / Train Tickets',
+  'Lunch & Dinner Expenses',
+  'Personal Expenses & Laundry',
+  'Tips for Drivers & Guides',
+  'Travel Insurance'
+];
+
 const defaultEnquiriesList = [
   { _id: 'enq-1', name: 'Riya Sharma', contact: '+91 98765 43210 · riya@example.com', interest: 'Meghalaya Highlights', pax: 2, assigned: 'Tapan', status: 'New', date: 'Today', email: 'riya@example.com', phone: '+91 98765 43210', location: 'New Delhi' },
   { _id: 'enq-2', name: 'Amit Das', contact: '+91 97654 32109 · amit@example.com', interest: 'Kaziranga Safari', pax: 4, assigned: 'Tapan', status: 'In progress', date: 'Yesterday', email: 'amit@example.com', phone: '+91 97654 32109', location: 'Kolkata' },
@@ -338,6 +373,29 @@ const AdminDashboard = () => {
 
   const handleUpdateItineraryDay = (index, field, value) => {
     setPkgItinerary(prev => prev.map((item, i) => i === index ? { ...item, [field]: value } : item));
+  };
+
+  const handleAddPresetText = (setter, currentVal, presetText) => {
+    const lines = currentVal ? currentVal.split('\n').map(s => s.trim()).filter(Boolean) : [];
+    if (!lines.includes(presetText)) {
+      lines.push(presetText);
+      setter(lines.join('\n'));
+      showToast(`Added: ${presetText}`, 'info');
+    }
+  };
+
+  const handleApplyItineraryTemplate = (daysCount = 5) => {
+    const templates = [
+      { day: 1, title: 'Guwahati Arrival → Shillong Transit', desc: 'Pickup from Guwahati airport/railway station. Drive to Shillong with stop at scenic Umiam Lake. Hotel check-in and leisure evening.' },
+      { day: 2, title: 'Shillong → Cherrapunji Sightseeing Excursion', desc: 'Full day sightseeing to Cherrapunji. Visit Elephant Falls, Nohkalikai Falls, Mawsmai Cave, and Seven Sisters Falls. Overnight stay in Cherrapunji.' },
+      { day: 3, title: 'Living Root Bridge Trek & Dawki River', desc: 'Morning trek to iconic Double-Decker Living Root Bridge. Drive to Dawki, boat ride on crystal-clear Umngot River. Visit Mawlynnong village.' },
+      { day: 4, title: 'Krang Suri Waterfalls → Shillong Return', desc: 'Excursion to turquoise Krang Suri waterfalls in Jowai. Swim in natural pools. Evening return to Shillong for local handicraft shopping at Police Bazar.' },
+      { day: 5, title: 'Kamakhya Temple Visit → Guwahati Departure', desc: 'Morning hotel check-out. Visit revered Kamakhya Temple in Guwahati. Drop-off at Guwahati airport or railway station for return journey.' },
+      { day: 6, title: 'Kaziranga National Park Elephant & Jeep Safari', desc: 'Early morning elephant safari in Central Range of Kaziranga. Afternoon open jeep safari to spot one-horned rhinos, wild buffaloes, and exotic birds.' },
+      { day: 7, title: 'Majuli Island Ferry & Cultural Village Walk', desc: 'Take scenic ferry across Brahmaputra to Majuli Island. Visit historic Satras (Vaishnavite monasteries) and local Mishing tribal craft hamlets.' }
+    ];
+    setPkgItinerary(templates.slice(0, daysCount));
+    showToast(`Applied ${daysCount}-Day Itinerary Template!`, 'info');
   };
 
   const handleSavePackage = async (e) => {
@@ -1063,28 +1121,51 @@ const AdminDashboard = () => {
         <div className="admin-modal-overlay">
           <div className="admin-modal-content">
             <div className="admin-modal-header">
-              <h3>{editingPackageId ? 'Edit Package Details' : 'Create New Detailed Package'}</h3>
+              <h3>
+                <span style={{ fontSize: '1.4rem' }}>🎒</span>
+                {editingPackageId ? 'Edit Tour Package' : 'Create New Tour Package'}
+              </h3>
               <button className="modal-close-btn" onClick={() => setPackageModalOpen(false)}>✕</button>
             </div>
 
-            {/* Modal Sub-Tabs */}
-            <div className="modal-nav-tabs">
-              <button className={`modal-tab-btn ${modalTab === 'basic' ? 'active' : ''}`} onClick={() => setModalTab('basic')}>
-                1. Basic Details
+            {/* Stepper Navigation Bar */}
+            <div className="modal-stepper-bar">
+              <button
+                type="button"
+                className={`stepper-btn ${modalTab === 'basic' ? 'active' : ''}`}
+                onClick={() => setModalTab('basic')}
+              >
+                <span className="stepper-num">1</span>
+                <span>Basic Details</span>
               </button>
-              <button className={`modal-tab-btn ${modalTab === 'tiers' ? 'active' : ''}`} onClick={() => setModalTab('tiers')}>
-                2. Tiered Pricing
+              <button
+                type="button"
+                className={`stepper-btn ${modalTab === 'tiers' ? 'active' : ''}`}
+                onClick={() => setModalTab('tiers')}
+              >
+                <span className="stepper-num">2</span>
+                <span>Tiered Pricing</span>
               </button>
-              <button className={`modal-tab-btn ${modalTab === 'highlights' ? 'active' : ''}`} onClick={() => setModalTab('highlights')}>
-                3. Highlights & Inclusions
+              <button
+                type="button"
+                className={`stepper-btn ${modalTab === 'highlights' ? 'active' : ''}`}
+                onClick={() => setModalTab('highlights')}
+              >
+                <span className="stepper-num">3</span>
+                <span>Highlights & Perks</span>
               </button>
-              <button className={`modal-tab-btn ${modalTab === 'itinerary' ? 'active' : ''}`} onClick={() => setModalTab('itinerary')}>
-                4. Day-wise Itinerary ({pkgItinerary.length})
+              <button
+                type="button"
+                className={`stepper-btn ${modalTab === 'itinerary' ? 'active' : ''}`}
+                onClick={() => setModalTab('itinerary')}
+              >
+                <span className="stepper-num">4</span>
+                <span>Day Itinerary ({pkgItinerary.length})</span>
               </button>
             </div>
 
             <form onSubmit={handleSavePackage}>
-              {/* TAB 1: BASIC DETAILS */}
+              {/* STEP 1: BASIC DETAILS */}
               {modalTab === 'basic' && (
                 <div>
                   <div className="admin-form-group">
@@ -1102,14 +1183,25 @@ const AdminDashboard = () => {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div className="admin-form-group">
                       <label>Destination Region *</label>
-                      <input
-                        type="text"
+                      <select
                         className="admin-form-input"
                         value={pkgDestination}
                         onChange={(e) => setPkgDestination(e.target.value)}
-                        placeholder="e.g. Meghalaya"
                         required
-                      />
+                      >
+                        <option value="">-- Select Destination --</option>
+                        {destinations.map((d) => (
+                          <option key={d._id || d.id || d.name} value={d.name}>{d.name}</option>
+                        ))}
+                        <option value="Meghalaya">Meghalaya</option>
+                        <option value="Assam">Assam</option>
+                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                        <option value="Sikkim">Sikkim</option>
+                        <option value="Nagaland">Nagaland</option>
+                        <option value="Manipur">Manipur</option>
+                        <option value="Mizoram">Mizoram</option>
+                        <option value="Tripura">Tripura</option>
+                      </select>
                     </div>
 
                     <div className="admin-form-group">
@@ -1125,6 +1217,7 @@ const AdminDashboard = () => {
                     </div>
                   </div>
 
+                  {/* Preset Image Picker */}
                   <div className="admin-form-group">
                     <label>Cover Image URL</label>
                     <input
@@ -1134,6 +1227,38 @@ const AdminDashboard = () => {
                       onChange={(e) => setPkgImage(e.target.value)}
                       placeholder="https://images.unsplash.com/photo-..."
                     />
+
+                    <div style={{ marginTop: '0.6rem' }}>
+                      <div className="preset-pills-label">📷 Quick Cover Photo Presets:</div>
+                      <div className="preset-pills-wrapper">
+                        {PRESET_COVER_IMAGES.map((item, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            className="preset-pill-btn"
+                            onClick={() => setPkgImage(item.url)}
+                          >
+                            + {item.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Image Preview */}
+                    {pkgImage && (
+                      <div className="image-preview-card">
+                        <img
+                          src={pkgImage}
+                          alt="Cover preview"
+                          className="image-preview-thumb"
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                        <div>
+                          <strong style={{ fontSize: '0.85rem', color: 'var(--slate-800)' }}>Live Image Preview</strong>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--slate-500)', margin: 0 }}>This photo will be displayed on the tour card and hero banner.</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="admin-form-group">
@@ -1149,12 +1274,14 @@ const AdminDashboard = () => {
                 </div>
               )}
 
-              {/* TAB 2: TIERED PRICING */}
+              {/* STEP 2: TIERED PRICING */}
               {modalTab === 'tiers' && (
                 <div>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--slate-500)', marginBottom: '1.25rem' }}>
-                    Set starting prices for different travel categories (Standard 3★, Deluxe 4★, Luxury 5★).
-                  </p>
+                  <div style={{ padding: '0.85rem 1rem', background: '#eff6ff', borderRadius: '12px', border: '1px solid #bfdbfe', marginBottom: '1.25rem' }}>
+                    <p style={{ fontSize: '0.85rem', color: '#1e40af', margin: 0 }}>
+                      💡 Set transparent tiered pricing so clients can choose between Standard 3★, Deluxe 4★, or Luxury 5★ packages.
+                    </p>
+                  </div>
 
                   <div className="admin-form-group">
                     <label>Standard Category Base Price (₹) *</label>
@@ -1166,7 +1293,9 @@ const AdminDashboard = () => {
                       placeholder="18900"
                       required
                     />
-                    <span className="admin-form-hint">Displayed as starting price across package cards.</span>
+                    <span className="admin-form-hint">
+                      Displayed as starting price card tag. {pkgPrice ? `(Formatted: ₹${Number(pkgPrice).toLocaleString('en-IN')})` : ''}
+                    </span>
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -1179,7 +1308,9 @@ const AdminDashboard = () => {
                         onChange={(e) => setPkgPriceDeluxe(e.target.value)}
                         placeholder="24900"
                       />
-                      <span className="admin-form-hint">4-Star hotel tier</span>
+                      <span className="admin-form-hint">
+                        4-Star hotel tier {pkgPriceDeluxe ? `(₹${Number(pkgPriceDeluxe).toLocaleString('en-IN')})` : ''}
+                      </span>
                     </div>
 
                     <div className="admin-form-group">
@@ -1191,17 +1322,32 @@ const AdminDashboard = () => {
                         onChange={(e) => setPkgPriceLuxury(e.target.value)}
                         placeholder="34900"
                       />
-                      <span className="admin-form-hint">5-Star / Resort tier</span>
+                      <span className="admin-form-hint">
+                        5-Star / Resort tier {pkgPriceLuxury ? `(₹${Number(pkgPriceLuxury).toLocaleString('en-IN')})` : ''}
+                      </span>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* TAB 3: HIGHLIGHTS & INCLUSIONS */}
+              {/* STEP 3: HIGHLIGHTS & INCLUSIONS */}
               {modalTab === 'highlights' && (
                 <div>
                   <div className="admin-form-group">
                     <label>Trip Key Highlights (One item per line)</label>
+                    <div className="preset-pills-label">✨ Quick Add Highlights:</div>
+                    <div className="preset-pills-wrapper">
+                      {HIGHLIGHT_PRESETS.map((preset, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          className="preset-pill-btn"
+                          onClick={() => handleAddPresetText(setPkgHighlights, pkgHighlights, preset)}
+                        >
+                          + {preset}
+                        </button>
+                      ))}
+                    </div>
                     <textarea
                       className="admin-form-input"
                       rows="4"
@@ -1214,6 +1360,19 @@ const AdminDashboard = () => {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div className="admin-form-group">
                       <label>Included Facilities (One per line)</label>
+                      <div className="preset-pills-label">✅ Quick Add Inclusions:</div>
+                      <div className="preset-pills-wrapper">
+                        {INCLUSION_PRESETS.map((preset, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            className="preset-pill-btn"
+                            onClick={() => handleAddPresetText(setPkgInclusions, pkgInclusions, preset)}
+                          >
+                            + {preset}
+                          </button>
+                        ))}
+                      </div>
                       <textarea
                         className="admin-form-input"
                         rows="4"
@@ -1225,6 +1384,19 @@ const AdminDashboard = () => {
 
                     <div className="admin-form-group">
                       <label>Excluded Facilities (One per line)</label>
+                      <div className="preset-pills-label">❌ Quick Add Exclusions:</div>
+                      <div className="preset-pills-wrapper">
+                        {EXCLUSION_PRESETS.map((preset, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            className="preset-pill-btn"
+                            onClick={() => handleAddPresetText(setPkgExclusions, pkgExclusions, preset)}
+                          >
+                            + {preset}
+                          </button>
+                        ))}
+                      </div>
                       <textarea
                         className="admin-form-input"
                         rows="4"
@@ -1237,12 +1409,22 @@ const AdminDashboard = () => {
                 </div>
               )}
 
-              {/* TAB 4: DAY-BY-DAY ITINERARY BUILDER */}
+              {/* STEP 4: DAY-BY-DAY ITINERARY BUILDER */}
               {modalTab === 'itinerary' && (
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--slate-500)' }}>Build detailed day-by-day travel plan</span>
-                    <button type="button" className="btn btn-teal btn-sm" onClick={handleAddItineraryDay}>+ Add Day</button>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', background: '#f8fafc', padding: '0.85rem 1rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                    <div>
+                      <strong style={{ fontSize: '0.88rem', color: 'var(--slate-800)', display: 'block' }}>Day-by-Day Itinerary Plan</strong>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--slate-500)' }}>Auto-fill starter templates or manually add days</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      <button type="button" className="btn btn-outline btn-sm" onClick={() => handleApplyItineraryTemplate(5)}>
+                        ⚡ Auto-Fill 5-Day Template
+                      </button>
+                      <button type="button" className="btn btn-teal btn-sm" onClick={handleAddItineraryDay}>
+                        + Add Day
+                      </button>
+                    </div>
                   </div>
 
                   {pkgItinerary.map((item, index) => (
@@ -1255,7 +1437,7 @@ const AdminDashboard = () => {
                             style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}
                             onClick={() => handleRemoveItineraryDay(index)}
                           >
-                            Remove Day
+                            ✕ Remove Day
                           </button>
                         )}
                       </div>
@@ -1266,7 +1448,7 @@ const AdminDashboard = () => {
                           className="admin-form-input"
                           value={item.title}
                           onChange={(e) => handleUpdateItineraryDay(index, 'title', e.target.value)}
-                          placeholder={`Day ${index + 1} Title (e.g. Guwahati Arrival → Shillong)`}
+                          placeholder={`Day ${index + 1} Title (e.g. Guwahati Arrival → Shillong Transit)`}
                         />
                       </div>
 
@@ -1276,7 +1458,7 @@ const AdminDashboard = () => {
                           rows="2"
                           value={item.desc}
                           onChange={(e) => handleUpdateItineraryDay(index, 'desc', e.target.value)}
-                          placeholder="Describe activities, travel route, and overnight stay..."
+                          placeholder="Describe key activities, travel routes, sightseeing spots, and overnight stay details..."
                         />
                       </div>
                     </div>
@@ -1285,19 +1467,19 @@ const AdminDashboard = () => {
               )}
 
               {/* Modal Footer Controls */}
-              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--slate-100)' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.75rem', paddingTop: '1rem', borderTop: '1px solid var(--slate-200)' }}>
                 <div>
                   {modalTab !== 'basic' && (
                     <button
                       type="button"
-                      className="btn btn-ghost btn-sm"
+                      className="btn btn-outline btn-sm"
                       onClick={() => {
                         if (modalTab === 'tiers') setModalTab('basic');
                         else if (modalTab === 'highlights') setModalTab('tiers');
                         else if (modalTab === 'itinerary') setModalTab('highlights');
                       }}
                     >
-                      ← Back
+                      ← Previous Step
                     </button>
                   )}
                 </div>
@@ -1319,7 +1501,7 @@ const AdminDashboard = () => {
                     </button>
                   ) : (
                     <button type="submit" className="btn btn-primary">
-                      {editingPackageId ? 'Save Package Details' : 'Create Detailed Package'}
+                      {editingPackageId ? '✓ Save Package Changes' : '✓ Publish Package'}
                     </button>
                   )}
                 </div>
