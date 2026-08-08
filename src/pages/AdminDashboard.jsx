@@ -282,12 +282,11 @@ const AdminDashboard = () => {
     setPkgDestination('');
     setPkgCategory('Standard');
     setPkgImage('');
-    setPkgHighlights('Living root bridge trek\nNohkalikai waterfalls\nDawki crystal river boating\nTraditional Khasi village tour');
-    setPkgInclusions('Accommodation in chosen category\nDaily breakfast\nPrivate AC vehicle for transfers\nDriver allowances & taxes');
-    setPkgExclusions('Airfare / train tickets\nPersonal expenses & tips\nLunch & dinner unless specified');
+    setPkgHighlights('');
+    setPkgInclusions('');
+    setPkgExclusions('');
     setPkgItinerary([
-      { day: 1, title: 'Arrival & Hotel Check-in', desc: 'Pick up from airport or railway station and transfer to hotel. Evening at leisure.' },
-      { day: 2, title: 'Full Day Sightseeing Tour', desc: 'Visit famous waterfalls, caves, and scenic mountain viewpoints.' }
+      { day: 1, title: '', desc: '' }
     ]);
     setPackageModalOpen(true);
   };
