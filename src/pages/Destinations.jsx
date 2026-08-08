@@ -2,69 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getDestinations } from '../services/api';
 
-const defaultDestinations = [
-  {
-    _id: 'dest-meghalaya',
-    name: 'Meghalaya',
-    meta: 'Best: Oct – May',
-    description: 'Living root bridges, waterfalls, clean Khasi villages and the wettest places on earth. Ideal for first-time visitors to the hills.',
-    image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
-    tags: ['Root bridges', 'Waterfalls', 'Shillong'],
-    viewLink: '/packages/meghalaya-1',
-    viewLabel: 'View package'
-  },
-  {
-    _id: 'dest-assam',
-    name: 'Assam',
-    meta: 'Best: Nov – Apr',
-    description: 'Kaziranga’s one-horned rhinos, Brahmaputra river life, tea gardens and the gateway city of Guwahati.',
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
-    tags: ['Kaziranga', 'Wildlife', 'Tea estates'],
-    viewLink: '/packages/assam-1',
-    viewLabel: 'View package'
-  },
-  {
-    _id: 'dest-arunachal',
-    name: 'Arunachal Pradesh',
-    meta: 'Best: Mar – Jun, Sep – Nov',
-    description: 'High passes, Tawang monastery, Buddhist culture and quiet mountain roads. Needs ILP — we arrange it for you.',
-    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
-    tags: ['Tawang', 'Sela Pass', 'Monasteries'],
-    viewLink: '/packages/arunachal-1',
-    viewLabel: 'View package'
-  },
-  {
-    _id: 'dest-sikkim',
-    name: 'Sikkim',
-    meta: 'Best: Mar – Jun, Sep – Nov',
-    description: 'Mountain views, monasteries, lakes and the road to high passes. A balanced mix of comfort and scenery.',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
-    tags: ['Gangtok', 'Lakes', 'High passes'],
-    viewLink: '/packages/sikkim-1',
-    viewLabel: 'See packages'
-  },
-  {
-    _id: 'dest-nagaland',
-    name: 'Nagaland',
-    meta: 'Best: Oct – Mar · Hornbill: Dec',
-    description: 'Tribal culture, the Hornbill Festival, hill villages and a very different North East experience.',
-    image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80',
-    tags: ['Hornbill', 'Culture', 'Kohima'],
-    viewLink: '/contact',
-    viewLabel: 'Plan a trip'
-  },
-  {
-    _id: 'dest-manipur',
-    name: 'Manipur, Mizoram & Tripura',
-    meta: 'Best: Oct – Mar',
-    description: 'Less-travelled states with lakes, hills, festivals and strong local cultures. Best planned with local insight.',
-    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
-    tags: ['Loktak', 'Hills', 'Culture'],
-    viewLink: '/contact',
-    viewLabel: 'Plan a trip'
-  }
-];
-
 const Destinations = () => {
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -82,7 +19,7 @@ const Destinations = () => {
     const fetchDestinations = async () => {
       try {
         const data = await getDestinations();
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setDestinations(data);
         }
       } catch (err) {
@@ -96,19 +33,16 @@ const Destinations = () => {
   }, []);
 
   const displayDestinations = React.useMemo(() => {
-    if (destinations.length > 0) {
-      return destinations.map((dest) => ({
-        _id: dest._id,
-        name: dest.name,
-        meta: dest.bestTime ? `Best: ${dest.bestTime}` : 'Best: All year',
-        description: dest.description || 'Discover incredible landscapes and rich local heritage in this region.',
-        image: dest.image || 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
-        tags: dest.tags && dest.tags.length > 0 ? dest.tags : ['Hills', 'Culture', 'Nature'],
-        viewLink: `/packages?destination=${encodeURIComponent(dest.name)}`,
-        viewLabel: 'View packages'
-      }));
-    }
-    return defaultDestinations;
+    return destinations.map((dest) => ({
+      _id: dest._id || dest.id,
+      name: dest.name,
+      meta: dest.bestTime || dest.best_time_to_visit ? `Best: ${dest.bestTime || dest.best_time_to_visit}` : 'Best: All year',
+      description: dest.description || 'Discover incredible landscapes and rich local heritage in this region.',
+      image: dest.image || 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
+      tags: dest.tags && dest.tags.length > 0 ? dest.tags : ['Hills', 'Culture', 'Nature'],
+      viewLink: `/packages?destination=${encodeURIComponent(dest.name)}`,
+      viewLabel: 'View packages'
+    }));
   }, [destinations]);
 
   return (
@@ -138,6 +72,13 @@ const Destinations = () => {
               {[1, 2, 3, 4].map((n) => (
                 <div key={n} className="dest-card" style={{ height: '220px', opacity: 0.6 }} />
               ))}
+            </div>
+          ) : displayDestinations.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '4rem 1rem', background: '#ffffff', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
+              <h3 style={{ color: 'var(--slate-800)', fontSize: '1.25rem', marginBottom: '0.5rem' }}>No Destinations Listed</h3>
+              <p style={{ color: 'var(--slate-500)', fontSize: '0.95rem' }}>
+                Destinations added in the Admin Dashboard will appear here automatically.
+              </p>
             </div>
           ) : (
             <div className="dest-grid">

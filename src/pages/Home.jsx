@@ -35,37 +35,6 @@ const HERO_IMAGES = [
   'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80'
 ];
 
-const FALLBACK_DESTINATIONS = [
-  {
-    _id: 'fallback-1',
-    name: 'Meghalaya',
-    description: 'Living root bridges, cascading waterfalls, clean Khasi villages and the wettest places on earth.',
-    image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
-    bestTimeToVisit: 'Oct – May'
-  },
-  {
-    _id: 'fallback-2',
-    name: 'Assam',
-    description: 'One-horned rhinos in Kaziranga, majestic Brahmaputra river islands, and historic tea gardens.',
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
-    bestTimeToVisit: 'Nov – Apr'
-  },
-  {
-    _id: 'fallback-3',
-    name: 'Arunachal Pradesh',
-    description: 'High mountain passes, Tawang monastery, frozen glacial lakes and quiet Buddhist culture.',
-    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
-    bestTimeToVisit: 'Mar – Jun, Sep – Nov'
-  },
-  {
-    _id: 'fallback-4',
-    name: 'Sikkim',
-    description: 'High altitude glacial lakes, Kanchenjunga peaks, serene monasteries and mountain passes.',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
-    bestTimeToVisit: 'Mar – Jun, Sep – Nov'
-  }
-];
-
 const Home = () => {
   const [packages, setPackages] = useState([]);
   const [destinations, setDestinations] = useState([]);
@@ -104,10 +73,10 @@ const Home = () => {
           getDestinations().catch(() => [])
         ]);
         setPackages(Array.isArray(pkgsData) ? pkgsData.slice(0, 3) : []);
-        setDestinations(Array.isArray(destsData) && destsData.length > 0 ? destsData.slice(0, 6) : FALLBACK_DESTINATIONS);
+        setDestinations(Array.isArray(destsData) ? destsData.slice(0, 6) : []);
       } catch (err) {
         console.error('Failed to load home page data:', err);
-        setDestinations(FALLBACK_DESTINATIONS);
+        setDestinations([]);
       } finally {
         setLoading(false);
       }
@@ -176,9 +145,15 @@ const Home = () => {
 
           {loading ? (
             <Spinner />
+          ) : destinations.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#ffffff', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
+              <p style={{ color: 'var(--slate-500)', fontSize: '0.95rem' }}>
+                No destinations listed yet. Destinations created in the Admin Dashboard will appear here automatically.
+              </p>
+            </div>
           ) : (
             <div className="dest-grid">
-              {(destinations.length > 0 ? destinations : FALLBACK_DESTINATIONS).map((dest) => (
+              {destinations.map((dest) => (
                 <article key={dest._id || dest.id || dest.name} className="dest-card">
                   <div
                     className="dest-img"
