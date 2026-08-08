@@ -3846,107 +3846,139 @@ footer {
   color: var(--slate-500);
 }
 
-/* Modals */
+/* Modals & Package Creation Wizard */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .admin-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 1.25rem;
-  animation: fadeIn 0.2s ease-out;
+  animation: fadeIn 0.25s ease-out;
 }
 
 .admin-modal-content {
-  background: var(--white);
-  border-radius: 20px;
-  width: min(800px, 100%);
-  max-height: 92vh;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 24px;
+  width: min(840px, 100%);
+  max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-  padding: 2rem;
+  box-shadow: 0 35px 70px -15px rgba(15, 23, 42, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  padding: 2.25rem;
   position: relative;
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Custom Scrollbar for Modal */
+.admin-modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+.admin-modal-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 999px;
+}
+.admin-modal-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+.admin-modal-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .admin-modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--slate-100);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .admin-modal-header h3 {
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   font-weight: 800;
   color: var(--slate-900);
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.65rem;
+  letter-spacing: -0.02em;
 }
 
 .modal-close-btn {
-  background: var(--slate-100);
-  border: none;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
   font-size: 1.1rem;
   cursor: pointer;
   color: var(--slate-600);
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal-close-btn:hover {
   background: #fee2e2;
+  border-color: #fca5a5;
   color: #dc2626;
-  transform: rotate(90deg);
+  transform: rotate(90deg) scale(1.05);
 }
 
 /* Stepper Navigation Bar */
 .modal-stepper-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
-  background: #f1f5f9;
-  padding: 0.4rem;
-  border-radius: 14px;
-  margin-bottom: 1.75rem;
+  gap: 0.6rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 0.45rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
 }
 
 .stepper-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.65rem 0.5rem;
+  gap: 0.55rem;
+  padding: 0.75rem 0.6rem;
   border: none;
   background: transparent;
-  border-radius: 10px;
-  font-size: 0.82rem;
+  border-radius: 12px;
+  font-size: 0.84rem;
   font-weight: 700;
   color: var(--slate-500);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .stepper-btn:hover {
   color: var(--slate-900);
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .stepper-btn.active {
   background: var(--white);
-  color: var(--teal);
-  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15);
+  color: #0f766e;
+  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.15), 0 0 0 1px rgba(15, 118, 110, 0.1);
 }
 
 .stepper-btn.completed {
@@ -3954,22 +3986,23 @@ footer {
 }
 
 .stepper-num {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: #cbd5e1;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   font-weight: 800;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .stepper-btn.active .stepper-num {
-  background: var(--teal);
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
   color: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.35);
 }
 
 .stepper-btn.completed .stepper-num {
@@ -3979,12 +4012,12 @@ footer {
 
 /* Preset Pills for Quick Entry */
 .preset-pills-label {
-  font-size: 0.76rem;
-  font-weight: 700;
-  color: var(--slate-500);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--slate-600);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 0.4rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -3993,82 +4026,135 @@ footer {
 .preset-pills-wrapper {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 0.85rem;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
 }
 
 .preset-pill-btn {
   background: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cbd5e1;
   color: var(--slate-700);
-  font-size: 0.76rem;
-  font-weight: 600;
-  padding: 0.3rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
   border-radius: 999px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .preset-pill-btn:hover {
   background: #ccfbf1;
-  border-color: #99f6e4;
+  border-color: #5eead4;
   color: #0f766e;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(15, 118, 110, 0.15);
+}
+
+.preset-pill-btn:active {
+  transform: translateY(0);
+}
+
+/* Form Controls in Modal */
+.admin-form-group {
+  margin-bottom: 1.25rem;
+}
+
+.admin-form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--slate-800);
+  margin-bottom: 0.4rem;
+}
+
+.admin-form-input, select.admin-form-input, textarea.admin-form-input {
+  width: 100%;
+  padding: 0.75rem 0.95rem;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  color: var(--slate-900);
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.admin-form-input:focus, select.admin-form-input:focus, textarea.admin-form-input:focus {
+  background: #ffffff;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.14);
+}
+
+.admin-form-hint {
+  font-size: 0.78rem;
+  color: var(--slate-500);
+  margin-top: 0.35rem;
+  display: block;
 }
 
 /* Image Preview Box */
 .image-preview-card {
   display: flex;
-  gap: 1rem;
+  gap: 1.1rem;
   align-items: center;
-  background: #f8fafc;
-  border: 1px solid var(--slate-200);
-  border-radius: 12px;
-  padding: 0.75rem;
-  margin-top: 0.6rem;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 0.9rem 1.1rem;
+  margin-top: 0.75rem;
 }
 
 .image-preview-thumb {
-  width: 90px;
-  height: 60px;
-  border-radius: 8px;
+  width: 100px;
+  height: 65px;
+  border-radius: 10px;
   object-fit: cover;
-  border: 1px solid #cbd5e1;
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 /* Dynamic Itinerary Builder Cards */
 .itinerary-builder-card {
-  background: #f8fafc;
-  border: 1px solid var(--slate-200);
-  border-radius: 14px;
-  padding: 1.1rem;
-  margin-bottom: 0.9rem;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
   position: relative;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.itinerary-builder-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 }
 
 .itinerary-builder-card:focus-within {
   border-color: var(--teal);
-  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.08);
+  box-shadow: 0 8px 20px rgba(15, 118, 110, 0.12);
 }
 
 .itinerary-builder-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.75rem;
 }
 
 .itinerary-day-tag {
-  background: #ccfbf1;
-  color: var(--teal);
-  font-size: 0.8rem;
+  background: linear-gradient(135deg, #ccfbf1, #99f6e4);
+  color: #0f766e;
+  font-size: 0.82rem;
   font-weight: 800;
-  padding: 0.25rem 0.7rem;
+  padding: 0.3rem 0.8rem;
   border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.12);
 }
 
 /* Mobile responsive drawer */
@@ -4103,6 +4189,10 @@ footer {
 
   .admin .content {
     padding: 1.25rem 1rem 2rem;
+  }
+
+  .modal-stepper-bar {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
