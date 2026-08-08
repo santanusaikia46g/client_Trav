@@ -228,18 +228,18 @@ const AdminDashboard = () => {
         getInquiries().catch(() => []),
         getDestinations().catch(() => [])
       ]);
-      setPackages(pkgs.length > 0 ? pkgs : defaultPackagesList);
-      setInquiries(inqs.length > 0 ? inqs : defaultEnquiriesList);
-      setDestinations(dests.length > 0 ? dests : defaultDestinationsList);
+      setPackages(Array.isArray(pkgs) ? pkgs : []);
+      setInquiries(Array.isArray(inqs) ? inqs : []);
+      setDestinations(Array.isArray(dests) ? dests : []);
       const revs = await getReviews().catch(() => []);
       setReviews(revs);
       const logs = await getActivityLogs().catch(() => []);
       setActivityLogs(logs);
     } catch (err) {
       console.error(err);
-      setPackages(defaultPackagesList);
-      setInquiries(defaultEnquiriesList);
-      setDestinations(defaultDestinationsList);
+      setPackages([]);
+      setInquiries([]);
+      setDestinations([]);
     }
   };
 
@@ -845,34 +845,42 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {packages.map((pkg) => (
-                      <tr key={pkg._id}>
-                        <td>
-                          <div className="cell-user">
-                            <div
-                              className="pkg-thumb"
-                              style={{ backgroundImage: `url('${pkg.image || 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=100&q=60'}')` }}
-                            />
-                            <div className="cell-user-info">
-                              <strong>{pkg.title}</strong>
-                              <span>{pkg.description ? pkg.description.substring(0, 45) + '...' : 'North East India Tour'}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td><strong>{pkg.destination || 'North East'}</strong></td>
-                        <td>{pkg.duration || '5D / 4N'}</td>
-                        <td><strong style={{ color: 'var(--slate-900)' }}>{pkg.standard || (typeof pkg.price === 'number' ? `₹${pkg.price.toLocaleString('en-IN')}` : pkg.price)}</strong></td>
-                        <td><span style={{ color: 'var(--teal)', fontWeight: 600 }}>{pkg.deluxe || '—'}</span></td>
-                        <td><span style={{ color: 'var(--coral)', fontWeight: 600 }}>{pkg.luxury || '—'}</span></td>
-                        <td><span className="status status-confirmed">{pkg.status || 'Published'}</span></td>
-                        <td>
-                          <div style={{ display: 'flex', gap: '0.4rem' }}>
-                            <button className="btn btn-ghost btn-sm" onClick={() => handleOpenEditModal(pkg)}>Edit Details</button>
-                            <button className="btn btn-ghost btn-sm" style={{ color: '#dc2626' }} onClick={() => handleDeletePkg(pkg._id)}>Delete</button>
-                          </div>
+                    {packages.length === 0 ? (
+                      <tr>
+                        <td colSpan="8" style={{ textAlign: 'center', padding: '2rem', color: 'var(--slate-500)' }}>
+                          No tour packages found. Click "+ Add New Package" to create one.
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      packages.map((pkg) => (
+                        <tr key={pkg._id}>
+                          <td>
+                            <div className="cell-user">
+                              <div
+                                className="pkg-thumb"
+                                style={{ backgroundImage: `url('${pkg.image || 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=100&q=60'}')` }}
+                              />
+                              <div className="cell-user-info">
+                                <strong>{pkg.title}</strong>
+                                <span>{pkg.description ? pkg.description.substring(0, 45) + '...' : 'North East India Tour'}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td><strong>{pkg.destination || 'North East'}</strong></td>
+                          <td>{pkg.duration || '5D / 4N'}</td>
+                          <td><strong style={{ color: 'var(--slate-900)' }}>{pkg.standard || (typeof pkg.price === 'number' ? `₹${pkg.price.toLocaleString('en-IN')}` : pkg.price)}</strong></td>
+                          <td><span style={{ color: 'var(--teal)', fontWeight: 600 }}>{pkg.deluxe || '—'}</span></td>
+                          <td><span style={{ color: 'var(--coral)', fontWeight: 600 }}>{pkg.luxury || '—'}</span></td>
+                          <td><span className="status status-confirmed">{pkg.status || 'Published'}</span></td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '0.4rem' }}>
+                              <button className="btn btn-ghost btn-sm" onClick={() => handleOpenEditModal(pkg)}>Edit Details</button>
+                              <button className="btn btn-ghost btn-sm" style={{ color: '#dc2626' }} onClick={() => handleDeletePkg(pkg._id)}>Delete</button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -939,15 +947,23 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {destinations.map((dest) => (
-                        <tr key={dest._id}>
-                          <td><strong>{dest.name}</strong></td>
-                          <td>{dest.bestTimeToVisit || 'Oct – May'}</td>
-                          <td>{dest.packagesCount || '1 package'}</td>
-                          <td><span className="status status-confirmed">Live</span></td>
-                          <td><button className="btn btn-ghost btn-sm" onClick={() => showToast('Editing destination region', 'info')}>Edit</button></td>
+                      {destinations.length === 0 ? (
+                        <tr>
+                          <td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: 'var(--slate-500)' }}>
+                            No destination regions added yet. Fill out the form on the left to add one.
+                          </td>
                         </tr>
-                      ))}
+                      ) : (
+                        destinations.map((dest) => (
+                          <tr key={dest._id}>
+                            <td><strong>{dest.name}</strong></td>
+                            <td>{dest.bestTimeToVisit || 'Oct – May'}</td>
+                            <td>{dest.packagesCount || '0 packages'}</td>
+                            <td><span className="status status-confirmed">Live</span></td>
+                            <td><button className="btn btn-ghost btn-sm" onClick={() => showToast('Editing destination region', 'info')}>Edit</button></td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
