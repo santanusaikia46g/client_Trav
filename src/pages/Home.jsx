@@ -38,27 +38,31 @@ const HERO_IMAGES = [
 const FALLBACK_DESTINATIONS = [
   {
     _id: 'fallback-1',
-    name: 'Meghalaya Highlands',
-    description: 'Living root bridges, waterfalls, clean villages and the wettest places on earth.',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
-    meta: 'Meghalaya · 5–7 days',
-    priceText: 'From ₹28,500'
+    name: 'Meghalaya',
+    description: 'Living root bridges, cascading waterfalls, clean Khasi villages and the wettest places on earth.',
+    image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Oct – May'
   },
   {
     _id: 'fallback-2',
-    name: 'Kaziranga National Park',
-    description: 'Home to the one-horned rhino. Jeep safaris at dawn through grasslands and wetlands.',
-    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=800&q=80',
-    meta: 'Assam · 3–4 days',
-    priceText: 'From ₹18,900'
+    name: 'Assam',
+    description: 'One-horned rhinos in Kaziranga, majestic Brahmaputra river islands, and historic tea gardens.',
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Nov – Apr'
   },
   {
     _id: 'fallback-3',
-    name: 'Tawang & Arunachal',
-    description: 'High mountain monastery, Sela Pass, clear lakes and quiet Buddhist culture.',
-    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
-    meta: 'Arunachal · 6–8 days',
-    priceText: 'From ₹34,900'
+    name: 'Arunachal Pradesh',
+    description: 'High mountain passes, Tawang monastery, frozen glacial lakes and quiet Buddhist culture.',
+    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Mar – Jun, Sep – Nov'
+  },
+  {
+    _id: 'fallback-4',
+    name: 'Sikkim',
+    description: 'High altitude glacial lakes, Kanchenjunga peaks, serene monasteries and mountain passes.',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Mar – Jun, Sep – Nov'
   }
 ];
 
@@ -96,11 +100,11 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const [pkgsData, destsData] = await Promise.all([
-          getPackages(),
-          getDestinations()
+          getPackages().catch(() => []),
+          getDestinations().catch(() => [])
         ]);
-        setPackages(pkgsData.slice(0, 3));
-        setDestinations(destsData.length > 0 ? destsData.slice(0, 6) : FALLBACK_DESTINATIONS);
+        setPackages(Array.isArray(pkgsData) ? pkgsData.slice(0, 3) : []);
+        setDestinations(Array.isArray(destsData) && destsData.length > 0 ? destsData.slice(0, 6) : FALLBACK_DESTINATIONS);
       } catch (err) {
         console.error('Failed to load home page data:', err);
         setDestinations(FALLBACK_DESTINATIONS);
@@ -162,12 +166,12 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Destinations */}
-      <section className="destinations" id="destinations" style={{ padding: '5rem 0' }}>
+      {/* Destinations Section */}
+      <section className="destinations" id="destinations" style={{ padding: '5rem 0', backgroundColor: '#f8fafc' }}>
         <div className="container">
-          <div className="section-header">
-            <h2>Popular North East destinations</h2>
-            <p>Hand-picked places that show the real character of the region.</p>
+          <div className="section-header text-center">
+            <h2 className="section-title">Popular North East Destinations</h2>
+            <p className="section-subtitle">Hand-picked regions that reveal the natural wonder and rich heritage of North East India.</p>
           </div>
 
           {loading ? (
@@ -175,14 +179,29 @@ const Home = () => {
           ) : (
             <div className="dest-grid">
               {(destinations.length > 0 ? destinations : FALLBACK_DESTINATIONS).map((dest) => (
-                <article key={dest._id || dest.name} className="dest-card">
-                  <img src={dest.image} alt={dest.name} />
+                <article key={dest._id || dest.id || dest.name} className="dest-card">
+                  <div
+                    className="dest-img"
+                    style={{
+                      backgroundImage: `url('${dest.image || 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80'}')`
+                    }}
+                  />
                   <div className="dest-body">
-                    <h3>{dest.name}</h3>
-                    <p>{dest.description || 'Explore scenic landscapes, cultural heritage, and guided excursions.'}</p>
-                    <div className="dest-meta">
-                      <span className="location">{dest.meta || `${dest.name} · Tour`}</span>
-                      <span className="price">{dest.priceText || (dest.price ? `From ₹${dest.price.toLocaleString('en-IN')}` : 'Best Rates')}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--slate-900)', margin: 0 }}>{dest.name}</h3>
+                      {(dest.bestTimeToVisit || dest.best_time_to_visit) && (
+                        <span style={{ fontSize: '0.72rem', fontWeight: 700, background: '#ccfbf1', color: 'var(--teal)', padding: '0.2rem 0.55rem', borderRadius: '999px' }}>
+                          Best: {dest.bestTimeToVisit || dest.best_time_to_visit}
+                        </span>
+                      )}
+                    </div>
+                    <p style={{ fontSize: '0.88rem', color: 'var(--slate-500)', lineHeight: '1.5', marginBottom: '1.25rem' }}>
+                      {dest.description || 'Discover incredible mountain passes, ancient monasteries, and lush valleys.'}
+                    </p>
+                    <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                      <Link to={`/packages?destination=${encodeURIComponent(dest.name)}`} className="btn btn-outline btn-sm" style={{ width: '100%' }}>
+                        Explore Packages →
+                      </Link>
                     </div>
                   </div>
                 </article>
@@ -213,7 +232,7 @@ const Home = () => {
               {packages.map((pkg) => (
                 <Card key={pkg._id} className="package-card" style={{ textAlign: 'left' }}>
                   <div className="package-card-img">
-                    <img src={pkg.images[0] || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80'} alt={pkg.title} />
+                    <img src={pkg.image || (pkg.images && pkg.images[0]) || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80'} alt={pkg.title} />
                     <span className="package-card-tag">{pkg.duration}</span>
                     <span className={`badge-category badge-category-${(pkg.category || 'Standard').toLowerCase()} package-card-category-badge`}>
                       {pkg.category || 'Standard'}
@@ -234,7 +253,7 @@ const Home = () => {
                     <div className="package-card-footer">
                       <div className="package-card-price">
                         <span>Starting from</span> <br />
-                        ₹{pkg.price.toLocaleString('en-IN')}
+                        ₹{pkg.price ? pkg.price.toLocaleString('en-IN') : 'N/A'}
                       </div>
                       <Link to={`/packages/${pkg._id}`}>
                         <Button variant="primary" size="sm">View Details</Button>
@@ -257,9 +276,9 @@ const Home = () => {
       {/* Why Choose Us */}
       <section id="why" className="section" style={{ backgroundColor: 'var(--slate-50)' }}>
         <div className="container">
-          <div className="section-header">
-            <h2>Why travel the North East with us</h2>
-            <p>We know the permits, the roads and the people who make the trip special.</p>
+          <div className="section-header text-center">
+            <h2 className="section-title">Why Travel The North East With Us</h2>
+            <p className="section-subtitle">We know the permits, the roads and the people who make the trip special.</p>
           </div>
 
           <div className="features">
@@ -269,7 +288,7 @@ const Home = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h3>Local know-how</h3>
+              <h3>Local Know-How</h3>
               <p>ILPs, best seasons, reliable drivers and stays that feel like home — sorted for you.</p>
             </div>
 
@@ -280,7 +299,7 @@ const Home = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <h3>Real experiences</h3>
+              <h3>Real Experiences</h3>
               <p>Homestays, village walks, root-bridge treks and early morning safaris with people who live there.</p>
             </div>
 
@@ -290,7 +309,7 @@ const Home = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <h3>Support that stays</h3>
+              <h3>Support That Stays</h3>
               <p>From Guwahati arrival to the last mountain road, someone from our team is reachable.</p>
             </div>
           </div>
